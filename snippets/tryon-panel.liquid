@@ -1,0 +1,755 @@
+{% comment %}
+  Try-On Product Panel
+  Renders a hidden panel that slides in when the GlassOn try-on modal opens.
+  Shows: product image, title, selected variant/colour, price, Add to Cart + See Frame buttons.
+{% endcomment %}
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<div id="tryon-panel" class="tryon-panel" aria-hidden="true">
+  <div class="tryon-panel__inner">
+
+    <!-- Close -->
+    <button class="tryon-panel__close" id="tryonPanelClose" aria-label="Close panel">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Product Image -->
+    <div class="tryon-panel__thumb">
+      <img
+        id="tryonPanelImage"
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        alt="{{ product.title | escape }}"
+      >
+    </div>
+
+    <!-- Scrollable info area -->
+    <div class="tryon-panel__info">
+
+      <p class="tryon-panel__vendor">{{ product.vendor }}</p>
+      <h3 class="tryon-panel__title">{{ product.title }}</h3>
+
+      <!-- Price -->
+      <div class="tryon-panel__price">
+        <span class="tryon-panel__price-new" id="tryonPanelPrice">{{ current_variant.price | money }}</span>
+        {% if product.compare_at_price_max > product.price %}
+          <span class="tryon-panel__price-old" id="tryonPanelOldPrice">{{ current_variant.compare_at_price | money }}</span>
+        {% endif %}
+      </div>
+
+      <!-- Colour swatches -->
+      {% assign color_option_index = nil %}
+      {% for option in product.options %}
+        {% assign opt_lower = option | downcase %}
+        {% if opt_lower == 'color' or opt_lower == 'colour' or opt_lower == 'frame color' or opt_lower == 'frame colour' %}
+          {% assign color_option_index = forloop.index0 %}
+        {% endif %}
+      {% endfor %}
+
+      {% if color_option_index != nil %}
+        <div class="tryon-panel__swatches">
+          <p class="tryon-panel__swatch-label">
+            Colour: <strong id="tryonSelectedColor">{{ current_variant.options[color_option_index] }}</strong>
+          </p>
+          <div class="tryon-panel__swatch-list">
+            {% assign seen_colors = '' %}
+            {% for variant in product.variants %}
+              {% assign col = variant.options[color_option_index] %}
+              {% assign col_slug = col | handleize %}
+              {% unless seen_colors contains col_slug %}
+                {% assign seen_colors = seen_colors | append: col_slug | append: ',' %}
+                <button
+                  class="tryon-swatch{% if variant.id == current_variant.id %} is-active{% endif %}"
+                  data-variant-id="{{ variant.id }}"
+                  data-color="{{ col }}"
+                  data-color-slug="{{ col_slug }}"
+                  data-price="{{ variant.price | money }}"
+                  data-compare="{{ variant.compare_at_price | money }}"
+                  data-image="{{ variant.image.src | default: product.featured_image.src | image_url: width: 600 }}"
+                  title="{{ col }}"
+                  style="background-color: {{ col_slug }};"
+                  aria-label="{{ col }}"
+                ></button>
+              {% endunless %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
+    <!-- Actions pinned to bottom -->
+    <div class="tryon-panel__actions">
+      <button class="tryon-panel__atc" id="tryonAddToCart" data-variant-id="{{ current_variant.id }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Add to Cart
+      </button>
+      <a class="tryon-panel__see-frame" href="{{ product.url }}">
+        See Frame
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <p class="tryon-panel__feedback" id="tryonFeedback" aria-live="polite"></p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* ── Try-On Panel — right-side vertical panel ── */
+.tryon-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  z-index: 1000001;
+  transform: translateX(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.tryon-panel.is-visible {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.tryon-panel__inner {
+  background: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.22);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 16px 16px 0;
+}
+
+/* Close button */
+.tryon-panel__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: background 0.15s ease, color 0.15s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.tryon-panel__close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+/* Product image — top, full width */
+.tryon-panel__thumb {
+  width: 100%;
+  flex-shrink: 0;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e8ecf0;
+  overflow: hidden;
+  height: 200px;
+}
+.tryon-panel__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Scrollable info section */
+.tryon-panel__info {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 18px 12px;
+  scrollbar-width: thin;
+}
+
+.tryon-panel__vendor {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.tryon-panel__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.tryon-panel__price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.tryon-panel__price-new {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+.tryon-panel__price-old {
+  font-size: 14px;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+/* Colour swatches */
+.tryon-panel__swatches {
+  margin-bottom: 8px;
+}
+.tryon-panel__swatch-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+.tryon-panel__swatch-label strong {
+  color: #111827;
+}
+.tryon-panel__swatch-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tryon-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.18);
+}
+.tryon-swatch:hover {
+  transform: scale(1.15);
+}
+.tryon-swatch.is-active {
+  outline-color: #113071;
+  border-color: #fff;
+}
+
+/* Actions — pinned to bottom */
+.tryon-panel__actions {
+  flex-shrink: 0;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tryon-panel__atc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #113071;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  width: 100%;
+}
+.tryon-panel__atc:hover {
+  background: #0d2458;
+  transform: translateY(-1px);
+}
+.tryon-panel__atc:disabled {
+  background: #c4c9d4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tryon-panel__see-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: #113071;
+  border: 1.5px solid #113071;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 12px 20px;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tryon-panel__see-frame:hover {
+  background: #113071;
+  color: #fff;
+  text-decoration: none;
+}
+
+.tryon-panel__feedback {
+  font-size: 12px;
+  color: #16a34a;
+  min-height: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Mobile: bottom sheet — JS overrides take precedence on desktop */
+@media (max-width: 768px) {
+  .tryon-panel:not([style]) {
+    top: auto !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 65vh !important;
+    transform: translateY(100%) !important;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+  }
+  .tryon-panel:not([style]).is-visible {
+    transform: translateY(0) !important;
+  }
+  .tryon-panel__inner {
+    box-shadow: 0 -6px 40px rgba(0,0,0,0.22);
+    border-radius: 20px 20px 0 0;
+    max-height: 65vh;
+  }
+  .tryon-panel__thumb {
+    height: 150px;
+  }
+}
+</style>
+
+<script>
+// Colour lookup map for eyewear colour names that aren't valid CSS colours
+(function() {
+  var COLOUR_MAP = {
+    // blacks & greys
+    'black': '#1a1a1a',
+    'matte-black': '#111111',
+    'shiny-black': '#222222',
+    'gloss-black': '#1c1c1c',
+    'dark-gunmetal': '#2a2a2f',
+    'gunmetal': '#2d3436',
+    'charcoal': '#3d3d3d',
+    'dark-grey': '#444444',
+    'dark-gray': '#444444',
+    'grey': '#6b7280',
+    'gray': '#6b7280',
+    'light-grey': '#b0b0b0',
+    'light-gray': '#b0b0b0',
+    'silver': '#c0c0c0',
+    'chrome': '#d0d0d0',
+    // whites & clears
+    'white': '#f9f9f9',
+    'crystal': '#d0e8f0',
+    'crystal-clear': '#dceef7',
+    'clear': '#e8e8e8',
+    'transparent': '#e0e0e0',
+    'frost': '#e8f0f5',
+    // browns & tortoise
+    'tortoise': '#8b5e3c',
+    'tortoise-shell': '#7a4a28',
+    'havana': '#6b2d0a',
+    'brown': '#795548',
+    'amber': '#d97706',
+    'honey': '#d4a017',
+    'sand': '#c2a36e',
+    'beige': '#d4b896',
+    'tan': '#c8a87a',
+    'nude': '#d4a984',
+    'caramel': '#b57a4a',
+    'espresso': '#4b2c20',
+    'walnut': '#5c3317',
+    // golds & metals
+    'gold': '#d4af37',
+    'rose-gold': '#b76e79',
+    'copper': '#b87333',
+    'bronze': '#cd7f32',
+    'champagne': '#f7e7ce',
+    // blues & navies
+    'navy': '#113071',
+    'navy-blue': '#1a2d6b',
+    'blue': '#2563eb',
+    'dark-blue': '#1e3a8a',
+    'light-blue': '#60a5fa',
+    'sky-blue': '#38bdf8',
+    'denim': '#1560bd',
+    'cobalt': '#0047ab',
+    'teal': '#0d9488',
+    // greens
+    'green': '#16a34a',
+    'olive': '#6b7c1c',
+    'forest': '#166534',
+    'sage': '#87a96b',
+    'khaki': '#8b864e',
+    // reds & pinks
+    'red': '#dc2626',
+    'burgundy': '#6d1f2a',
+    'wine': '#722f37',
+    'maroon': '#800000',
+    'pink': '#f472b6',
+    'blush': '#f4a3b5',
+    'rose': '#f43f5e',
+    'coral': '#f87171',
+    // purples
+    'purple': '#7c3aed',
+    'violet': '#8b5cf6',
+    'lavender': '#a78bfa',
+    'plum': '#6b21a8',
+    // multicolour / patterns
+    'multi': 'linear-gradient(135deg,#e53e3e 33%,#113071 33%,#113071 66%,#16a34a 66%)',
+    'multicolour': 'linear-gradient(135deg,#e53e3e 33%,#113071 33%,#113071 66%,#16a34a 66%)',
+    'pattern': 'repeating-linear-gradient(45deg,#888 0,#888 2px,#ccc 2px,#ccc 8px)',
+    'striped': 'repeating-linear-gradient(90deg,#333 0,#333 4px,#bbb 4px,#bbb 8px)'
+  };
+
+  document.querySelectorAll('.tryon-swatch').forEach(function(sw) {
+    var slug = sw.dataset.colorSlug || '';
+    if (COLOUR_MAP[slug]) {
+      var val = COLOUR_MAP[slug];
+      if (val.indexOf('gradient') !== -1) {
+        sw.style.backgroundImage = val;
+        sw.style.backgroundColor = '';
+      } else {
+        sw.style.backgroundColor = val;
+      }
+    }
+  });
+})();
+
+(function() {
+  var panel = document.getElementById('tryon-panel');
+  var closeBtn = document.getElementById('tryonPanelClose');
+  var atcBtn = document.getElementById('tryonAddToCart');
+  var feedback = document.getElementById('tryonFeedback');
+  var panelImage = document.getElementById('tryonPanelImage');
+  var panelPrice = document.getElementById('tryonPanelPrice');
+  var panelOldPrice = document.getElementById('tryonPanelOldPrice');
+  var selectedColorLabel = document.getElementById('tryonSelectedColor');
+
+  if (!panel) return;
+
+  var selectedVariantId = atcBtn ? atcBtn.dataset.variantId : null;
+  var panelVisible = false;
+  var userClosedPanel = false;
+  var PANEL_W = 300;
+
+  // ── Find the GlassOn dialog bounding rect ──
+  //
+  // Searches shadow DOM (including nested shadow roots) for the actual dialog box.
+  // Returns a DOMRect-like object, or null if not found yet (caller retries).
+  //
+  // We deliberately do NOT fall back to the viewport here — that's done in
+  // tryAttachAndShow() after all retries, so we don't skip retries prematurely.
+  function collectShadowElements(root) {
+    // Recursively collect every DOM element inside a shadow root (and any nested
+    // shadow roots inside it), so we can measure them all with getBoundingClientRect.
+    var results = [];
+    function walk(node) {
+      if (!node || node.nodeType !== 1) return;
+      results.push(node);
+      // Recurse into any nested shadow root
+      if (node.shadowRoot) {
+        for (var c = 0; c < node.shadowRoot.children.length; c++) walk(node.shadowRoot.children[c]);
+      }
+      for (var i = 0; i < node.children.length; i++) walk(node.children[i]);
+    }
+    for (var i = 0; i < root.children.length; i++) walk(root.children[i]);
+    return results;
+  }
+
+  function getGlassonModalRect() {
+    var el = document.querySelector('glasson-try-on');
+    if (!el || !el.shadowRoot) return null;
+    // Only run when the modal is confirmed open
+    if (!el.shadowRoot.querySelector('.g-dialog-overlay--active')) return null;
+
+    var vw = window.innerWidth, vh = window.innerHeight;
+
+    // Strategy 1: host element itself, if it's dialog-sized (not full-screen)
+    var hostRect = el.getBoundingClientRect();
+    if (hostRect.width > 200 && hostRect.height > 150 &&
+        hostRect.width < vw * 0.97 && hostRect.height < vh * 0.97) {
+      return hostRect;
+    }
+
+    // Strategy 2: exhaustive search — every element inside the shadow root
+    // (including nested shadow DOMs) for the largest dialog-sized element.
+    // This catches: dialog siblings of the overlay, nested custom elements, etc.
+    var all = collectShadowElements(el.shadowRoot);
+    var best = null, bestArea = 0;
+    for (var i = 0; i < all.length; i++) {
+      var r = all[i].getBoundingClientRect();
+      // Must be a reasonable dialog size — not tiny, not nearly full-screen
+      if (r.width > 200 && r.height > 150 &&
+          r.width < vw * 0.96 && r.height < vh * 0.96 &&
+          r.left >= -10 && r.top >= -10) {
+        var area = r.width * r.height;
+        if (area > bestArea) { bestArea = area; best = r; }
+      }
+    }
+    return best; // null → caller will retry
+  }
+
+  // Position the panel inset from the top/bottom of `rect`, flush to its right edge.
+  // INSET_TOP clears GlassOn's own close button; INSET_BOTTOM gives a bottom gap.
+  // Uses cssText so we own the inline style, then we explicitly drive the
+  // slide-in with panel.style.transform (CSS class can't override inline style).
+  function applyPosition(rect) {
+    var pw = Math.round(Math.min(PANEL_W, rect.width * 0.38));
+    pw = Math.max(240, pw);
+    panel.style.cssText = [
+      'position:fixed',
+      'top:' + Math.round(rect.top) + 'px',
+      'left:' + Math.round(rect.right - pw) + 'px',
+      'right:auto',
+      'bottom:auto',
+      'width:' + pw + 'px',
+      'height:' + Math.round(rect.height) + 'px',
+      'transform:translateX(100%)',
+      'transition:transform 0.38s cubic-bezier(0.4,0,0.2,1)',
+      'pointer-events:none',
+      'z-index:2000000'
+    ].join(';');
+  }
+
+  function slideIn() {
+    // Double-rAF: first frame commits the off-screen start position,
+    // second frame changes transform, triggering the CSS transition.
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        panel.classList.add('is-visible');
+        panel.setAttribute('aria-hidden', 'false');
+        panel.style.pointerEvents = 'auto';
+        panel.style.transform = 'translateX(0)';
+      });
+    });
+  }
+
+  function resetPanelPosition() {
+    panel.style.cssText = '';
+  }
+
+  // ── Show panel ──
+  var showAttempt = 0;
+
+  function tryAttachAndShow() {
+    var rect = getGlassonModalRect();
+    if (rect) {
+      // Found the dialog box — overlay our panel on its right portion
+      applyPosition(rect);
+      slideIn();
+      // GlassOn's open animation may not have settled yet — re-measure once it has
+      setTimeout(function() {
+        if (!panelVisible) return;
+        var rect2 = getGlassonModalRect();
+        if (rect2) {
+          panel.style.top    = Math.round(rect2.top) + 'px';
+          panel.style.left   = Math.round(rect2.right - panel.offsetWidth) + 'px';
+          panel.style.height = Math.round(rect2.height) + 'px';
+        }
+      }, 420);
+    } else if (showAttempt < 10) {
+      // Dialog may still be animating/painting — retry with backoff
+      showAttempt++;
+      setTimeout(tryAttachAndShow, showAttempt * 80); // 80, 160, 240 … 800ms
+    } else {
+      // All retries exhausted — GlassOn is likely full-screen.
+      // Fall back to right edge of viewport so the panel overlays the camera view.
+      var vw = window.innerWidth, vh = window.innerHeight;
+      applyPosition({ top: 0, left: 0, right: vw, bottom: vh, width: vw, height: vh });
+      slideIn();
+    }
+  }
+
+  function showPanel() {
+    panelVisible = true;
+    showAttempt = 0;
+
+    if (window.innerWidth <= 768) {
+      // Mobile: no overlay needed — show immediately as bottom sheet (CSS handles it)
+      resetPanelPosition();
+      panel.classList.add('is-visible');
+      panel.setAttribute('aria-hidden', 'false');
+    } else {
+      // Desktop: attach panel to the right side of the GlassOn camera view
+      setTimeout(tryAttachAndShow, 120);
+    }
+  }
+
+  function hidePanel() {
+    panelVisible = false;
+    panel.setAttribute('aria-hidden', 'true');
+    // If we have an inline-positioned panel, drive the slide-out explicitly
+    // (inline transform wins over CSS class, so we must set it directly)
+    if (panel.style.cssText) {
+      panel.style.transform = 'translateX(100%)';
+    } else {
+      panel.classList.remove('is-visible');
+    }
+    setTimeout(function() {
+      panel.classList.remove('is-visible');
+      resetPanelPosition();
+    }, 420);
+  }
+
+  // Re-position on window resize
+  window.addEventListener('resize', function() {
+    if (panelVisible && window.innerWidth > 768) {
+      var rect = getGlassonModalRect();
+      if (rect) {
+        applyPosition(rect);
+        panel.style.pointerEvents = 'auto';
+        panel.style.transform = 'translateX(0)';
+      }
+    }
+  });
+
+  // ── Watch for GlassOn opening ──
+  function isGlassOnOpen() {
+    var el = document.querySelector('glasson-try-on');
+    if (!el || !el.shadowRoot) return false;
+    return !!el.shadowRoot.querySelector('.g-dialog-overlay--active');
+  }
+
+  function checkGlassOn() {
+    var open = isGlassOnOpen();
+    if (open && !panelVisible && !userClosedPanel) {
+      showPanel();
+    } else if (!open && panelVisible) {
+      hidePanel();
+      userClosedPanel = false;
+    }
+  }
+
+  function attachShadowObserver(el) {
+    if (!el.shadowRoot || el._shadowObserved) return;
+    el._shadowObserved = true;
+    var shadowObserver = new MutationObserver(checkGlassOn);
+    shadowObserver.observe(el.shadowRoot, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  var glassonEl = document.querySelector('glasson-try-on');
+  if (glassonEl) attachShadowObserver(glassonEl);
+
+  var observer = new MutationObserver(function() {
+    var el = document.querySelector('glasson-try-on');
+    if (el) attachShadowObserver(el);
+  });
+  observer.observe(document.body, { childList: true, subtree: false });
+
+  // ── Close button ──
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      userClosedPanel = true;
+      hidePanel();
+    });
+  }
+
+  // ── Colour swatch clicks ──
+  document.querySelectorAll('.tryon-swatch').forEach(function(swatch) {
+    swatch.addEventListener('click', function() {
+      document.querySelectorAll('.tryon-swatch').forEach(function(s) {
+        s.classList.remove('is-active');
+      });
+      swatch.classList.add('is-active');
+
+      selectedVariantId = swatch.dataset.variantId;
+      if (atcBtn) atcBtn.dataset.variantId = selectedVariantId;
+
+      // Update label
+      if (selectedColorLabel) selectedColorLabel.textContent = swatch.dataset.color;
+
+      // Update price
+      if (panelPrice && swatch.dataset.price) {
+        panelPrice.textContent = swatch.dataset.price;
+      }
+      if (panelOldPrice && swatch.dataset.compare && swatch.dataset.compare !== swatch.dataset.price) {
+        panelOldPrice.textContent = swatch.dataset.compare;
+        panelOldPrice.style.display = '';
+      } else if (panelOldPrice) {
+        panelOldPrice.style.display = 'none';
+      }
+
+      // Update image
+      if (panelImage && swatch.dataset.image) {
+        panelImage.src = swatch.dataset.image;
+      }
+    });
+  });
+
+  // ── Add to Cart ──
+  if (atcBtn) {
+    atcBtn.addEventListener('click', function() {
+      var variantId = atcBtn.dataset.variantId;
+      if (!variantId) return;
+
+      atcBtn.disabled = true;
+      atcBtn.textContent = 'Adding…';
+      if (feedback) feedback.textContent = '';
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: parseInt(variantId), quantity: 1 })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status) throw new Error(data.description || data.message);
+        if (feedback) {
+          feedback.textContent = '✓ Added to cart!';
+          setTimeout(function() { if (feedback) feedback.textContent = ''; }, 3000);
+        }
+        // Update cart count if bubble exists
+        var bubble = document.querySelector('.cart-count, .cart-item-count, [data-cart-count]');
+        if (bubble) {
+          fetch('/cart.js')
+            .then(function(r) { return r.json(); })
+            .then(function(cart) {
+              if (bubble) bubble.textContent = cart.item_count;
+            });
+        }
+      })
+      .catch(function(err) {
+        if (feedback) {
+          feedback.textContent = err.message || 'Error — please try again';
+          feedback.style.color = '#dc2626';
+          setTimeout(function() {
+            if (feedback) { feedback.textContent = ''; feedback.style.color = ''; }
+          }, 4000);
+        }
+      })
+      .finally(function() {
+        atcBtn.disabled = false;
+        atcBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add to Cart';
+      });
+    });
+  }
+
+})();
+</script>

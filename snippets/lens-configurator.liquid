@@ -1,0 +1,968 @@
+{% comment %}
+Lens Configurator with localStorage (No Backend Needed)
+Save as: snippets/lens-configurator.liquid
+Usage: {% render 'lens-configurator', button_alignment: 'center' %}
+
+FEATURES:
+- Saves prescriptions to browser localStorage
+- Requires customer login to save/use prescriptions
+- No backend or API needed
+- Works immediately
+{% endcomment %}
+
+<section class="lens-configurator" 
+  data-product-id="{{ product.id }}" 
+  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  data-product-title="{{ product.title | escape }}"
+  data-customer-id="{% if customer %}{{ customer.id }}{% endif %}"
+  data-is-logged-in="{% if customer %}true{% else %}false{% endif %}">
+  
+  <div class="lens-button-wrapper lens-align-{{ button_alignment | default: 'center' }}">
+    <button class="lens-start-btn" id="openLensConfigurator">
+      Choose Lenses
+    </button>
+  </div>
+
+  <div class="lens-modal" id="lensModal">
+    <div class="lens-modal__inner">
+
+      <!-- STEP 1: Usage -->
+      <div class="lens-step is-active" data-step="1">
+        <h2>What do you use your glasses for?</h2>
+        <p class="lens-subtitle">Step 1 of 6</p>
+        <button class="lens-option" data-value="Single Vision">
+          <div class="lens-option-content">
+            <div>
+              <strong>Single Vision</strong>
+              <span>For distance or reading</span>
+            </div>
+            <div class="lens-option-price" data-price-type="usage" data-price-key="Single Vision">From £0</div>
+          </div>
+        </button>
+        <button class="lens-option" data-value="Reading">
+          <div class="lens-option-content">
+            <div>
+              <strong>Reading</strong>
+              <span>For close-up work</span>
+            </div>
+            <div class="lens-option-price" data-price-type="usage" data-price-key="Reading">From £25</div>
+          </div>
+        </button>
+        <button class="lens-option" data-value="Progressive">
+          <div class="lens-option-content">
+            <div>
+              <strong>Progressive</strong>
+              <span>Multi-focal lenses</span>
+            </div>
+            <div class="lens-option-price" data-price-type="usage" data-price-key="Progressive">From £150</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- STEP 2: Lens Type -->
+      <div class="lens-step" data-step="2">
+        <h2>Choose your lens type</h2>
+        <p class="lens-subtitle">Step 2 of 6</p>
+        <button class="lens-option" data-value="Clear">
+          <div class="lens-option-content">
+            <div>
+              <strong>Clear</strong>
+              <span>Standard clear lenses</span>
+            </div>
+            <div class="lens-option-price" data-price-type="lensType" data-price-key="Clear">+£0</div>
+          </div>
+        </button>
+        <button class="lens-option" data-value="Blue Light">
+          <div class="lens-option-content">
+            <div>
+              <strong>Blue Light</strong>
+              <span>Filter digital screen light</span>
+            </div>
+            <div class="lens-option-price" data-price-type="lensType" data-price-key="Blue Light">+£50</div>
+          </div>
+        </button>
+        <button class="lens-option" data-value="Transitions">
+          <div class="lens-option-content">
+            <div>
+              <strong>Transitions</strong>
+              <span>Adapt to light conditions</span>
+            </div>
+            <div class="lens-option-price" data-price-type="lensType" data-price-key="Transitions">+£100</div>
+          </div>
+        </button>
+        <button class="lens-back-btn" id="backToStep1">← Back</button>
+      </div>
+
+      <!-- STEP 3: Upgrades -->
+      <div class="lens-step" data-step="3">
+        <h2>Add upgrades (optional)</h2>
+        <p class="lens-subtitle">Step 3 of 6</p>
+        <div class="lens-checkbox-group">
+          <label class="lens-checkbox">
+            <input type="checkbox" value="Anti-Reflective">
+            <div class="lens-checkbox-content">
+              <div>
+                <strong>Anti-Reflective Coating</strong>
+                <span>Reduces glare and reflections</span>
+              </div>
+              <div class="lens-checkbox-price" data-price-type="coating" data-price-key="Anti-Reflective">+£40</div>
+            </div>
+          </label>
+          <label class="lens-checkbox">
+            <input type="checkbox" value="Hydrophobic">
+            <div class="lens-checkbox-content">
+              <div>
+                <strong>Hydrophobic Coating</strong>
+                <span>Repels water and smudges</span>
+              </div>
+              <div class="lens-checkbox-price" data-price-type="coating" data-price-key="Hydrophobic">+£30</div>
+            </div>
+          </label>
+        </div>
+        <button class="lens-next-btn" id="goToPrescription">Continue →</button>
+        <button class="lens-back-btn" id="backToStep2">← Back</button>
+      </div>
+
+      <!-- STEP 4: Prescription Method -->
+      <div class="lens-step" data-step="4">
+        <h2>How do you want to add your prescription?</h2>
+        <p class="lens-subtitle">Step 4 of 6</p>
+        <button class="lens-option" data-value="Fill Online" data-goto="4a">
+          <div class="lens-option-content">
+            <div>
+              <strong>Fill it out online</strong>
+              <span>Fill it manually according to your printed prescription</span>
+            </div>
+            <div class="lens-option-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+        <button class="lens-option" data-value="Use Saved" data-goto="4c" id="useSavedPrescriptionBtn">
+          <div class="lens-option-content">
+            <div>
+              <strong>Use saved prescription</strong>
+              <span>{% if customer %}Use a prescription you've saved before{% else %}Log in to access saved prescriptions{% endif %}</span>
+            </div>
+            <div class="lens-option-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <path d="M12 18v-6"/>
+                <path d="m9 15 3 3 3-3"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+        <button class="lens-option" data-value="Send Later" data-goto="5">
+          <div class="lens-option-content">
+            <div>
+              <strong>Send later</strong>
+              <span>You can easily send it after checkout. We'll remind you in your confirmation email.</span>
+            </div>
+            <div class="lens-option-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+                <circle cx="17" cy="17" r="3"/>
+                <polyline points="17 15 17 17 18 18"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+        <button class="lens-back-btn" id="backToStep3">← Back</button>
+      </div>
+
+      <!-- STEP 4A: Fill Out Online -->
+      <div class="lens-step" data-step="4a">
+        <h2>Fill it out online</h2>
+        <p class="lens-subtitle">Step 5 of 6</p>
+        
+        <a href="#" class="lens-help-link" id="howToReadLink">How to read my prescription?</a>
+        
+        <div class="lens-prescription-table">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Sphere (SPH)</th>
+                <th>Cylinder (CYL)</th>
+                <th>Axis (AXI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Right (OD)</strong></td>
+                <td>
+                  <select name="od_sph" class="lens-select">
+                    <option value="">None</option>
+                    <option value="+0.25">+0.25</option>
+                    <option value="+0.50">+0.50</option>
+                    <option value="+0.75">+0.75</option>
+                    <option value="+1.00">+1.00</option>
+                    <option value="-0.25">-0.25</option>
+                    <option value="-0.50">-0.50</option>
+                    <option value="-0.75">-0.75</option>
+                    <option value="-1.00">-1.00</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="od_cyl" class="lens-select">
+                    <option value="">None</option>
+                    <option value="+0.25">+0.25</option>
+                    <option value="+0.50">+0.50</option>
+                    <option value="-0.25">-0.25</option>
+                    <option value="-0.50">-0.50</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="od_axis" class="lens-select">
+                    <option value="">None</option>
+                    <option value="1">1</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                    <option value="60">60</option>
+                    <option value="75">75</option>
+                    <option value="90">90</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Left (OS)</strong></td>
+                <td>
+                  <select name="os_sph" class="lens-select">
+                    <option value="">None</option>
+                    <option value="+0.25">+0.25</option>
+                    <option value="+0.50">+0.50</option>
+                    <option value="+0.75">+0.75</option>
+                    <option value="+1.00">+1.00</option>
+                    <option value="-0.25">-0.25</option>
+                    <option value="-0.50">-0.50</option>
+                    <option value="-0.75">-0.75</option>
+                    <option value="-1.00">-1.00</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="os_cyl" class="lens-select">
+                    <option value="">None</option>
+                    <option value="+0.25">+0.25</option>
+                    <option value="+0.50">+0.50</option>
+                    <option value="-0.25">-0.25</option>
+                    <option value="-0.50">-0.50</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="os_axis" class="lens-select">
+                    <option value="">None</option>
+                    <option value="1">1</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                    <option value="60">60</option>
+                    <option value="75">75</option>
+                    <option value="90">90</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lens-form-group">
+          <label class="lens-label">Does your prescription have a PD value?</label>
+          <select name="pd_value" class="lens-select">
+            <option value="">Select an option</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="unsure">Not sure</option>
+          </select>
+        </div>
+
+        <div class="lens-form-group">
+          <label class="lens-label">Additional comments...</label>
+          <textarea name="comments" class="lens-textarea" rows="4" placeholder="Any special instructions or notes"></textarea>
+        </div>
+
+        <label class="lens-checkbox-inline">
+          <input type="checkbox" name="includes_prism">
+          <span>My prescription includes prism (+£30 +£15)</span>
+        </label>
+
+        {% if customer %}
+        <label class="lens-checkbox-inline">
+          <input type="checkbox" name="save_prescription" checked>
+          <span>Save your prescription for quick reuse (Saved in your browser)</span>
+        </label>
+        {% else %}
+        <div class="lens-info-box" style="margin: 12px 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <p style="margin: 0; font-size: 13px;">
+            <a href="/account/login" style="color: #2563eb; text-decoration: underline;">Log in</a> to save prescriptions for future orders
+          </p>
+        </div>
+        {% endif %}
+
+        <button class="lens-next-btn" id="continueFromFillOnline">Continue</button>
+        <button class="lens-next-btn lens-secondary-btn" id="sendLaterFromFillOnline">Send Later</button>
+        <button class="lens-back-btn" id="backToStep4FromFillOnline">← Back</button>
+      </div>
+
+      <!-- STEP 4C: Use Saved Prescription -->
+      <div class="lens-step" data-step="4c">
+        <h2>Use saved prescription</h2>
+        <p class="lens-subtitle">Step 5 of 6</p>
+        
+        <div class="lens-saved-list" id="savedPrescriptionsList">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <button class="lens-next-btn" id="continueFromSaved" style="display: none;">Continue with Selected</button>
+        <button class="lens-back-btn" id="backToStep4FromSaved">← Back</button>
+      </div>
+
+      <!-- STEP 5: Review -->
+      <div class="lens-step" data-step="5">
+        <h2>Review your selection</h2>
+        <p class="lens-subtitle">Step 6 of 6</p>
+        <div class="lens-review-box">
+          <div class="lens-review-item">
+            <span class="lens-review-label">Frame:</span>
+            <span class="lens-review-value" id="reviewProduct"></span>
+          </div>
+          <div class="lens-review-item">
+            <span class="lens-review-label">Usage:</span>
+            <span class="lens-review-value" id="reviewUsage"></span>
+          </div>
+          <div class="lens-review-item">
+            <span class="lens-review-label">Lens Type:</span>
+            <span class="lens-review-value" id="reviewLens"></span>
+          </div>
+          <div class="lens-review-item">
+            <span class="lens-review-label">Coatings:</span>
+            <span class="lens-review-value" id="reviewUpgrades"></span>
+          </div>
+          <div class="lens-review-item">
+            <span class="lens-review-label">Prescription:</span>
+            <span class="lens-review-value" id="reviewPrescription"></span>
+          </div>
+          <div class="lens-review-item lens-review-total">
+            <span class="lens-review-label">Lens Cost:</span>
+            <span class="lens-review-value" id="reviewTotal">£0</span>
+          </div>
+        </div>
+        <button class="lens-add-cart-btn" id="addToCartFinal">
+          <span id="addToCartText">Add Frame + Lenses to Cart</span>
+        </button>
+        <button class="lens-back-btn" id="backToStep4">← Back</button>
+      </div>
+
+      <button class="lens-close" id="closeLensModal" aria-label="Close">✕</button>
+
+    </div>
+  </div>
+</section>
+
+<style>
+.lens-button-wrapper {display: flex;margin: 20px 0;}
+.lens-align-left {justify-content: flex-start;}
+.lens-align-center {justify-content: center;}
+.lens-align-right {justify-content: flex-end;}
+.lens-start-btn {padding: 16px 32px;border-radius: 8px;background: #2563eb;color: #fff;border: none;font-weight: 600;font-size: 16px;cursor: pointer;width: 100%;max-width: 400px;transition: background 0.2s;}
+.lens-start-btn:hover {background: #1d4ed8;}
+.lens-modal {display: none;position: fixed;inset: 0;background: rgba(0, 0, 0, 0.7);z-index: 9999;align-items: center;justify-content: center;padding: 20px;}
+.lens-modal.is-open {display: flex;}
+.lens-modal__inner {background: #fff;max-width: 560px;width: 100%;max-height: 90vh;overflow-y: auto;padding: 32px;border-radius: 16px;position: relative;box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);}
+.lens-step {display: none;}
+.lens-step.is-active {display: block;}
+.lens-step h2 {margin: 0 0 8px 0;font-size: 24px;font-weight: 700;color: #111;}
+.lens-subtitle {margin: 0 0 24px 0;color: #6b7280;font-size: 14px;}
+.lens-option {display: block;width: 100%;margin: 12px 0;padding: 16px 20px;border-radius: 12px;border: 2px solid #e5e7eb;background: #fff;cursor: pointer;text-align: left;transition: all 0.2s;}
+.lens-option:hover:not(:disabled) {border-color: #2563eb;background: #eff6ff;transform: translateY(-2px);}
+.lens-option:disabled {opacity: 0.5;cursor: not-allowed;}
+.lens-option-content {display: flex;justify-content: space-between;align-items: center;}
+.lens-option strong {display: block;font-size: 16px;font-weight: 600;color: #111;margin-bottom: 4px;}
+.lens-option span {display: block;font-size: 14px;color: #6b7280;}
+.lens-option-price {font-size: 18px;font-weight: 700;color: #2563eb;white-space: nowrap;margin-left: 16px;}
+.lens-option-icon {color: #6b7280;flex-shrink: 0;margin-left: 16px;}
+.lens-checkbox-group {margin: 20px 0;}
+.lens-checkbox {display: flex;align-items: flex-start;padding: 16px;border: 2px solid #e5e7eb;border-radius: 12px;margin: 12px 0;cursor: pointer;transition: all 0.2s;}
+.lens-checkbox:hover {border-color: #2563eb;background: #eff6ff;}
+.lens-checkbox input[type="checkbox"] {margin: 4px 12px 0 0;width: 18px;height: 18px;cursor: pointer;flex-shrink: 0;}
+.lens-checkbox-content {display: flex;justify-content: space-between;align-items: center;flex: 1;}
+.lens-checkbox strong {display: block;font-size: 15px;font-weight: 600;color: #111;margin-bottom: 4px;}
+.lens-checkbox span {display: block;font-size: 13px;color: #6b7280;}
+.lens-checkbox-price {font-size: 16px;font-weight: 700;color: #2563eb;white-space: nowrap;margin-left: 16px;}
+.lens-review-box {background: #f9fafb;border: 1px solid #e5e7eb;border-radius: 12px;padding: 20px;margin: 20px 0;}
+.lens-review-item {display: flex;justify-content: space-between;padding: 12px 0;border-bottom: 1px solid #e5e7eb;}
+.lens-review-item:last-child {border-bottom: none;}
+.lens-review-total {margin-top: 8px;padding-top: 16px;border-top: 2px solid #2563eb;font-size: 18px;}
+.lens-review-total .lens-review-label {font-size: 18px;color: #111;}
+.lens-review-total .lens-review-value {font-size: 24px;font-weight: 700;color: #2563eb;}
+.lens-review-label {font-weight: 600;color: #374151;}
+.lens-review-value {color: #111;text-align: right;}
+.lens-next-btn,.lens-add-cart-btn {width: 100%;padding: 16px 24px;border-radius: 8px;background: #2563eb;color: #fff;border: none;font-weight: 600;font-size: 16px;cursor: pointer;margin-top: 12px;transition: background 0.2s;}
+.lens-next-btn:hover,.lens-add-cart-btn:hover {background: #1d4ed8;}
+.lens-add-cart-btn:disabled {background: #9ca3af;cursor: not-allowed;}
+.lens-back-btn {width: 100%;padding: 12px 24px;border-radius: 8px;background: transparent;color: #6b7280;border: 1px solid #e5e7eb;font-weight: 500;font-size: 14px;cursor: pointer;margin-top: 8px;transition: all 0.2s;}
+.lens-back-btn:hover {background: #f9fafb;color: #111;}
+.lens-close {position: absolute;top: 16px;right: 16px;border: none;background: #f3f4f6;width: 36px;height: 36px;border-radius: 50%;font-size: 20px;cursor: pointer;color: #6b7280;transition: all 0.2s;display: flex;align-items: center;justify-content: center;}
+.lens-close:hover {background: #e5e7eb;color: #111;}
+.lens-help-link {display: inline-block;color: #2563eb;text-decoration: none;font-size: 14px;margin-bottom: 16px;}
+.lens-help-link:hover {text-decoration: underline;}
+.lens-prescription-table {overflow-x: auto;margin: 20px 0;}
+.lens-prescription-table table {width: 100%;border-collapse: collapse;background: #f9fafb;border-radius: 8px;overflow: hidden;}
+.lens-prescription-table th,.lens-prescription-table td {padding: 12px;text-align: left;border-bottom: 1px solid #e5e7eb;}
+.lens-prescription-table th {background: #f3f4f6;font-weight: 600;font-size: 13px;color: #6b7280;}
+.lens-prescription-table td:first-child {font-weight: 600;}
+.lens-select {width: 100%;padding: 8px 12px;border: 1px solid #d1d5db;border-radius: 6px;background: #fff;font-size: 14px;cursor: pointer;}
+.lens-select:focus {outline: none;border-color: #2563eb;box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);}
+.lens-form-group {margin: 20px 0;}
+.lens-label {display: block;font-weight: 600;font-size: 14px;color: #374151;margin-bottom: 8px;}
+.lens-textarea {width: 100%;padding: 12px;border: 1px solid #d1d5db;border-radius: 8px;font-size: 14px;font-family: inherit;resize: vertical;}
+.lens-textarea:focus {outline: none;border-color: #2563eb;box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);}
+.lens-checkbox-inline {display: flex;align-items: center;margin: 12px 0;cursor: pointer;}
+.lens-checkbox-inline input[type="checkbox"] {margin-right: 8px;width: 18px;height: 18px;cursor: pointer;}
+.lens-checkbox-inline span {font-size: 14px;color: #374151;}
+.lens-secondary-btn {background: #fff;color: #2563eb;border: 2px solid #2563eb;}
+.lens-secondary-btn:hover {background: #eff6ff;}
+.lens-saved-list {margin: 20px 0;}
+.lens-info-box {display: flex;align-items: flex-start;padding: 16px;background: #eff6ff;border: 1px solid #bfdbfe;border-radius: 8px;gap: 12px;}
+.lens-info-box svg {color: #2563eb;flex-shrink: 0;margin-top: 2px;}
+.lens-info-box p {margin: 0;font-size: 14px;color: #1e40af;line-height: 1.5;}
+.lens-saved-card {padding: 16px;border: 2px solid #e5e7eb;border-radius: 12px;margin: 12px 0;cursor: pointer;transition: all 0.2s;position: relative;}
+.lens-saved-card:hover {border-color: #2563eb;background: #eff6ff;}
+.lens-saved-card.selected {border-color: #2563eb;background: #eff6ff;}
+.lens-saved-card-header {display: flex;justify-content: space-between;align-items: center;margin-bottom: 12px;}
+.lens-saved-card-title {font-weight: 600;font-size: 15px;color: #111;}
+.lens-saved-card-date {font-size: 13px;color: #6b7280;}
+.lens-saved-card-details {display: grid;grid-template-columns: 1fr 1fr;gap: 8px;font-size: 13px;color: #374151;}
+.lens-saved-card-detail {display: flex;gap: 4px;}
+.lens-saved-card-detail strong {color: #6b7280;font-weight: 500;}
+.lens-delete-prescription {position: absolute;top: 12px;right: 12px;background: #fee2e2;color: #dc2626;border: none;padding: 6px 12px;border-radius: 6px;font-size: 12px;font-weight: 600;cursor: pointer;transition: all 0.2s;}
+.lens-delete-prescription:hover {background: #fecaca;}
+@media (max-width: 640px) {
+  .lens-modal__inner {padding: 24px 20px;}
+  .lens-step h2 {font-size: 20px;}
+  .lens-option-price,.lens-checkbox-price {font-size: 16px;}
+  .lens-option-icon {display: none;}
+  .lens-prescription-table {font-size: 12px;}
+  .lens-prescription-table th,.lens-prescription-table td {padding: 8px 6px;}
+  .lens-saved-card-details {grid-template-columns: 1fr;}
+}
+</style>
+
+<script>
+(() => {
+  const modal = document.getElementById('lensModal');
+  const openBtn = document.getElementById('openLensConfigurator');
+  const closeBtn = document.getElementById('closeLensModal');
+  const steps = document.querySelectorAll('.lens-step');
+  const addBtn = document.getElementById('addToCartFinal');
+  const configurator = document.querySelector('.lens-configurator');
+  if (!modal || !openBtn) return;
+
+  const customerId = configurator.dataset.customerId;
+  const isLoggedIn = configurator.dataset.isLoggedIn === 'true';
+
+  let selections = {usage: '', lensType: '', coatings: [], prescriptionMethod: '', prescriptionData: null};
+  let priceData = {usage: {}, lensType: {}, coatings: {}};
+  let savedPrescriptions = [];
+  let selectedSavedPrescription = null;
+
+  // localStorage key for this customer
+  const STORAGE_KEY = `lens_prescriptions_${customerId || 'guest'}`;
+
+  // Load pricing data
+  async function loadPrices() {
+    try {
+      const response = await fetch('/products/prescription-lens-package.js');
+      if (!response.ok) throw new Error('Could not load lens product');
+      const lensProduct = await response.json();
+      lensProduct.variants.forEach(variant => {
+        const usage = variant.option1;
+        const lensType = variant.option2;
+        const coating = variant.option3;
+        if (usage && !priceData.usage[usage]) {
+          priceData.usage[usage] = variant.price / 100;
+        }
+        if (lensType && usage === 'Single Vision' && coating === 'None') {
+          priceData.lensType[lensType] = (variant.price / 100) - (priceData.usage['Single Vision'] || 0);
+        }
+        if (coating && coating !== 'None' && coating !== 'Both Coatings') {
+          const baseVariant = lensProduct.variants.find(v => 
+            v.option1 === usage && v.option2 === lensType && v.option3 === 'None'
+          );
+          if (baseVariant) {
+            priceData.coatings[coating] = (variant.price - baseVariant.price) / 100;
+          }
+        }
+      });
+      updatePriceDisplay();
+    } catch (error) {
+      console.error('Error loading prices:', error);
+      priceData = {
+        usage: { 'Single Vision': 0, 'Reading': 25, 'Progressive': 150 },
+        lensType: { 'Clear': 0, 'Blue Light': 50, 'Transitions': 100 },
+        coatings: { 'Anti-Reflective': 40, 'Hydrophobic': 30 }
+      };
+      updatePriceDisplay();
+    }
+  }
+
+  function updatePriceDisplay() {
+    document.querySelectorAll('[data-price-type]').forEach(el => {
+      const type = el.dataset.priceType;
+      const key = el.dataset.priceKey;
+      if (type === 'usage' && priceData.usage[key] !== undefined) {
+        el.textContent = `From £${priceData.usage[key].toFixed(0)}`;
+      } else if (type === 'lensType' && priceData.lensType[key] !== undefined) {
+        const price = priceData.lensType[key];
+        el.textContent = price === 0 ? '+£0' : `+£${price.toFixed(0)}`;
+      } else if (type === 'coating' && priceData.coatings[key] !== undefined) {
+        el.textContent = `+£${priceData.coatings[key].toFixed(0)}`;
+      }
+    });
+  }
+
+  // Load saved prescriptions from localStorage
+  function loadSavedPrescriptions() {
+    if (!isLoggedIn) {
+      showNotLoggedIn();
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      savedPrescriptions = stored ? JSON.parse(stored) : [];
+      
+      if (savedPrescriptions.length === 0) {
+        showNoSavedPrescriptions();
+      } else {
+        renderSavedPrescriptions();
+      }
+    } catch (error) {
+      console.error('Error loading prescriptions:', error);
+      showNoSavedPrescriptions();
+    }
+  }
+
+  function showNotLoggedIn() {
+    const listContainer = document.getElementById('savedPrescriptionsList');
+    listContainer.innerHTML = `
+      <div class="lens-info-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <p>Please <a href="/account/login" style="color: #2563eb; text-decoration: underline;">log in</a> to access saved prescriptions.</p>
+      </div>
+    `;
+  }
+
+  function showNoSavedPrescriptions() {
+    const listContainer = document.getElementById('savedPrescriptionsList');
+    listContainer.innerHTML = `
+      <div class="lens-info-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <p>No saved prescriptions found. Complete a prescription form and select "Save for quick reuse" to save it for future orders.</p>
+      </div>
+    `;
+  }
+
+  function renderSavedPrescriptions() {
+    const listContainer = document.getElementById('savedPrescriptionsList');
+    const continueBtn = document.getElementById('continueFromSaved');
+    
+    const prescriptionsHtml = savedPrescriptions.map((prescription, index) => {
+      const date = new Date(prescription.saved_at).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+
+      return `
+        <div class="lens-saved-card" data-prescription-index="${index}">
+          <button class="lens-delete-prescription" data-index="${index}">Delete</button>
+          <div class="lens-saved-card-header">
+            <div class="lens-saved-card-title">Prescription ${index + 1}</div>
+            <div class="lens-saved-card-date">${date}</div>
+          </div>
+          <div class="lens-saved-card-details">
+            <div class="lens-saved-card-detail">
+              <strong>Right (OD):</strong>
+              <span>SPH ${prescription.od_sph || 'None'}, CYL ${prescription.od_cyl || 'None'}</span>
+            </div>
+            <div class="lens-saved-card-detail">
+              <strong>Left (OS):</strong>
+              <span>SPH ${prescription.os_sph || 'None'}, CYL ${prescription.os_cyl || 'None'}</span>
+            </div>
+            <div class="lens-saved-card-detail">
+              <strong>PD:</strong>
+              <span>${prescription.pd_value || 'Not specified'}</span>
+            </div>
+            ${prescription.comments ? `
+              <div class="lens-saved-card-detail" style="grid-column: 1 / -1;">
+                <strong>Notes:</strong>
+                <span>${prescription.comments}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    listContainer.innerHTML = prescriptionsHtml;
+
+    // Add click handlers to select prescription
+    document.querySelectorAll('.lens-saved-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Don't select if clicking delete button
+        if (e.target.classList.contains('lens-delete-prescription')) return;
+        
+        e.preventDefault();
+        
+        document.querySelectorAll('.lens-saved-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        
+        const prescriptionIndex = parseInt(card.dataset.prescriptionIndex);
+        selectedSavedPrescription = savedPrescriptions[prescriptionIndex];
+        
+        continueBtn.style.display = 'block';
+      });
+    });
+
+    // Add delete handlers
+    document.querySelectorAll('.lens-delete-prescription').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(btn.dataset.index);
+        
+        if (confirm('Delete this prescription?')) {
+          savedPrescriptions.splice(index, 1);
+          savePrescriptionsToStorage();
+          loadSavedPrescriptions();
+        }
+      });
+    });
+  }
+
+  // Save prescriptions to localStorage
+  function savePrescriptionsToStorage() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPrescriptions));
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }
+
+  // Save new prescription
+  function savePrescription(prescriptionData) {
+    if (!isLoggedIn) return;
+
+    const newPrescription = {
+      ...prescriptionData,
+      saved_at: new Date().toISOString()
+    };
+
+    savedPrescriptions.unshift(newPrescription);
+    
+    // Limit to 10 most recent
+    if (savedPrescriptions.length > 10) {
+      savedPrescriptions = savedPrescriptions.slice(0, 10);
+    }
+
+    savePrescriptionsToStorage();
+  }
+
+  loadPrices();
+
+  // Modal open/close
+  openBtn.onclick = (e) => {
+    e.preventDefault();
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    selections = {usage: '', lensType: '', coatings: [], prescriptionMethod: '', prescriptionData: null};
+    selectedSavedPrescription = null;
+    goToStep('1');
+  };
+
+  closeBtn.onclick = (e) => {
+    e.preventDefault();
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+  };
+
+  modal.onclick = (e) => {
+    if (e.target === modal) closeBtn.click();
+  };
+
+  function goToStep(stepNumber) {
+    steps.forEach(s => s.classList.remove('is-active'));
+    const targetStep = document.querySelector(`[data-step="${stepNumber}"]`);
+    if (targetStep) {
+      targetStep.classList.add('is-active');
+      if (stepNumber === '5') updateReview();
+      if (stepNumber === '4c') loadSavedPrescriptions();
+    }
+  }
+
+  // Step 1: Usage
+  document.querySelectorAll('[data-step="1"] .lens-option').forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      selections.usage = btn.dataset.value;
+      goToStep('2');
+    };
+  });
+
+  // Step 2: Lens Type
+  document.querySelectorAll('[data-step="2"] .lens-option').forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      selections.lensType = btn.dataset.value;
+      goToStep('3');
+    };
+  });
+
+  // Step 3: Upgrades
+  document.querySelectorAll('[data-step="3"] input[type="checkbox"]').forEach(cb => {
+    cb.onchange = () => {
+      selections.coatings = [...document.querySelectorAll('[data-step="3"] input:checked')].map(i => i.value);
+    };
+  });
+
+  document.getElementById('goToPrescription').onclick = (e) => {
+    e.preventDefault();
+    goToStep('4');
+  };
+
+  // Step 4: Prescription Method
+  document.querySelectorAll('[data-step="4"] .lens-option').forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      selections.prescriptionMethod = btn.dataset.value;
+      goToStep(btn.dataset.goto);
+    };
+  });
+
+  // Step 4A: Fill Online
+  document.getElementById('continueFromFillOnline').onclick = (e) => {
+    e.preventDefault();
+    
+    const prescriptionData = {
+      od_sph: document.querySelector('[name="od_sph"]').value,
+      od_cyl: document.querySelector('[name="od_cyl"]').value,
+      od_axis: document.querySelector('[name="od_axis"]').value,
+      os_sph: document.querySelector('[name="os_sph"]').value,
+      os_cyl: document.querySelector('[name="os_cyl"]').value,
+      os_axis: document.querySelector('[name="os_axis"]').value,
+      pd_value: document.querySelector('[name="pd_value"]').value,
+      comments: document.querySelector('[name="comments"]').value,
+      includes_prism: document.querySelector('[name="includes_prism"]').checked
+    };
+
+    const savePrescriptionCheckbox = document.querySelector('[name="save_prescription"]');
+    const shouldSave = savePrescriptionCheckbox && savePrescriptionCheckbox.checked;
+
+    selections.prescriptionData = prescriptionData;
+
+    if (shouldSave && isLoggedIn) {
+      savePrescription(prescriptionData);
+    }
+
+    goToStep('5');
+  };
+
+  document.getElementById('sendLaterFromFillOnline').onclick = (e) => {
+    e.preventDefault();
+    selections.prescriptionMethod = 'Send Later';
+    selections.prescriptionData = null;
+    goToStep('5');
+  };
+
+  // Step 4C: Use Saved
+  document.getElementById('continueFromSaved').onclick = (e) => {
+    e.preventDefault();
+    if (selectedSavedPrescription) {
+      selections.prescriptionData = selectedSavedPrescription;
+      goToStep('5');
+    }
+  };
+
+  // Back buttons
+  document.getElementById('backToStep1').onclick = (e) => {
+    e.preventDefault();
+    goToStep('1');
+  };
+
+  document.getElementById('backToStep2').onclick = (e) => {
+    e.preventDefault();
+    goToStep('2');
+  };
+
+  document.getElementById('backToStep3').onclick = (e) => {
+    e.preventDefault();
+    goToStep('3');
+  };
+
+  document.getElementById('backToStep4FromFillOnline').onclick = (e) => {
+    e.preventDefault();
+    goToStep('4');
+  };
+
+  document.getElementById('backToStep4FromSaved').onclick = (e) => {
+    e.preventDefault();
+    goToStep('4');
+  };
+
+  document.getElementById('backToStep4').onclick = (e) => {
+    e.preventDefault();
+    goToStep('4');
+  };
+
+  function getCoatingOption() {
+    if (selections.coatings.length === 0) return 'None';
+    if (selections.coatings.length === 2) return 'Both Coatings';
+    return selections.coatings[0];
+  }
+
+  function calculatePrice() {
+    let total = priceData.usage[selections.usage] || 0;
+    total += priceData.lensType[selections.lensType] || 0;
+    selections.coatings.forEach(coating => {
+      total += priceData.coatings[coating] || 0;
+    });
+    return total;
+  }
+
+  function updateReview() {
+    document.getElementById('reviewProduct').textContent = configurator.dataset.productTitle;
+    document.getElementById('reviewUsage').textContent = selections.usage || 'Not selected';
+    document.getElementById('reviewLens').textContent = selections.lensType || 'Not selected';
+    document.getElementById('reviewUpgrades').textContent = getCoatingOption();
+
+    let prescriptionText = selections.prescriptionMethod || 'Not selected';
+    if (selections.prescriptionData && selections.prescriptionData.od_sph) {
+      prescriptionText = `${selections.prescriptionMethod} (Completed)`;
+    }
+    document.getElementById('reviewPrescription').textContent = prescriptionText;
+    document.getElementById('reviewTotal').textContent = `£${calculatePrice().toFixed(0)}`;
+  }
+
+  // Add to cart
+  addBtn.onclick = async (e) => {
+    e.preventDefault();
+    const addToCartText = document.getElementById('addToCartText');
+    const originalText = addToCartText.textContent;
+    addBtn.disabled = true;
+    addToCartText.textContent = 'Adding...';
+
+    try {
+      let frameVariantId = configurator.dataset.variantId;
+      const variantInput = document.querySelector('input[name="id"]');
+      const variantSelect = document.querySelector('select[name="id"]');
+      const variantRadio = document.querySelector('input[name="id"]:checked');
+
+      if (variantInput?.value) frameVariantId = variantInput.value;
+      else if (variantSelect?.value) frameVariantId = variantSelect.value;
+      else if (variantRadio?.value) frameVariantId = variantRadio.value;
+
+      if (!frameVariantId) throw new Error('Please select frame options first');
+
+      const lensResponse = await fetch('/products/prescription-lens-package.js');
+      if (!lensResponse.ok) throw new Error('Could not load lens options');
+      const lensProduct = await lensResponse.json();
+
+      const coatingOption = getCoatingOption();
+      const matchingVariant = lensProduct.variants.find(v => 
+        v.option1 === selections.usage && 
+        v.option2 === selections.lensType && 
+        v.option3 === coatingOption
+      );
+
+      if (!matchingVariant) throw new Error('Lens combination not available. Please contact support.');
+
+      const lensProperties = {
+        '_Paired with': configurator.dataset.productTitle,
+        '_Usage': selections.usage,
+        '_Lens Type': selections.lensType,
+        '_Coatings': getCoatingOption()
+      };
+
+      if (selections.prescriptionMethod) {
+        lensProperties['_Prescription Method'] = selections.prescriptionMethod;
+      }
+
+      if (selections.prescriptionData && selections.prescriptionData.od_sph) {
+        lensProperties['_Right Eye SPH'] = selections.prescriptionData.od_sph || 'None';
+        lensProperties['_Right Eye CYL'] = selections.prescriptionData.od_cyl || 'None';
+        lensProperties['_Right Eye AXIS'] = selections.prescriptionData.od_axis || 'None';
+        lensProperties['_Left Eye SPH'] = selections.prescriptionData.os_sph || 'None';
+        lensProperties['_Left Eye CYL'] = selections.prescriptionData.os_cyl || 'None';
+        lensProperties['_Left Eye AXIS'] = selections.prescriptionData.os_axis || 'None';
+        lensProperties['_PD Value'] = selections.prescriptionData.pd_value || 'Not specified';
+        if (selections.prescriptionData.comments) lensProperties['_Comments'] = selections.prescriptionData.comments;
+        if (selections.prescriptionData.includes_prism) lensProperties['_Includes Prism'] = 'Yes (+£30 +£15)';
+      }
+
+      const frameResponse = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          id: frameVariantId,
+          quantity: 1
+        })
+      });
+
+      if (!frameResponse.ok) {
+        const frameError = await frameResponse.json();
+        throw new Error(`Failed to add frame: ${frameError.description || frameError.message}`);
+      }
+
+      const lensAddResponse = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          id: matchingVariant.id,
+          quantity: 1,
+          properties: lensProperties
+        })
+      });
+
+      if (!lensAddResponse.ok) {
+        const lensError = await lensAddResponse.json();
+        throw new Error(`Lens package error: ${lensError.description || lensError.message}`);
+      }
+
+      window.location.href = '/cart';
+    } catch (error) {
+      console.error('Cart error:', error);
+      alert('Error: ' + error.message);
+      addBtn.disabled = false;
+      addToCartText.textContent = originalText;
+    }
+  };
+})();
+</script>

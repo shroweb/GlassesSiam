@@ -1,0 +1,81 @@
+{% doc %}
+  @prompt
+    Cloud search filters block.
+
+    Behaviour:
+    - Filter buttons centered horizontally
+    - Vertical padding added for clean spacing
+    - Matches section horizontal padding
+{% enddoc %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+/* --------------------------------------------------------------------------
+  Cloud Search Filters Block
+--------------------------------------------------------------------------- */
+
+.ai-cloud-search-container-{{ ai_gen_id }} {
+  width: 100%;
+  box-sizing: border-box;
+
+  /* Match section padding */
+  padding-left: 40px;
+  padding-right: 40px;
+
+  /* Vertical spacing */
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+/* Mobile padding */
+@media (max-width: 749px) {
+  .ai-cloud-search-container-{{ ai_gen_id }} {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+/* Mount point */
+.ai-cloud-search-container-{{ ai_gen_id }} #cloud_search_filters_root {
+  width: 100%;
+  display: flex;
+  justify-content: center;   /* CENTER horizontally */
+  align-items: center;
+  gap: 10px;                 /* space between buttons if supported */
+}
+
+/* Ensure nested Cloud Search wrappers also center */
+.ai-cloud-search-container-{{ ai_gen_id }} #cloud_search_filters_root * {
+  justify-content: center !important;
+}
+
+/* Prevent rogue margins */
+.ai-cloud-search-container-{{ ai_gen_id }} #cloud_search_filters_root > * {
+  margin-left: 0 !important;
+}
+{% endstyle %}
+
+<div class="ai-cloud-search-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div id="cloud_search_filters_root"></div>
+</div>
+
+{% schema %}
+{
+  "name": "Cloud search filters",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders the cloud_search_filters_root container for external filter integration."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cloud search filters"
+    }
+  ]
+}
+{% endschema %}

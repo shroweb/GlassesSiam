@@ -1,0 +1,32 @@
+<div class="blog-post">
+  <div class="blog-main-img">
+    <a href="{{ article.url }}" class="blog-img">
+      {%- if article.image -%}
+      {{ article.image.src | image_url: width: 630, height: 585, crop: 'center' | image_tag:
+        loading: 'lazy',
+        width: article.image.width,
+        height: article.image.height,
+        class: "img-fluid",
+        widths: "630",
+        alt: article.image.alt | escape }}
+      {%- else -%}
+      {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+      {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </a>
+    <div class="blog-title">
+      <a href="{{ article.url }}" class="title">{{ article.title | truncate: 100 }}</a>
+    </div>
+  </div>
+  <div class="blog-post-content">
+    <div class="date-comment">
+      <span class="date-time">{{ article.published_at | date: '<span class="date">%d</span> <span class="month">%b</span> <span class="year">%y</span>' }}</span>
+      <a href="{{ article.comment_post_url }}" class="comment">{{ article.comments_count }} Comment</a>
+    </div>
+    <div class="read-btn-buttol">
+      <a href="{{ article.url }}" class="read-btn" aria-label="Read more: {{ article.title }}">
+        <span><i class="feather-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+</div>

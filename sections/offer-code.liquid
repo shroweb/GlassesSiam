@@ -1,0 +1,447 @@
+<section class="offer-code-area" {% if section.settings.section_bg_image_enable %} style="background-image: url('{% if section.settings.section_bg_image %}{{ section.settings.section_bg_image | image_url }}{% else %}https://dummyimage.com/1920x420/232323/FFFFFF{% endif %}');"{% endif %}>
+  <div class="container">
+		<div class="row">
+			<div class="col">
+				<div class="offer-code-bg">
+					<div class="offer-code-content">
+						{% if section.settings.section_title_1 != '' or section.settings.section_title_2 != '' %}
+						<div class="section-capture">
+							<div class="section-title">
+								<h2 style="color: {{ section.settings.section_title_color }};">
+									{% if section.settings.section_title_1 != '' %}
+									<span class="b-text">{{ section.settings.section_title_1 }}</span>
+									{% endif %}  
+									{% if section.settings.section_title_2 != '' %}
+									<span class="n-text">{{ section.settings.section_title_2 }}</span>
+									{% endif %}  
+								</h2>
+							</div>
+						</div>
+						{% endif %}
+						<div class="offer-code">
+							<div class="password password-copy">
+								<div class="password-content">
+									<div class="clipboard">
+										<div class="code-text">
+											{% if section.settings.offer_code_label != '' %}
+											<span class="code-label">{{ section.settings.offer_code_label }}</span>
+											{% endif %}
+											<span id="pwd_spn" class="password-span">{{ section.settings.offer_code_value }}</span>
+										</div>
+										<button class="copy-btn" id="cp_btn"><i class="far fa-copy"></i></button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	document.getElementById("cp_btn").addEventListener("click", copy_password);
+	function copy_password() {
+		var copyText = document.getElementById("pwd_spn");
+		var textArea = document.createElement("textarea");
+		textArea.value = copyText.textContent;
+		document.body.appendChild(textArea);
+		textArea.select();
+		document.execCommand("Copy");
+		textArea.remove();
+	}
+</script>
+
+{% schema %}
+{
+  "name": "Offer Code",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop / Laptop"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "paragraph",
+      "content": "Ipad pro / Ipad"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_ip",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_ip",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_xs",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_xs",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Section Background Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_bg_image_enable",
+      "label": "Show Background Image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background Image",
+      "info": "Recommended Size: 1920 x 420px"
+    },
+    {
+      "type": "header",
+      "content": "Section Background Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_bg_color_enable",
+      "label": "Show Backgorund Color",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background Color",
+      "default": "#F7F7F7"
+    },
+    {
+      "type": "header",
+      "content": "Content Background Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "content_bg_image_enable",
+      "label": "Show Background Image",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "content_bg_image",
+      "label": "Desktop Background Image",
+      "info": "Recommended Size: 1350 x 220px"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_after_image",
+      "label": "Mobile Background Image",
+      "info": "Recommended Size: 750 x 130px"
+    },
+    {
+      "type": "header",
+      "content": "Content Background Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "content_bg_color_enable",
+      "label": "Show Backgorund Color",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "content_bg_color",
+      "label": "Background Color",
+      "default": "#F7F7F7"
+    },
+    {
+      "type": "header",
+      "content": "Offer Code Title"
+    },
+    {
+      "type": "text",
+      "id": "section_title_1",
+      "label": "Title 1",
+      "default": "Get 30% off"
+    },
+    {
+      "type": "text",
+      "id": "section_title_2",
+      "label": "Title 2",
+      "default": "good offer !"
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Title Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Offer Code Content"
+    },
+    {
+      "type": "text",
+      "id": "offer_code_label",
+      "label": "Label",
+      "default": "Use code : "
+    },
+    {
+      "type": "text",
+      "id": "offer_code_value",
+      "label": "Code value",
+      "default": "TR80TR"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Offer Code",
+      "category": "Offer Code"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+	.offer-code-area {
+    position: relative;
+    padding-top: {{ section.settings.section_padding_top }}px;
+    padding-bottom: {{ section.settings.section_padding_bottom }}px;
+		{% if section.settings.section_bg_image_enable %}
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+		{% endif %}
+  }
+	{% if section.settings.section_bg_color_enable %}
+	.offer-code-area::before {
+    background-color: {{ section.settings.section_bg_color }};
+		content: '';
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		width: 100%;
+		height: 80px;
+		z-index: -1;
+	}
+	{% endif %}
+  @media (max-width: 1199px) {
+    .offer-code-area {
+      padding-top: {{ section.settings.section_padding_top_ip }}px;
+      padding-bottom: {{ section.settings.section_padding_bottom_ip }}px;
+    }
+  }
+  @media (max-width: 767px) {
+    .offer-code-area {
+      padding-top: {{ section.settings.section_padding_top_xs }}px;
+      padding-bottom: {{ section.settings.section_padding_bottom_xs }}px;
+    }
+  }
+
+	/* main css */
+	.offer-code-area .offer-code-bg {
+		position: relative;
+		{% if section.settings.content_bg_image_enable %}
+		background-image: url('{% if section.settings.content_bg_image %}{{ section.settings.content_bg_image | image_url }}{% else %}https://dummyimage.com/1380x220/232323/FFFFFF{% endif %}');
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+		{% endif %}
+		{% if section.settings.content_bg_image_enable %}
+		padding: 100px 30px 30px 30px;
+		{% else %}
+		padding: 50px 30px;
+		{% endif %}
+		display: flex;
+		justify-content: center;
+	}
+	{% if section.settings.content_bg_image_enable %}
+  .offer-code-area .offer-code-bg::after {
+    background-image: url('{% if section.settings.section_after_image %}{{ section.settings.section_after_image | image_url }}{% else %}https://dummyimage.com/750x130/232323/FFFFFF{% endif %}');
+    content: '';
+    position: absolute;
+    top: 0px;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+		display: none;
+  }
+	{% endif %}
+	.offer-code-area .offer-code-bg .offer-code-content {
+    display: flex;
+    flex-wrap: wrap;
+		align-items: center;
+		{% if settings.enable_rtl %}
+		margin-right: -30px;
+		{% else %}
+		margin-left: -30px;
+		{% endif %}
+		width: 50%;
+	}
+	.offer-code-area .offer-code-bg .offer-code-content .section-capture,
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code {
+		width: calc(50% - 30px);
+		{% if settings.enable_rtl %}
+		margin-right: 30px;
+		{% else %}
+		margin-left: 30px;
+		{% endif %}
+	}
+	@media (max-width: 1399px) {
+		.offer-code-area .offer-code-bg .offer-code-content {
+			width: 66.67%;
+		}
+	}
+	@media (max-width: 1199px) {
+		.offer-code-area .offer-code-bg .offer-code-content {
+			width: 75%;
+		}
+	}
+	@media (max-width: 991px) {
+		.offer-code-area .offer-code-bg {
+			background-image: none;
+			padding: 30px;
+		}
+		.offer-code-area .offer-code-bg::after {
+			display: block;
+		}
+		.offer-code-area .offer-code-bg .offer-code-content {
+			width: 100%;
+		}
+	}
+	@media (max-width: 767px) {
+		.offer-code-area .offer-code-bg {
+			padding: 30px 12px;
+		}
+		.offer-code-area .offer-code-bg .offer-code-content {
+			{% if settings.enable_rtl %}
+			margin-right: -12px;
+			{% else %}
+			margin-left: -12px;
+			{% endif %}
+		}
+		.offer-code-area .offer-code-bg .offer-code-content .section-capture,
+		.offer-code-area .offer-code-bg .offer-code-content .offer-code {
+			{% if settings.enable_rtl %}
+			margin-right: 12px;
+			{% else %}
+			margin-left: 12px;
+			{% endif %}
+			width: calc(50% - 12px);
+		}
+	}
+	@media (max-width: 600px) {
+		.offer-code-area .offer-code-bg .offer-code-content .section-capture,
+		.offer-code-area .offer-code-bg .offer-code-content .offer-code {
+			width: calc(100% - 12px);
+		}
+		.offer-code-area .offer-code-bg .offer-code-content .offer-code {
+			margin-top: 25px;
+		}
+	}
+
+	/* title css */
+	.offer-code-area .offer-code-bg .offer-code-content .section-capture {
+		margin-bottom: 0px;	
+	}
+	
+	/* code css */
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy {
+		padding: 0px 15px;
+	}
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy .password-content .clipboard {
+    background-color: var(--font-color-secondary);
+		display: flex;
+    align-items: center;
+	}
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy .password-content .clipboard .code-text {
+    display: flex;
+    align-items: center;
+		margin: 0 auto;
+		padding: 0px 12px;
+	}
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy .password-content .clipboard .code-text span.code-label {
+    color: #FFFFFF;
+    font-weight: var(--font-subtitle-weight-body);
+    text-transform: uppercase;
+	}
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy .password-content .clipboard .code-text span.password-span {
+		color: var(--font-color-primary);
+		{% if settings.enable_rtl %}
+		margin-right: 5px;
+		{% else %}
+		margin-left: 5px;
+		{% endif %}
+		font-weight: var(--font-subtitle-weight-body);
+    text-transform: uppercase;
+	}
+	.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy .password-content .clipboard button.copy-btn {
+		color: #FFFFFF;
+		font-size: 18px;
+		width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+		border-left: 1px dashed var(--theme-border-color);
+	}
+	@media (max-width: 600px) {
+		.offer-code-area .offer-code-bg .offer-code-content .offer-code .password-copy {
+			padding: 0px;
+		}
+	}
+</style>

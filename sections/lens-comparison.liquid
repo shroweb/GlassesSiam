@@ -1,0 +1,317 @@
+{% comment %}
+  Lens comparison section
+  - Editable lens cards
+  - Editable CTA rows
+  - Optional flipped layout
+{% endcomment %}
+
+<section class="lens-comparison {% if section.settings.flip_layout %}is-flipped{% endif %}">
+  <div class="lens-comparison__inner">
+
+    <!-- LEFT / RIGHT: CONTENT -->
+    <div class="lens-comparison__content">
+      {% if section.settings.heading != blank %}
+        <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.text != blank %}
+        <p>{{ section.settings.text }}</p>
+      {% endif %}
+
+      <div class="lens-comparison__links">
+        {% for block in section.blocks %}
+          {% if block.type == 'cta' %}
+            <a
+              class="lens-cta"
+              href="{{ block.settings.url }}"
+              {{ block.shopify_attributes }}
+            >
+              <span>{{ block.settings.label }}</span>
+              <span class="arrow">→</span>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- LEFT / RIGHT: CARDS -->
+    <div class="lens-comparison__cards">
+      {% for block in section.blocks %}
+        {% if block.type == 'card' %}
+          <div class="lens-card" {{ block.shopify_attributes }}>
+
+            {% if block.settings.badge_text != blank %}
+              <div class="lens-card__badge">
+                {{ block.settings.badge_text }}
+              </div>
+            {% endif %}
+
+            <div class="lens-card__media">
+              {% if block.settings.image %}
+                <img
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  alt="{{ block.settings.title | escape }}"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="lens-card__placeholder">
+                  Add image
+                </div>
+              {% endif %}
+            </div>
+
+            {% if block.settings.title != blank %}
+              <h3 class="lens-card__title">{{ block.settings.title }}</h3>
+            {% endif %}
+
+            {% if block.settings.section_one_title != blank %}
+              <div class="lens-card__section">
+                <strong>{{ block.settings.section_one_title }}</strong>
+                {{ block.settings.section_one_list }}
+              </div>
+            {% endif %}
+
+            {% if block.settings.section_two_title != blank %}
+              <div class="lens-card__section">
+                <strong>{{ block.settings.section_two_title }}</strong>
+                {{ block.settings.section_two_list }}
+              </div>
+            {% endif %}
+
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% style %}
+.lens-comparison {
+  padding: 3rem 2rem;
+}
+
+.lens-comparison__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* FLIPPED LAYOUT */
+.lens-comparison.is-flipped .lens-comparison__inner {
+  grid-template-columns: 2fr 1fr;
+}
+
+.lens-comparison.is-flipped .lens-comparison__content {
+  order: 2;
+}
+
+.lens-comparison.is-flipped .lens-comparison__cards {
+  order: 1;
+}
+
+/* CONTENT */
+.lens-comparison__content h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.lens-comparison__content p {
+  max-width: 460px;
+}
+
+.lens-comparison__links {
+  margin-top: 2rem;
+}
+
+.lens-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+  font-size: 1rem;
+}
+
+.lens-cta .arrow {
+  transition: transform 0.2s ease;
+}
+
+.lens-cta:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* CARDS */
+.lens-comparison__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.lens-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.lens-card__badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: #c99a2c;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.4rem;
+}
+
+.lens-card__media {
+  margin-bottom: 1rem;
+}
+
+.lens-card__media img {
+  width: 100%;
+  border-radius: 0.75rem;
+}
+
+.lens-card__placeholder {
+  height: 180px;
+  background: #f3f4f6;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.lens-card__section {
+  margin-top: 1.25rem;
+}
+
+.lens-card__section ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+.lens-card__section li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.lens-card__section li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #c99a2c;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .lens-comparison__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .lens-comparison.is-flipped .lens-comparison__content,
+  .lens-comparison.is-flipped .lens-comparison__cards {
+    order: unset;
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Lens comparison",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "checkbox",
+      "id": "flip_layout",
+      "label": "Flip layout (cards on right)",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Lens card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge text (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card title"
+        },
+        {
+          "type": "text",
+          "id": "section_one_title",
+          "label": "First section title"
+        },
+        {
+          "type": "richtext",
+          "id": "section_one_list",
+          "label": "First section list"
+        },
+        {
+          "type": "text",
+          "id": "section_two_title",
+          "label": "Second section title"
+        },
+        {
+          "type": "richtext",
+          "id": "section_two_list",
+          "label": "Second section list"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "CTA link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "CTA label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "CTA link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lens comparison"
+    }
+  ]
+}
+{% endschema %}

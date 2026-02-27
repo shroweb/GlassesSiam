@@ -1,0 +1,345 @@
+{%- if section.settings.topbar_notification_enable -%}
+<section class="top-notification-bar">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <div class="notification-block">
+          <ul class="notification-entry">
+            <li class="notify-wrap info-block">
+              <div class="info-area">
+                {% if section.settings.info_text_1 != '' %}
+                <div class="info-text">{{ section.settings.info_text_1 }}</div>
+                {% endif %}
+              </div>
+            </li>
+            {% if section.settings.offer_text != '' %}
+            <li class="notify-wrap offer-text">
+              <div class="text-wrap">{{ section.settings.offer_text }}</div>
+            </li>
+            {% endif %}
+            <li class="notify-wrap custom-link">
+              <ul class="custom-link-ul">
+                <li class="custom-link-li topbar-a11y-wrap">
+                  <button id="gs-a11y-trigger" tabindex="0" aria-label="Accessibility options" class="topbar-a11y-btn" title="Accessibility" onclick="if(typeof UserWay!=='undefined'){UserWay.widgetOpen();}">
+                    <i class="ri-wheelchair-fill" style="font-size:18px;line-height:1;" aria-hidden="true"></i>
+                  </button>
+                </li>
+                {% if section.settings.custom_link_1 != '' %}
+                <li class="custom-link-li">
+                  <div class="link">{{ section.settings.custom_link_1 }}</div>
+                </li>
+                {% endif %}
+                {% if section.settings.custom_link_2 != '' %}
+                <li class="custom-link-li">
+                  <div class="link">{{ section.settings.custom_link_2 }}</div>
+                </li>
+                {% endif %}
+                <li class="custom-link-li">
+                  <div class="user-block user-lg">
+                    {% if customer %}
+                    <a class="header-icon" href="{{ routes.account_url }}">
+                      {% if section.settings.account_title != '' %}
+                      <span class="icon-title">{{ section.settings.account_title }}</span>
+                      {% endif %}
+                    </a>
+                    <a class="header-icon" href="{{ routes.account_logout_url }}">
+                      {% if section.settings.logout_title != '' %}
+                      <span class="icon-title">{{ section.settings.logout_title }}</span>
+                      {% endif %}
+                    </a>
+                    {% else %}
+                    <a class="header-icon" href="{{ routes.account_login_url }}">
+                      {% if section.settings.login_title != '' %}
+                      <span class="icon-title">{{ section.settings.login_title }}</span>
+                      {% endif %}
+                    </a>
+                    <a class="header-icon" href="{{ routes.account_register_url }}">
+                      {% if section.settings.register_title != '' %}
+                      <span class="icon-title">{{ section.settings.register_title }}</span>
+                      {% endif %}
+                    </a>
+                    {% endif %}
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Topbar notification",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Show topbar notification"
+    },
+    {
+      "type": "checkbox",
+      "id": "topbar_notification_enable",
+      "label": "Show topbar notification",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Notification Padding"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Section background color"
+    },
+    {
+      "type": "color",
+      "id": "topbar_notification_bg_color",
+      "label": "Section background color",
+      "default": "#31AF68"
+    },
+    {
+      "type": "color",
+      "id": "topbar_notification_txt_color",
+      "label": "Section text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Contact Info Text"
+    },
+    {
+      "type": "richtext",
+      "id": "info_text_1",
+      "label": "Text 1"
+    },
+    {
+      "type": "header",
+      "content": "Offer Text"
+    },
+    {
+      "type": "richtext",
+      "id": "offer_text",
+      "label": "Text"
+    },
+    {
+      "type": "header",
+      "content": "Custom Link"
+    },
+    {
+      "type": "richtext",
+      "id": "custom_link_1",
+      "label": "Link 1"
+    },
+    {
+      "type": "richtext",
+      "id": "custom_link_2",
+      "label": "Link 2"
+    },
+    {
+      "type": "text",
+      "id": "login_title",
+      "label": "Login Title",
+      "default": "Login"
+    },
+    {
+      "type": "text",
+      "id": "register_title",
+      "label": "Register Title",
+      "default": "Register"
+    },
+    {
+      "type": "text",
+      "id": "account_title",
+      "label": "Account Title",
+      "default": "Account"
+    },
+    {
+      "type": "text",
+      "id": "logout_title",
+      "label": "Logout Title",
+      "default": "Logout"
+    }
+  ]
+}
+{% endschema %}
+<style>
+.top-notification-bar {
+  position: relative;
+  padding-top: {{ section.settings.section_padding_top }}px;
+  padding-bottom: {{ section.settings.section_padding_bottom }}px;
+  background-color: {{ section.settings.topbar_notification_bg_color }};
+  z-index: 1;
+}
+.top-notification-bar .notification-block ul.notification-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.top-notification-bar .notification-block ul.notification-entry li.notify-wrap {
+  width: 33.33%;
+}
+@media (max-width: 991px) {
+  .top-notification-bar .notification-block ul.notification-entry li.info-block,
+  .top-notification-bar .notification-block ul.notification-entry li.custom-link {
+    width: 25%;
+  } 
+  .top-notification-bar .notification-block ul.notification-entry li.offer-text {
+    width: 50%;
+  }
+}
+@media (max-width: 991px) {
+  .top-notification-bar .notification-block ul.notification-entry li.info-block,
+  .top-notification-bar .notification-block ul.notification-entry li.custom-link {
+    display: none;
+  } 
+  .top-notification-bar .notification-block ul.notification-entry li.offer-text {
+    width: 100%;
+  }
+}
+
+/* contact info css */
+.info-block {
+
+}
+.info-block .info-area {
+
+}
+.info-block .info-area .info-text {
+
+}
+.info-block .info-area .info-text p,
+.info-block .info-area .info-text p a {
+  color: {{ section.settings.topbar_notification_txt_color }};
+  font-weight: var(--font-custom-weight-header);
+}
+.info-block .info-area .info-text p a:hover {
+  opacity: 0.7;
+}
+
+/* offer text css */
+.offer-text {
+  text-align: center;
+} 
+.offer-text .text-wrap {
+
+}
+.offer-text .text-wrap p,
+.offer-text .text-wrap p a {
+  color: {{ section.settings.topbar_notification_txt_color }};
+  font-weight: var(--font-custom-weight-header);
+}
+.offer-text .text-wrap p a {
+  border-bottom: 2px solid;
+  line-height: 1;
+}
+.offer-text .text-wrap p a:hover {
+  opacity: 0.7;
+}
+
+/* custom link css */
+.custom-link {
+
+}
+.custom-link ul.custom-link-ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.custom-link ul.custom-link-ul li.custom-link-li {
+  margin-left: 30px;
+}
+.custom-link ul.custom-link-ul li.custom-link-li:first-child {
+  margin-left: 0px;
+}
+.custom-link ul.custom-link-ul li.custom-link-li .link {
+
+}
+.custom-link ul.custom-link-ul li.custom-link-li .link p,
+.custom-link ul.custom-link-ul li.custom-link-li .link p a {
+  font-weight: var(--font-custom-weight-header);
+  color: {{ section.settings.topbar_notification_txt_color }};
+}
+.custom-link ul.custom-link-ul li.custom-link-li .link p a:hover {
+  opacity: 0.7;
+}
+/* user css */
+.custom-link ul.custom-link-ul li.custom-link-li .user-block {
+  display: flex;
+  align-items: center;
+}
+.custom-link ul.custom-link-ul li.custom-link-li .user-block a.header-icon {
+  color: {{ section.settings.topbar_notification_txt_color }};
+  position: relative;
+  margin-left: 7px;
+  padding-left: 7px;
+  font-weight: var(--font-custom-weight-header);
+}
+.custom-link ul.custom-link-ul li.custom-link-li .user-block a.header-icon:hover {
+  opacity: 0.7;
+}
+.custom-link ul.custom-link-ul li.custom-link-li .user-block a.header-icon:first-child {
+  margin-left: 0px;
+  padding-left: 0px;
+}
+.custom-link ul.custom-link-ul li.custom-link-li .user-block a.header-icon::before {
+  color: {{ section.settings.topbar_notification_txt_color }};
+  content: '|';
+  position: absolute;
+  bottom: 50%;
+  transform: translateY(50%);
+  left: -2px;
+}
+.custom-link ul.custom-link-ul li.custom-link-li .user-block a.header-icon:first-child::before {
+  display: none;
+}
+@media (max-width: 1199px) {
+  .custom-link ul.custom-link-ul li.custom-link-li:last-child {
+    display: none;
+  }
+}
+/* Accessibility button in top bar */
+.topbar-a11y-wrap {
+  display: flex !important;
+}
+.topbar-a11y-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #113071;
+  border: 2px solid rgba(255,255,255,0.5);
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.topbar-a11y-btn:hover {
+  background-color: #0d245a;
+  transform: scale(1.08);
+}
+</style>

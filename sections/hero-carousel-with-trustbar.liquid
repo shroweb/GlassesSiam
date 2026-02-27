@@ -1,0 +1,350 @@
+{% assign sid = section.id %}
+
+<section
+  class="hero-clean"
+  data-section-id="{{ sid }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.autoplay_speed }}"
+  style="
+    --hero-height: {{ section.settings.hero_height }}px;
+    --heading-color: {{ section.settings.heading_color }};
+    --subheading-color: {{ section.settings.subheading_color }};
+    --btn-bg: {{ section.settings.primary_button_bg }};
+    --btn-text: {{ section.settings.primary_button_text }};
+    --btn2-bg: {{ section.settings.secondary_button_bg }};
+    --btn2-text: {{ section.settings.secondary_button_text }};
+  "
+>
+  <div class="hero-clean__viewport">
+    <div class="hero-clean__track">
+
+      {% assign slide_count = 0 %}
+      {% for block in section.blocks %}
+        {% if block.type == 'slide' %}
+          {% assign slide_count = slide_count | plus: 1 %}
+          <article class="hero-clean__slide" {{ block.shopify_attributes }}>
+
+            <!-- IMAGE -->
+            {% if block.settings.image %}
+              <img
+                src="{{ block.settings.image | image_url: width: 2400 }}"
+                alt="{{ block.settings.heading | escape }}"
+                loading="lazy"
+              >
+            {% endif %}
+
+            <!-- OVERLAY -->
+            {% if block.settings.overlay_opacity > 0 %}
+              <div
+                class="hero-clean__overlay-bg"
+                style="opacity: {{ block.settings.overlay_opacity | times: 0.01 }};"
+              ></div>
+            {% endif %}
+
+            <!-- CONTENT -->
+            <div class="hero-clean__overlay">
+              {% if block.settings.heading != blank %}
+                <h1>{{ block.settings.heading }}</h1>
+              {% endif %}
+
+              {% if block.settings.subheading != blank %}
+                <p>{{ block.settings.subheading }}</p>
+              {% endif %}
+
+              <div class="hero-clean__buttons">
+                {% if block.settings.primary_label %}
+                  <a href="{{ block.settings.primary_url }}" class="btn btn--primary">
+                    {{ block.settings.primary_label }}
+                  </a>
+                {% endif %}
+                {% if block.settings.secondary_label %}
+                  <a href="{{ block.settings.secondary_url }}" class="btn btn--secondary">
+                    {{ block.settings.secondary_label }}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if slide_count > 1 %}
+      <button class="hero-clean__arrow prev">‹</button>
+      <button class="hero-clean__arrow next">›</button>
+
+      <div class="hero-clean__dots">
+        {% for i in (1..slide_count) %}
+          <span class="dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}"></span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.hero-clean {
+  position: relative;
+}
+
+.hero-clean__viewport {
+  overflow: hidden;
+  height: var(--hero-height);
+}
+
+.hero-clean__track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-clean__slide {
+  position: relative;
+  min-width: 100%;
+  height: 100%;
+}
+
+.hero-clean__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* DARK OVERLAY */
+.hero-clean__overlay-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.05) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* CONTENT OVERLAY — left-aligned */
+.hero-clean__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  text-align: left;
+  padding: 4rem 6rem;
+  max-width: 640px;
+}
+
+.hero-clean__overlay h1 {
+  color: var(--heading-color);
+  font-size: clamp(32px, 4.5vw, 58px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+
+.hero-clean__overlay p {
+  color: var(--subheading-color);
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  max-width: 420px;
+}
+
+.hero-clean__buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+.btn--primary {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.btn--primary:hover {
+  background: #fff;
+  color: #113071;
+}
+
+.btn--secondary {
+  background: #e53e3e;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.btn--secondary:hover {
+  background: #c53030;
+  color: #ffffff;
+}
+
+.hero-clean__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 3;
+  transition: background 0.2s ease;
+}
+
+.hero-clean__arrow:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.hero-clean__arrow.prev { left: 24px; }
+.hero-clean__arrow.next { right: 24px; }
+
+.hero-clean__dots {
+  position: absolute;
+  bottom: 24px;
+  left: 6rem;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.hero-clean__dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.hero-clean__dots .dot.active {
+  background: white;
+  transform: scale(1.3);
+}
+
+@media (max-width: 768px) {
+  .hero-clean__overlay {
+    padding: 2.5rem 2rem;
+    max-width: 100%;
+  }
+
+  .hero-clean__dots {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+</style>
+
+<script>
+(() => {
+  const section = document.querySelector('.hero-clean[data-section-id="{{ sid }}"]');
+  if (!section) return;
+
+  const track = section.querySelector('.hero-clean__track');
+  const slides = section.querySelectorAll('.hero-clean__slide');
+  const dots = section.querySelectorAll('.dot');
+  const prev = section.querySelector('.prev');
+  const next = section.querySelector('.next');
+
+  let index = 0;
+  let timer;
+
+  const goTo = i => {
+    index = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach(d => d.classList.remove('active'));
+    if (dots[index]) dots[index].classList.add('active');
+  };
+
+  prev?.addEventListener('click', () => goTo(index - 1));
+  next?.addEventListener('click', () => goTo(index + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(d.dataset.index)));
+
+  if (section.dataset.autoplay === 'true') {
+    timer = setInterval(() => goTo(index + 1), section.dataset.speed || 5000);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Hero slider (clean)",
+  "settings": [
+    { "type": "range", "id": "hero_height", "label": "Hero height", "min": 300, "max": 700, "step": 20, "default": 520 },
+
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#ffffff" },
+    { "type": "color", "id": "subheading_color", "label": "Subheading color", "default": "#ffffff" },
+
+    { "type": "color", "id": "primary_button_bg", "label": "Primary button background", "default": "#ffffff" },
+    { "type": "color", "id": "primary_button_text", "label": "Primary button text", "default": "#111111" },
+
+    { "type": "color", "id": "secondary_button_bg", "label": "Secondary button background", "default": "transparent" },
+    { "type": "color", "id": "secondary_button_text", "label": "Secondary button text", "default": "#ffffff" },
+
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay slides", "default": false },
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay speed (ms)", "min": 2000, "max": 9000, "step": 500, "default": 5000 }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Background image" },
+
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Overlay darkness (%)",
+          "min": 0,
+          "max": 70,
+          "step": 5,
+          "default": 0
+        },
+
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "textarea", "id": "subheading", "label": "Subheading" },
+
+        { "type": "text", "id": "primary_label", "label": "Primary button label" },
+        { "type": "url", "id": "primary_url", "label": "Primary button link" },
+
+        { "type": "text", "id": "secondary_label", "label": "Secondary button label" },
+        { "type": "url", "id": "secondary_url", "label": "Secondary button link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero slider (clean)",
+      "blocks": [{ "type": "slide" }]
+    }
+  ]
+}
+{% endschema %}

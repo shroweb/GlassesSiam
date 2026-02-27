@@ -1,0 +1,37 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "1769543502704d79ca": {
+      "type": "apps",
+      "blocks": {
+        "surecust_forms_lock_custom_form_YadLah": {
+          "type": "shopify://apps/surecust-forms-lock/blocks/custom-form/11b1d95b-f9a2-49ad-9a53-3d6a172a070d",
+          "settings": {
+            "formid": "17695433928104",
+            "title": "Send Your Prescription",
+            "subtitle": "If your prescription is missing from your order, you can upload it here. You can find your Order ID in your order confirmation email.",
+            "selectproduct": "",
+            "fieldradius": 0,
+            "buttonback": "#000000",
+            "buttoncolor": "#ffffff"
+          }
+        }
+      },
+      "block_order": [
+        "surecust_forms_lock_custom_form_YadLah"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "1769543502704d79ca"
+  ]
+}

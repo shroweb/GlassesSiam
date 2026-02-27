@@ -1,0 +1,151 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "lens_configurator": {
+      "type": "lens-configurator",
+      "settings": {
+        "button_alignment": "center"
+      }
+    },
+    "lens_types": {
+      "type": "lens-types-section",
+      "blocks": {
+        "sv": {
+          "type": "lens_type",
+          "settings": {
+            "eyebrow": "Best Seller",
+            "title": "Single Vision Lenses",
+            "description": "Our most popular option. Ideal for correcting near-sightedness, far-sightedness, or astigmatism. Perfect for everyday wear.",
+            "feature_1": "Sharp, clear vision at one distance",
+            "feature_2": "Lightweight & thin materials available",
+            "feature_3": "Anti-reflective coating included",
+            "feature_4": "UV protection as standard",
+            "price_from": "฿690",
+            "cta_text": "Get Single Vision Lenses",
+            "badge": "Most Popular"
+          }
+        },
+        "prog": {
+          "type": "lens_type",
+          "settings": {
+            "eyebrow": "For Over 40s",
+            "title": "Progressive Lenses",
+            "description": "Seamlessly transition from distance to reading with no visible line — the modern alternative to bifocals.",
+            "feature_1": "Distance, intermediate & near in one lens",
+            "feature_2": "No bifocal line — looks natural",
+            "feature_3": "Premium corridor technology",
+            "feature_4": "Digitally surfaced for accuracy",
+            "price_from": "฿2,490",
+            "cta_text": "Get Progressive Lenses"
+          }
+        },
+        "bl": {
+          "type": "lens_type",
+          "settings": {
+            "eyebrow": "Modern Protection",
+            "title": "Blue Light Blocking",
+            "description": "Filter harmful blue light from screens to reduce eye strain, improve sleep, and protect long-term eye health.",
+            "feature_1": "Reduces digital eye strain",
+            "feature_2": "Better sleep with less screen glare",
+            "feature_3": "Clear lenses — not yellow tinted",
+            "feature_4": "Add to any frame or prescription",
+            "price_from": "฿1,290",
+            "cta_text": "Get Blue Light Lenses"
+          }
+        }
+      },
+      "block_order": ["sv", "prog", "bl"],
+      "settings": {
+        "eyebrow": "Our Lenses",
+        "heading": "Choose the Right Lenses",
+        "subheading": "Every pair comes with expert lens recommendations based on your prescription and lifestyle.",
+        "background_color": "#ffffff",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "coatings": {
+      "type": "lens-coatings-tabs",
+      "blocks": {
+        "bl_tab": {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "blue-light",
+            "tab_label": "Blue Light",
+            "title": "Blue Light Blocking",
+            "description": "Filter harmful blue light from screens to reduce eye strain and protect your sleep cycle. Essential for anyone who spends long hours on digital devices.",
+            "feature_1": "Reduces digital eye strain significantly",
+            "feature_2": "Supports natural sleep rhythms",
+            "feature_3": "Clear lenses — not yellow tinted",
+            "feature_4": "Works on any prescription",
+            "price": "฿590",
+            "cta_text": "Add Blue Light Coating"
+          }
+        },
+        "trans_tab": {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "transitions",
+            "tab_label": "Transitions",
+            "title": "Transitions® Lenses",
+            "description": "Automatically adapt from clear indoors to dark outside — no need for a second pair of sunglasses. The smart, convenient choice.",
+            "feature_1": "Darkens in sunlight in seconds",
+            "feature_2": "100% UV protection outdoors",
+            "feature_3": "Returns to clear quickly indoors",
+            "feature_4": "Available in multiple colours",
+            "price": "฿2,990",
+            "cta_text": "Add Transitions Lenses"
+          }
+        },
+        "pol_tab": {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "polarized",
+            "tab_label": "Polarized",
+            "title": "Polarized Lenses",
+            "description": "Eliminate glare from water, roads, and reflective surfaces for unbeatable outdoor clarity. A must-have for driving and outdoor activities.",
+            "feature_1": "Eliminates horizontal glare completely",
+            "feature_2": "Enhanced contrast and colour",
+            "feature_3": "Perfect for driving and water sports",
+            "feature_4": "100% UV400 protection",
+            "price": "฿1,190",
+            "cta_text": "Add Polarized Coating"
+          }
+        },
+        "ar_tab": {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "anti-reflective",
+            "tab_label": "Anti-Reflective",
+            "title": "Anti-Reflective Coating",
+            "description": "Eliminate reflections and glare from artificial lighting for clearer, more comfortable vision. Makes your lenses look virtually invisible.",
+            "feature_1": "Removes distracting lens reflections",
+            "feature_2": "Easier for others to see your eyes",
+            "feature_3": "Scratch-resistant layer included",
+            "feature_4": "Easier to clean — repels smudges",
+            "price": "฿490",
+            "cta_text": "Add Anti-Reflective Coating"
+          }
+        }
+      },
+      "block_order": ["bl_tab", "trans_tab", "pol_tab", "ar_tab"],
+      "settings": {
+        "eyebrow": "Lens Upgrades",
+        "heading": "Upgrade Your Lenses",
+        "subheading": "Enhance your vision with our premium lens coatings and treatments.",
+        "background_color": "#f8f9fb",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": ["lens_configurator", "lens_types", "coatings"]
+}

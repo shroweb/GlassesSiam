@@ -1,0 +1,100 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "1662971666b663c615": {
+      "type": "contact-services",
+      "blocks": {
+        "b12132b3-d433-4d8d-8c93-a0eb6af00fd4": {
+          "type": "our_services",
+          "settings": {
+            "ser_url": "tel:+6620016789",
+            "service_icon": "<i class=\"feather-phone-call\"></i>",
+            "service_title": "Call Us",
+            "service_description": "<p><a href=\"tel:+6620016789\">+66 2 001 6789</a><br/>Mon–Sat, 9am–6pm (ICT)</p>"
+          }
+        },
+        "9686a887-be50-4390-bb51-ed06beab20eb": {
+          "type": "our_services",
+          "settings": {
+            "ser_url": "",
+            "service_icon": "<i class=\"feather-map-pin\"></i>",
+            "service_title": "Our Store",
+            "service_description": "<p>GlassesSiam<br/>Bangkok, Thailand<br/>Online orders ship nationwide</p>"
+          }
+        },
+        "29ea147e-b39a-4666-a762-8057c2bfab1f": {
+          "type": "our_services",
+          "settings": {
+            "ser_url": "mailto:hello@glassessiam.com",
+            "service_icon": "<i class=\"feather-mail\"></i>",
+            "service_title": "Email Us",
+            "service_description": "<p><a href=\"mailto:hello@glassessiam.com\">hello@glassessiam.com</a><br/>We reply within 24 hours</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b12132b3-d433-4d8d-8c93-a0eb6af00fd4",
+        "9686a887-be50-4390-bb51-ed06beab20eb",
+        "29ea147e-b39a-4666-a762-8057c2bfab1f"
+      ],
+      "settings": {
+        "our_ser_padding_top": 80,
+        "our_ser_padding_bottom": 80,
+        "our_ser_padding_top_ip": 60,
+        "our_ser_padding_bottom_ip": 60,
+        "our_ser_padding_top_xs": 50,
+        "our_ser_padding_bottom_xs": 50,
+        "our_ser_bgcolor": "#ffffff"
+      }
+    },
+    "1662974000da2ae674": {
+      "type": "contact-banner",
+      "settings": {
+        "section_padding_top": 100,
+        "section_padding_bottom": 100,
+        "section_padding_top_lg": 80,
+        "section_padding_bottom_lg": 80,
+        "section_padding_top_xs": 60,
+        "section_padding_bottom_xs": 60,
+        "section_bg_color": "#f7f7f7",
+        "banner_img": "shopify://shop_images/contact-us.jpg",
+        "banner_title_1": "We're here to help you find your perfect pair.",
+        "banner_description": "Whether you have questions about frames, lenses, prescriptions, or your order — our friendly team is ready to assist. Get in touch and we'll get back to you within 24 hours.",
+        "banner_button": "Shop All Frames",
+        "banner_url": "/collections/all",
+        "banner_button_style": "btn-style1"
+      }
+    },
+    "contact-us": {
+      "type": "contact-us",
+      "settings": {
+        "main_padding_top": 100,
+        "main_padding_bottom": 100,
+        "main_padding_top_lg": 80,
+        "main_padding_bottom_lg": 80,
+        "main_padding_top_xs": 60,
+        "main_padding_bottom_xs": 60,
+        "contact_drop_title_1": "Send us a message",
+        "contact_drop_title_2": "and we'll get back to you!",
+        "name_placeholder": "Your full name",
+        "email_placeholder": "Your email address",
+        "mobile_placeholder": "Your phone number (optional)",
+        "message_placeholder": "How can we help you?",
+        "form_button_name": "Send Message"
+      }
+    }
+  },
+  "order": [
+    "1662971666b663c615",
+    "1662974000da2ae674",
+    "contact-us"
+  ]
+}

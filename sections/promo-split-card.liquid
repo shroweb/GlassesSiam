@@ -1,0 +1,208 @@
+{% comment %}
+  Promo split card section
+  - Image left
+  - Content right
+  - CTA button
+{% endcomment %}
+
+<section class="promo-split">
+  <div class="promo-split__inner">
+
+    <div class="promo-split__card">
+
+      <!-- LEFT: IMAGE -->
+      <div class="promo-split__image">
+        {% if section.settings.image %}
+          <img
+            src="{{ section.settings.image | image_url: width: 1600 }}"
+            alt="{{ section.settings.heading | escape }}"
+            loading="lazy"
+          >
+        {% else %}
+          <div class="promo-split__placeholder">
+            Upload image
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: CONTENT -->
+      <div class="promo-split__content">
+        {% if section.settings.heading != blank %}
+          <h2>{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.text != blank %}
+          <p>{{ section.settings.text }}</p>
+        {% endif %}
+
+        {% if section.settings.cta_label != blank %}
+          <a
+            href="{{ section.settings.cta_url }}"
+            class="promo-split__cta"
+          >
+            {{ section.settings.cta_label }}
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% style %}
+.promo-split {
+  padding: 4rem 2rem;
+  background: #f8f9fb;
+}
+
+.promo-split__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.promo-split__card {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  background: #fff;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.promo-split__image {
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-split__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.promo-split__card:hover .promo-split__image img {
+  transform: scale(1.03);
+}
+
+.promo-split__placeholder {
+  height: 100%;
+  min-height: 320px;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+/* CONTENT */
+.promo-split__content {
+  padding: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.promo-split__content h2 {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.promo-split__content p {
+  max-width: 380px;
+  margin: 0 0 2rem;
+  line-height: 1.7;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.promo-split__cta {
+  align-self: flex-start;
+  background: #113071;
+  color: #fff;
+  padding: 0.85rem 2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 12px rgba(17,48,113,0.25);
+}
+
+.promo-split__cta:hover {
+  background: #0d2458;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(17,48,113,0.3);
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .promo-split__card {
+    grid-template-columns: 1fr;
+  }
+
+  .promo-split__content {
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .promo-split__content p {
+    max-width: 100%;
+    margin: 0 0 1.5rem;
+  }
+
+  .promo-split__cta {
+    align-self: center;
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Promo split card",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Left image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "AI glasses"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Smart glasses with AI, HD cameras & audio, featuring top brands like Ray-Ban and Oakley"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop Collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo split card"
+    }
+  ]
+}
+{% endschema %}

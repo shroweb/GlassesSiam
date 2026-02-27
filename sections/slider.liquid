@@ -1,0 +1,509 @@
+<section class="slider-content">
+  <div class="home-slider swiper" id="home-slider-{{ section.id }}">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+      <div class="swiper-slide">
+        <div class="slide-image">
+          {% comment %}
+          <img src="https://dummyimage.com/1920x820/e2e2e2/999999" class="img-fluid desk-img" alt="image">
+          {% endcomment %}
+          {%- if block.settings.slider_img -%}
+          {{ block.settings.slider_img | image_url: width: 1920 | image_tag:
+          loading: 'lazy',
+          width: block.settings.slider_img.width,
+          height: block.settings.slider_img.height,
+          class: "img-fluid desk-img",
+          alt: block.settings.slider_img.alt | escape }}
+          {%- else -%}  
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg desk-img' }}
+          {%- endif -%}
+          {% comment %}
+          <img src="https://dummyimage.com/1000x700/e2e2e2/999999" class="img-fluid mobile-img" alt="image">
+          {% endcomment %}
+          {%- if block.settings.slider_mobile_img -%}  
+          {{ block.settings.slider_mobile_img | image_url: width: 1024 | image_tag:
+             loading: 'lazy',
+             width: block.settings.slider_mobile_img.width,
+             height: block.settings.slider_mobile_img.height,
+             class: "img-fluid mobile-img",
+             alt: block.settings.slider_mobile_img.alt | escape }} 
+          {%- else -%}
+          {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+          {{ placeholder | placeholder_svg_tag: 'placeholder-svg mobile-img' }}
+          {%- endif -%}
+          <div class="container slider-info-content">
+            <div class="row">
+              <div class="col">
+                <div class="slider-text-info item-{{ block.id }} {% if block.settings.slider_content_position == "right" %} slider-content-right{% elsif block.settings.slider_content_position == "left" %} slider-content-left{% else %} slider-content-center{% endif %}{% if block.settings.slider_text_position == "right" %} slider-text-right{% elsif block.settings.slider_text_position == "left" %} slider-text-left{% else %} slider-text-center{% endif %}">
+                  {% if block.settings.slider_title != '' %}
+                  <h2 class="{% if block.settings.slider_title_effect == "e2" %}e2{% elsif block.settings.slider_title_effect == "e3" %}e3{% elsif block.settings.slider_title_effect == "e4" %}e4{% elsif block.settings.slider_title_effect == "e5" %}e5{% else %}e1{% endif %}" style="color: {{ block.settings.slider_title_color }};">{{ block.settings.slider_title }}</h2>
+                  {% endif %}
+                  {% if block.settings.slider_button != '' %}
+                  <a href="{{ block.settings.slider_button_url }}" class="slider-button btn {% if block.settings.slider_button_style == 'btn-style1' %}btn-style{% elsif block.settings.slider_button_style == 'btn-style2' %}btn-style2{% else %}btn-style3{% endif %} {% if block.settings.slider_button_effect == "e2" %}e2{% elsif block.settings.slider_button_effect == "e3" %}e3{% elsif block.settings.slider_button_effect == "e4" %}e4{% elsif block.settings.slider_button_effect == "e5" %}e5{% else %}e1{% endif %}">{{ block.settings.slider_button }}</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  addEventListener('DOMContentLoaded', (event) => {
+    var menu = [{% for block in section.blocks %}'{{ block.settings.slider_navtext }}'{% unless forloop.last %},{% endunless -%}{% endfor %}]
+    var swiper = new Swiper('.swiper#home-slider-{{ section.id }}', {
+      slidesPerView: 1,
+      grid: {
+        rows: 1,
+        fill: 'row' | 'column',
+      },
+      spaceBetween: 0,
+      effect: 'fade',
+      observer: true,
+      observeParents: true,
+      watchSlidesProgress: true,
+      {%- if settings.enable_rtl -%}
+      rtl: true,
+      {%- endif -%}
+      navigation: {
+        nextEl: '.swiper-next-{{ block.id }}',
+        prevEl: '.swiper-prev-{{ block.id }}',
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+        renderBullet: function (index, className) {
+          return '<span class="' + className + '">' + (menu[index]) + '</span>';
+        },
+      },
+      // autoplay: {
+      //   delay: 6000,
+      //   disableOnInteraction: false,
+      //   pauseOnMouseEnter: true
+      // }
+    });
+  });
+</script>
+{% schema %}
+{
+  "name": "Slider",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background Image Overlay Color"
+    },
+    {
+      "type": "color",
+      "id": "slider_bg_img_overlay_color",
+      "label": "Background Image Overlay Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "slider_bg_img_overlay_color_opacity",
+      "label": "Background Image Overlay Color Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Slider Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "slider_img",
+          "label": "Image",
+          "info": "Recommended Size: 1920px x 820px"
+        },
+        {
+          "type": "image_picker",
+          "id": "slider_mobile_img",
+          "label": "Mobile Image",
+          "info": "Recommended Size: 1000px x 700px"
+        },
+        {
+          "type": "header",
+          "content": "Slider Title"
+        },
+        {
+          "type": "text",
+          "id": "slider_title",
+          "label": "Title",
+          "default": "Your only limit is you"
+        },
+        {
+          "type": "color",
+          "id": "slider_title_color",
+          "label": "Title color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "select",
+          "id": "slider_title_effect",
+          "label": "Title Effect",
+          "options": [
+            {
+              "label": "Effect1",
+              "value": "e1"
+            },
+            {
+              "label": "Effect2",
+              "value": "e2"
+            },
+            {
+              "label": "Effect3",
+              "value": "e3"
+            },
+            {
+              "label": "Effect4",
+              "value": "e4"
+            },
+            {
+              "label": "Effect5",
+              "value": "e5"
+            }
+          ],
+          "default": "e1"
+        },
+        {
+          "type": "header",
+          "content": "Slider Button"
+        },
+        {
+          "type": "text",
+          "id": "slider_button",
+          "label": "Button Text",
+          "default": "Shop collection"
+        },
+        {
+          "type": "url",
+          "id": "slider_button_url",
+          "label": "Button URL"
+        },
+        {
+          "type": "select",
+          "id": "slider_button_style",
+          "label": "Button Style",
+          "options": [
+            {
+              "label": "Button Style1",
+              "value": "btn-style1"
+            },
+            {
+              "label": "Button Style2",
+              "value": "btn-style2"
+            },
+            {
+              "label": "Button Style3",
+              "value": "btn-style3"
+            }
+          ],
+          "default": "btn-style1"
+        },
+        {
+          "type": "select",
+          "id": "slider_button_effect",
+          "label": "Button Effect",
+          "options": [
+            {
+              "label": "Effect1",
+              "value": "e1"
+            },
+            {
+              "label": "Effect2",
+              "value": "e2"
+            },
+            {
+              "label": "Effect3",
+              "value": "e3"
+            },
+            {
+              "label": "Effect4",
+              "value": "e4"
+            },
+            {
+              "label": "Effect5",
+              "value": "e5"
+            }
+          ],
+          "default": "e1"
+        },
+        {
+          "type": "header",
+          "content": "Slider Content Position"
+        },
+        {
+          "type": "select",
+          "id": "slider_content_position",
+          "label": "Content Position",
+          "options": [
+            {
+              "label": "left",
+              "value": "left"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            },
+            {
+              "label": "Center",
+              "value": "center"
+            }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "header",
+          "content": "Slider Text Position"
+        },
+        {
+          "type": "select",
+          "id": "slider_text_position",
+          "label": "Text Position",
+          "options": [
+            {
+              "label": "left",
+              "value": "left"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            },
+            {
+              "label": "Center",
+              "value": "center"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "header",
+          "content": "Slider Navigation Text"
+        },
+        {
+          "type": "text",
+          "id": "slider_navtext",
+          "label": "Text",
+          "default": "Basketball"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slider"
+    }
+  ]
+}
+{% endschema %}
+<style>
+/* slider img css */
+.slider-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.slider-content .home-slider .slide-image .mobile-img {
+  display: none;
+}
+.slider-content .home-slider .slide-image::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: {{ section.settings.slider_bg_img_overlay_color }};
+  opacity: {{ section.settings.slider_bg_img_overlay_color_opacity }};
+}
+@media(max-width: 991px) {
+  .slider-content .home-slider .slide-image .desk-img {
+    display: none;
+  }
+  .slider-content .home-slider .slide-image .mobile-img {
+    display: block;
+  }
+}
+@media (max-width: 479px) {
+  .slider-content {
+    display: block;
+  } 
+}
+/* slider text-info css */
+.slider-content .home-slider .slide-image .slider-info-content {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 100px;
+}
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info {
+  width: calc(41.67% - 0px);
+}
+@media (max-width: 1199px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info {
+    width: calc(50% - 0px);
+  } 
+}
+@media (max-width: 767px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info {
+    width: calc(100% - 0px);
+  } 
+}
+/* slider content position */
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info.slider-content-left {
+  margin-right: auto;
+}
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info.slider-content-right {
+  margin-left: auto;
+}
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info.slider-content-center {
+  margin: 0 auto;
+}
+/* slider text position */
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info.slider-text-left {
+  {%- if settings.enable_rtl -%}
+  text-align: right;
+  {%- else -%}
+  text-align: left;
+  {%- endif -%}
+}
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info.slider-text-right {
+  {%- if settings.enable_rtl -%}
+  text-align: left;
+  {%- else -%}
+  text-align: right;
+  {%- endif -%}
+}
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info.slider-text-center {
+  text-align: center;
+}
+@media (max-width: 1499px) {
+  .slider-content .home-slider .slide-image .slider-info-content {
+    bottom: 60px;
+  }
+}
+@media (max-width: 1199px) {
+  .slider-content .home-slider .slide-image .slider-info-content {
+    bottom: 40px;
+  }
+}
+@media (max-width: 767px) {
+  .slider-content .home-slider .slide-image .slider-info-content {
+    bottom: 30px;
+  }
+}
+/* effect transition css */
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info h2 {
+  -webkit-animation-delay: 1.0s;
+  animation-delay: 1.0s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1.0s;
+  animation-duration: 1.0s;
+}
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info a.slider-button {
+  -webkit-animation-delay: 1.5s;
+  animation-delay: 1.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1.5s;
+  animation-duration: 1.5s;
+}
+/* effect style */
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info h2.e1,
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info a.slider-button.e1 {
+  -webkit-animation-name: fadeInUp;
+  animation-name: fadeInUp;
+}
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info h2.e2,
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info a.slider-button.e2 {
+  {%- if settings.enable_rtl -%}
+    -webkit-animation-name: bounceInRight;
+    animation-name: bounceInRight;
+  {%- else -%}
+    -webkit-animation-name: bounceInLeft;
+    animation-name: bounceInLeft;
+  {%- endif -%}
+}
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info h2.e3,
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info a.slider-button.e3 {
+  {%- if settings.enable_rtl -%}
+    -webkit-animation-name: slideInLeft;
+    animation-name: slideInLeft;
+  {%- else -%}
+    -webkit-animation-name: slideInRight;
+    animation-name: slideInRight;
+  {%- endif -%}
+}
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info h2.e4,
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info a.slider-button.e4 {
+  -webkit-animation-name: zoomIn;
+  animation-name: zoomIn;
+}
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info h2.e5,
+.slider-content .home-slider .swiper-wrapper .swiper-slide.swiper-slide-visible.swiper-slide-active .slide-image .slider-info-content .slider-text-info a.slider-button.e5 {
+  -webkit-animation-name: backInDown;
+  animation-name: backInDown;
+}
+/* slider text css */
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info h2 {
+  font-size: 120px;
+  {% if settings.other_custom_font_handle_enable %}
+  font-family: '{{ settings.other_custom_font_handle }}', sans-serif;
+  {% endif %}
+  font-weight: var(--font-custom-weight-section-header);
+  line-height: 1;
+}
+.slider-content .home-slider .slide-image .slider-info-content .slider-text-info a.slider-button {
+  margin-top: 35px;
+}
+@media(max-width: 1499px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info h2 {
+    font-size: 100px;
+  }
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info a.slider-button {
+    margin-top: 29px;
+  }
+}
+@media(max-width: 1280px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info h2 {
+    font-size: 80px;
+  }
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info a.slider-button {
+    margin-top: 23px;
+  }
+}
+@media(max-width: 600px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info h2 {
+    font-size: 60px;
+  }    
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info a.slider-button {
+    margin-top: 17px;
+  }
+} 
+@media(max-width: 479px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info h2 {
+    font-size: 32px;
+  }    
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info a.slider-button {
+    margin-top: 23px;
+  }
+}
+@media(max-width: 320px) {
+  .slider-content .home-slider .slide-image .slider-info-content .slider-text-info a.slider-button {
+    margin-top: 13px;
+  }
+}
+</style>

@@ -1,0 +1,1046 @@
+{% doc %}
+  @prompt
+    Create a responsive product filter bar for an eyewear collection page.
+    
+    The filter UI should appear horizontally at the top of the collection and include dropdown-style filters with rounded pill buttons.
+    
+    Filters required:
+    	•	Glasses Type (e.g. Optical, Sunglasses, Blue Light)
+    	•	Gender (Men, Women, Unisex)
+    	•	Shape (Round, Square, Aviator, Cat Eye, etc)
+    	•	Size (Small, Medium, Large)
+    	•	Features (Polarised, Prescription Ready, Lightweight, etc)
+    	•	Brands (use product vendor as the data source)
+    	•	Color
+    	•	More (advanced filters / overflow options)
+    
+    Each filter should:
+    	•	Open as a dropdown on click
+    	•	Support multi-select where appropriate
+    	•	Use Shopify’s native filtering system (product options, metafields, and vendor)
+    	•	Update products dynamically without a full page reload
+    
+    Styling requirements:
+    	•	Clean, modern eyewear aesthetic
+    	•	Rounded pill-style buttons
+    	•	Light background container
+    	•	Mobile-friendly with horizontal scroll or stacked layout
+    
+    Ensure filters are SEO-safe, accessible, and compatible with Shopify 2.0 themes.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-eyewear-filter-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.filter_bg_color }};
+    padding: {{ block.settings.filter_padding }}px 20px;
+    border-radius: {{ block.settings.border_radius }}px;
+    margin-bottom: 30px;
+  }
+
+  .ai-eyewear-filter__container-{{ ai_gen_id }} {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .ai-eyewear-filter__wrapper-{{ ai_gen_id }} {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .ai-eyewear-filter__item-{{ ai_gen_id }} {
+    position: relative;
+  }
+
+  .ai-eyewear-filter__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: {{ block.settings.pill_bg_color }};
+    color: {{ block.settings.pill_text_color }};
+    border: 1px solid {{ block.settings.pill_border_color }};
+    border-radius: {{ block.settings.pill_border_radius }}px;
+    font-size: {{ block.settings.pill_font_size }}px;
+    font-weight: {{ block.settings.pill_font_weight }};
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .ai-eyewear-filter__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.pill_hover_bg_color }};
+    color: {{ block.settings.pill_hover_text_color }};
+    border-color: {{ block.settings.pill_hover_border_color }};
+  }
+
+  .ai-eyewear-filter__button-{{ ai_gen_id }}.active {
+    background-color: {{ block.settings.pill_active_bg_color }};
+    color: {{ block.settings.pill_active_text_color }};
+    border-color: {{ block.settings.pill_active_border_color }};
+  }
+
+  .ai-eyewear-filter__icon-{{ ai_gen_id }} {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-eyewear-filter__button-{{ ai_gen_id }}.active .ai-eyewear-filter__icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-eyewear-filter__dropdown-{{ ai_gen_id }} {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background-color: {{ block.settings.dropdown_bg_color }};
+    border: 1px solid {{ block.settings.dropdown_border_color }};
+    border-radius: {{ block.settings.dropdown_border_radius }}px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .ai-eyewear-filter__dropdown-{{ ai_gen_id }}.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .ai-eyewear-filter__dropdown-content-{{ ai_gen_id }} {
+    padding: 12px;
+  }
+
+  .ai-eyewear-filter__option-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+  }
+
+  .ai-eyewear-filter__option-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.option_hover_bg_color }};
+  }
+
+  .ai-eyewear-filter__checkbox-{{ ai_gen_id }} {
+    width: 18px;
+    height: 18px;
+    border: 2px solid {{ block.settings.checkbox_border_color }};
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .ai-eyewear-filter__checkbox-{{ ai_gen_id }}.checked {
+    background-color: {{ block.settings.checkbox_checked_bg_color }};
+    border-color: {{ block.settings.checkbox_checked_bg_color }};
+  }
+
+  .ai-eyewear-filter__checkbox-{{ ai_gen_id }}.checked::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .ai-eyewear-filter__option-label-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.option_text_color }};
+    flex-grow: 1;
+  }
+
+  .ai-eyewear-filter__option-count-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.option_count_color }};
+  }
+
+  .ai-eyewear-filter__clear-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: {{ block.settings.clear_text_color }};
+    border: 1px solid {{ block.settings.clear_border_color }};
+    border-radius: {{ block.settings.pill_border_radius }}px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-eyewear-filter__clear-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.clear_hover_bg_color }};
+    color: {{ block.settings.clear_hover_text_color }};
+  }
+
+  .ai-eyewear-filter__active-filters-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+  }
+
+  .ai-eyewear-filter__active-tag-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: {{ block.settings.active_tag_bg_color }};
+    color: {{ block.settings.active_tag_text_color }};
+    border-radius: 20px;
+    font-size: 13px;
+  }
+
+  .ai-eyewear-filter__active-tag-close-{{ ai_gen_id }} {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-eyewear-filter__active-tag-close-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-eyewear-filter__wrapper-{{ ai_gen_id }} {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .ai-eyewear-filter__wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ai-eyewear-filter__dropdown-{{ ai_gen_id }} {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 70vh;
+      border-radius: {{ block.settings.dropdown_border_radius }}px {{ block.settings.dropdown_border_radius }}px 0 0;
+      transform: translateY(100%);
+    }
+
+    .ai-eyewear-filter__dropdown-{{ ai_gen_id }}.active {
+      transform: translateY(0);
+    }
+  }
+{% endstyle %}
+
+<eyewear-filter-{{ ai_gen_id }}
+  class="ai-eyewear-filter-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  data-collection-url="{{ collection.url }}"
+>
+  <div class="ai-eyewear-filter__container-{{ ai_gen_id }}">
+    <div class="ai-eyewear-filter__wrapper-{{ ai_gen_id }}">
+      {% if block.settings.show_glasses_type %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="type">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.glasses_type_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign glasses_types = block.settings.glasses_type_options | split: ',' %}
+              {% for type in glasses_types %}
+                {% assign type_trimmed = type | strip %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ type_trimmed | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ type_trimmed }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_gender %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="gender">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.gender_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign genders = block.settings.gender_options | split: ',' %}
+              {% for gender in genders %}
+                {% assign gender_trimmed = gender | strip %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ gender_trimmed | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ gender_trimmed }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_shape %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="shape">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.shape_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign shapes = block.settings.shape_options | split: ',' %}
+              {% for shape in shapes %}
+                {% assign shape_trimmed = shape | strip %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ shape_trimmed | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ shape_trimmed }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_size %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="size">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.size_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign sizes = block.settings.size_options | split: ',' %}
+              {% for size in sizes %}
+                {% assign size_trimmed = size | strip %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ size_trimmed | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ size_trimmed }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_features %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="features">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.features_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign features = block.settings.features_options | split: ',' %}
+              {% for feature in features %}
+                {% assign feature_trimmed = feature | strip %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ feature_trimmed | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ feature_trimmed }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_brands %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="vendor">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.brands_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign vendors = collection.all_vendors %}
+              {% for vendor in vendors %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ vendor | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ vendor }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_color %}
+        <div class="ai-eyewear-filter__item-{{ ai_gen_id }}" data-filter="color">
+          <button class="ai-eyewear-filter__button-{{ ai_gen_id }}" aria-expanded="false">
+            {{ block.settings.color_label }}
+            <svg class="ai-eyewear-filter__icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-eyewear-filter__dropdown-{{ ai_gen_id }}">
+            <div class="ai-eyewear-filter__dropdown-content-{{ ai_gen_id }}">
+              {% assign colors = block.settings.color_options | split: ',' %}
+              {% for color in colors %}
+                {% assign color_trimmed = color | strip %}
+                <div class="ai-eyewear-filter__option-{{ ai_gen_id }}" data-value="{{ color_trimmed | handleize }}">
+                  <div class="ai-eyewear-filter__checkbox-{{ ai_gen_id }}"></div>
+                  <span class="ai-eyewear-filter__option-label-{{ ai_gen_id }}">{{ color_trimmed }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <button class="ai-eyewear-filter__clear-{{ ai_gen_id }}" style="display: none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        {{ block.settings.clear_filters_label }}
+      </button>
+    </div>
+
+    <div class="ai-eyewear-filter__active-filters-{{ ai_gen_id }}"></div>
+  </div>
+</eyewear-filter-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class EyewearFilter{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.activeFilters = {};
+        this.collectionUrl = this.dataset.collectionUrl || window.location.pathname;
+      }
+
+      connectedCallback() {
+        this.filterItems = this.querySelectorAll('.ai-eyewear-filter__item-{{ ai_gen_id }}');
+        this.clearButton = this.querySelector('.ai-eyewear-filter__clear-{{ ai_gen_id }}');
+        this.activeFiltersContainer = this.querySelector('.ai-eyewear-filter__active-filters-{{ ai_gen_id }}');
+        
+        this.setupEventListeners();
+        this.parseUrlFilters();
+      }
+
+      setupEventListeners() {
+        this.filterItems.forEach(item => {
+          const button = item.querySelector('.ai-eyewear-filter__button-{{ ai_gen_id }}');
+          const dropdown = item.querySelector('.ai-eyewear-filter__dropdown-{{ ai_gen_id }}');
+          const options = item.querySelectorAll('.ai-eyewear-filter__option-{{ ai_gen_id }}');
+
+          button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleDropdown(item);
+          });
+
+          options.forEach(option => {
+            option.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.toggleOption(item, option);
+            });
+          });
+        });
+
+        document.addEventListener('click', () => {
+          this.closeAllDropdowns();
+        });
+
+        if (this.clearButton) {
+          this.clearButton.addEventListener('click', () => {
+            this.clearAllFilters();
+          });
+        }
+      }
+
+      toggleDropdown(item) {
+        const button = item.querySelector('.ai-eyewear-filter__button-{{ ai_gen_id }}');
+        const dropdown = item.querySelector('.ai-eyewear-filter__dropdown-{{ ai_gen_id }}');
+        const isActive = dropdown.classList.contains('active');
+
+        this.closeAllDropdowns();
+
+        if (!isActive) {
+          dropdown.classList.add('active');
+          button.classList.add('active');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      }
+
+      closeAllDropdowns() {
+        this.filterItems.forEach(item => {
+          const button = item.querySelector('.ai-eyewear-filter__button-{{ ai_gen_id }}');
+          const dropdown = item.querySelector('.ai-eyewear-filter__dropdown-{{ ai_gen_id }}');
+          dropdown.classList.remove('active');
+          button.classList.remove('active');
+          button.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      toggleOption(item, option) {
+        const checkbox = option.querySelector('.ai-eyewear-filter__checkbox-{{ ai_gen_id }}');
+        const filterType = item.dataset.filter;
+        const value = option.dataset.value;
+
+        if (!this.activeFilters[filterType]) {
+          this.activeFilters[filterType] = [];
+        }
+
+        const index = this.activeFilters[filterType].indexOf(value);
+        
+        if (index > -1) {
+          this.activeFilters[filterType].splice(index, 1);
+          checkbox.classList.remove('checked');
+          if (this.activeFilters[filterType].length === 0) {
+            delete this.activeFilters[filterType];
+          }
+        } else {
+          this.activeFilters[filterType].push(value);
+          checkbox.classList.add('checked');
+        }
+
+        this.updateActiveFiltersDisplay();
+        this.applyFilters();
+      }
+
+      updateActiveFiltersDisplay() {
+        this.activeFiltersContainer.innerHTML = '';
+        
+        let hasFilters = false;
+        for (const filterType in this.activeFilters) {
+          this.activeFilters[filterType].forEach(value => {
+            hasFilters = true;
+            const tag = document.createElement('div');
+            tag.className = 'ai-eyewear-filter__active-tag-{{ ai_gen_id }}';
+            tag.innerHTML = `
+              ${value.replace(/-/g, ' ')}
+              <svg class="ai-eyewear-filter__active-tag-close-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            `;
+            
+            tag.querySelector('.ai-eyewear-filter__active-tag-close-{{ ai_gen_id }}').addEventListener('click', () => {
+              this.removeFilter(filterType, value);
+            });
+            
+            this.activeFiltersContainer.appendChild(tag);
+          });
+        }
+
+        if (this.clearButton) {
+          this.clearButton.style.display = hasFilters ? 'inline-flex' : 'none';
+        }
+      }
+
+      removeFilter(filterType, value) {
+        const index = this.activeFilters[filterType].indexOf(value);
+        if (index > -1) {
+          this.activeFilters[filterType].splice(index, 1);
+          if (this.activeFilters[filterType].length === 0) {
+            delete this.activeFilters[filterType];
+          }
+        }
+
+        this.filterItems.forEach(item => {
+          if (item.dataset.filter === filterType) {
+            const option = item.querySelector(`[data-value="${value}"]`);
+            if (option) {
+              const checkbox = option.querySelector('.ai-eyewear-filter__checkbox-{{ ai_gen_id }}');
+              checkbox.classList.remove('checked');
+            }
+          }
+        });
+
+        this.updateActiveFiltersDisplay();
+        this.applyFilters();
+      }
+
+      clearAllFilters() {
+        this.activeFilters = {};
+        
+        this.filterItems.forEach(item => {
+          const checkboxes = item.querySelectorAll('.ai-eyewear-filter__checkbox-{{ ai_gen_id }}');
+          checkboxes.forEach(checkbox => checkbox.classList.remove('checked'));
+        });
+
+        this.updateActiveFiltersDisplay();
+        this.applyFilters();
+      }
+
+      applyFilters() {
+        const params = new URLSearchParams();
+        
+        for (const filterType in this.activeFilters) {
+          if (this.activeFilters[filterType].length > 0) {
+            params.append(`filter.p.m.custom.${filterType}`, this.activeFilters[filterType].join(','));
+          }
+        }
+
+        const url = params.toString() ? `${this.collectionUrl}?${params.toString()}` : this.collectionUrl;
+        
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newProducts = doc.querySelector('[data-collection-products]');
+            const currentProducts = document.querySelector('[data-collection-products]');
+            
+            if (newProducts && currentProducts) {
+              currentProducts.innerHTML = newProducts.innerHTML;
+            }
+
+            window.history.pushState({}, '', url);
+          })
+          .catch(error => {
+            console.error('Filter error:', error);
+          });
+      }
+
+      parseUrlFilters() {
+        const params = new URLSearchParams(window.location.search);
+        
+        params.forEach((value, key) => {
+          if (key.startsWith('filter.p.m.custom.')) {
+            const filterType = key.replace('filter.p.m.custom.', '');
+            const values = value.split(',');
+            this.activeFilters[filterType] = values;
+
+            this.filterItems.forEach(item => {
+              if (item.dataset.filter === filterType) {
+                values.forEach(val => {
+                  const option = item.querySelector(`[data-value="${val}"]`);
+                  if (option) {
+                    const checkbox = option.querySelector('.ai-eyewear-filter__checkbox-{{ ai_gen_id }}');
+                    checkbox.classList.add('checked');
+                  }
+                });
+              }
+            });
+          }
+        });
+
+        this.updateActiveFiltersDisplay();
+      }
+    }
+
+    customElements.define('eyewear-filter-{{ ai_gen_id }}', EyewearFilter{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Eyewear filter bar",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Filter bar style"
+    },
+    {
+      "type": "color",
+      "id": "filter_bg_color",
+      "label": "Background color",
+      "default": "#f7f7f7"
+    },
+    {
+      "type": "range",
+      "id": "filter_padding",
+      "label": "Padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Pill button style"
+    },
+    {
+      "type": "color",
+      "id": "pill_bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pill_text_color",
+      "label": "Text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "pill_border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "pill_hover_bg_color",
+      "label": "Hover background",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "pill_hover_text_color",
+      "label": "Hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pill_hover_border_color",
+      "label": "Hover border",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "pill_active_bg_color",
+      "label": "Active background",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "pill_active_text_color",
+      "label": "Active text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pill_active_border_color",
+      "label": "Active border",
+      "default": "#113071"
+    },
+    {
+      "type": "range",
+      "id": "pill_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "pill_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "pill_font_weight",
+      "label": "Font weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Dropdown style"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "dropdown_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "option_hover_bg_color",
+      "label": "Option hover background",
+      "default": "#f7f7f7"
+    },
+    {
+      "type": "color",
+      "id": "option_text_color",
+      "label": "Option text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "option_count_color",
+      "label": "Option count",
+      "default": "#808080"
+    },
+    {
+      "type": "header",
+      "content": "Checkbox style"
+    },
+    {
+      "type": "color",
+      "id": "checkbox_border_color",
+      "label": "Border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "checkbox_checked_bg_color",
+      "label": "Checked background",
+      "default": "#113071"
+    },
+    {
+      "type": "header",
+      "content": "Clear filters button"
+    },
+    {
+      "type": "text",
+      "id": "clear_filters_label",
+      "label": "Label",
+      "default": "Clear all"
+    },
+    {
+      "type": "color",
+      "id": "clear_text_color",
+      "label": "Text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "clear_border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "clear_hover_bg_color",
+      "label": "Hover background",
+      "default": "#f7f7f7"
+    },
+    {
+      "type": "color",
+      "id": "clear_hover_text_color",
+      "label": "Hover text",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Active filter tags"
+    },
+    {
+      "type": "color",
+      "id": "active_tag_bg_color",
+      "label": "Background",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "active_tag_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Glasses type filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_glasses_type",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "glasses_type_label",
+      "label": "Label",
+      "default": "Type"
+    },
+    {
+      "type": "textarea",
+      "id": "glasses_type_options",
+      "label": "Options",
+      "default": "Optical, Sunglasses, Blue Light"
+    },
+    {
+      "type": "header",
+      "content": "Gender filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gender",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gender_label",
+      "label": "Label",
+      "default": "Gender"
+    },
+    {
+      "type": "textarea",
+      "id": "gender_options",
+      "label": "Options",
+      "default": "Men, Women, Unisex"
+    },
+    {
+      "type": "header",
+      "content": "Shape filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shape",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shape_label",
+      "label": "Label",
+      "default": "Shape"
+    },
+    {
+      "type": "textarea",
+      "id": "shape_options",
+      "label": "Options",
+      "default": "Round, Square, Aviator, Cat Eye, Rectangle, Oval, Wayfarer"
+    },
+    {
+      "type": "header",
+      "content": "Size filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "size_label",
+      "label": "Label",
+      "default": "Size"
+    },
+    {
+      "type": "textarea",
+      "id": "size_options",
+      "label": "Options",
+      "default": "Small, Medium, Large"
+    },
+    {
+      "type": "header",
+      "content": "Features filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "features_label",
+      "label": "Label",
+      "default": "Features"
+    },
+    {
+      "type": "textarea",
+      "id": "features_options",
+      "label": "Options",
+      "default": "Polarised, Prescription Ready, Lightweight, UV Protection, Anti-Glare"
+    },
+    {
+      "type": "header",
+      "content": "Brands filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_brands",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "brands_label",
+      "label": "Label",
+      "default": "Brands"
+    },
+    {
+      "type": "header",
+      "content": "Color filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color",
+      "label": "Show filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "color_label",
+      "label": "Label",
+      "default": "Color"
+    },
+    {
+      "type": "textarea",
+      "id": "color_options",
+      "label": "Options",
+      "default": "Black, Brown, Tortoise, Clear, Blue, Gold, Silver, Rose Gold"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Eyewear filter bar"
+    }
+  ]
+}
+{% endschema %}

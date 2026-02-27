@@ -1,0 +1,1743 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "color_primary": "#113071",
+    "color_secondary": "#333333",
+    "body_text_color": "#333333",
+    "extra_bgcolor": "#f7f7f7",
+    "section_heading_text_color": "#333333",
+    "para_text_color": "#808080",
+    "theme_border_color": "#808080",
+    "theme_border_color_opacity": 0.1,
+    "body_font_handle": "roboto_n4",
+    "body_custom_font_handle_enable": true,
+    "body_custom_font_handle": "Roboto",
+    "subtitle_custom_font_weight": 600,
+    "body_font_size": 16,
+    "body_letter_spacing": 0,
+    "header_font_handle": "poppins_n4",
+    "header_custom_font_handle_enable": true,
+    "header_custom_font_handle": "Jost",
+    "header_custom_font_weight": 500,
+    "section_header_font_handle": "poppins_n4",
+    "section_header_custom_font_handle_enable": true,
+    "section_header_custom_font_handle": "Rajdhani",
+    "section_header_custom_font_weight": 600,
+    "section_header_text_transform": "none",
+    "paragraph_font_handle": "poppins_n4",
+    "paragraph_custom_font_handle_enable": true,
+    "paragraph_custom_font_handle": "Jost",
+    "paragraph_custom_font_weight": 400,
+    "paragraph_font_line_height": 28,
+    "other_font_handle": "lora_n4",
+    "other_custom_font_handle_enable": true,
+    "other_custom_font_handle": "Rajdhani",
+    "tag_font_size": 16,
+    "tag_bgcolor": "#ffffff",
+    "tag_font_weight": 600,
+    "tag_border_color": "#808080",
+    "tag_border_color_opacity": 0.1,
+    "tag_border_radius": 10,
+    "enable_rtl": false,
+    "google_analytic_enable": true,
+    "google_tracking_id": "UA-110326897-1",
+    "newsletter_popup_enable": false,
+    "newsletter_popup_title": "33% off",
+    "newsletter_success_text": "Thank you for subscribe use this code:",
+    "newsletter_coupan_code": "20%OFF",
+    "email_placeholder": "Enter your email..",
+    "input_placeholder_color": "#000000",
+    "email_button": "Subscribe",
+    "logo_header_max_width": 100,
+    "logo_header": "shopify://shop_images/logo.png",
+    "logo_footer_max_width": 100,
+    "logo_footer": "shopify://shop_images/logo.png",
+    "favicon": "shopify://shop_images/favicon.png",
+    "tooltip_enable": true,
+    "color_swatch_config": "Aliceblue:#f0f8ff\nBali hai:#86aab0\nBrandy rose:#ba957d\nRrown:#795548\nBrown rust:#b87145\nCeleste:#cdd1c6\nChestnut rose:#c66\nDanube:#72a6d8\nEquator:#e0b756\nFlint:#6f6963\nGull gray:#93a6b0\nJuniper:#719297\nMediumaquamarine:#66cdaa\nMercury:#e8e8e8\nMuddy waters:#b58555\nNebula:#cedbd8\nNeptune:#6ca6b7\nOlivedrab:#6b8e23\nPalegoldenrod:#eee8aa\nPigeon post:#a2c4d4\nQuicksand:#bb9290\nSand dune:#877666",
+    "image_height": 350,
+    "pro_rew_enable": true,
+    "show_product_type": true,
+    "day_title": "Day",
+    "hour_title": "Hrs",
+    "minute_title": "Min",
+    "second_title": "sec",
+    "count_text_enable": true,
+    "empty_cart": "No products in the cart.",
+    "cart_continue_shop": "Continue shopping",
+    "cart_continue_shop_link": "shopify://collections/all",
+    "cart_desc1": "There are",
+    "cart_desc2": "products",
+    "cart_sub_total": "Sub Total:",
+    "cart_view": "View Cart",
+    "cart_checkout": "Checkout",
+    "product_quickview_enalbe": true,
+    "qcv_add_to_cart_text": "Add to cart",
+    "search_bar_placeholder": "Search...",
+    "breadcrumb_banner_enable": true,
+    "breadcrumb_padding_top": 80,
+    "breadcrumb_padding_bottom": 80,
+    "breadcrumb_padding_top_md": 50,
+    "breadcrumb_padding_bottom_md": 50,
+    "breadcrumb_bg_image_enable": false,
+    "breadcrumb_bg_image_overlay_color": "#222222",
+    "breadcrumb_bg_image_overlay_color_opacity": 0.2,
+    "breadcrumb_bg_color": "#113071",
+    "breadcrumb_bottom_border_enable": false,
+    "breadcrumb_title_color": "#ffffff",
+    "breadcrumb_main_color": "#ffffff",
+    "search_title": "Search",
+    "blog_search_placeholder": "Search blog",
+    "archive_title": "Archive",
+    "recent_title": "Recent post",
+    "recent_post_limit_handle": "5",
+    "blog_tags_title": "Tags",
+    "blog_tags_list_limit_handle": "15",
+    "social_icon_1_name": "fa fa-facebook",
+    "social_icon_1_link": "https://www.facebook.com/login.php/",
+    "social_icon_2_name": "fa fa-instagram",
+    "social_icon_2_link": "https://www.instagram.com/",
+    "social_icon_3_name": "fa fa-twitter",
+    "social_icon_3_link": "https://twitter.com/i/flow/login?input_flow_data=%7B%22requested_variant%22%3A%22eyJsYW5nIjoiZW4ifQ%3D%3D%22%7D",
+    "social_icon_4_name": "fa fa-dribbble",
+    "social_icon_4_link": "https://dribbble.com/session/new",
+    "social_icon_5_name": "fa fa-youtube-play",
+    "social_icon_5_link": "https://www.youtube.com/",
+    "payment_picker": "visa, paypal, master, american_express",
+    "payment_svg_width": 45,
+    "wishlist_enable": true,
+    "add_wishlit_title": "Add wishlist",
+    "loading_wishlist": "Loding..",
+    "remove_wishlit_title": "Remove From wishlist",
+    "go_to_wishlit_title": "Go to wishlist",
+    "wishlist_empty_title": "Your wishlist is currently empty!",
+    "login_request_title": "Please login your account",
+    "dnt_acc_title": "Don't have an account?",
+    "alredy_acc_title": "Already an account holder?",
+    "customer_logout_title": "Logout",
+    "section_padding_top": 100,
+    "section_padding_bottom": 100,
+    "section_padding_top_lg": 80,
+    "section_padding_bottom_lg": 80,
+    "section_padding_top_xs": 60,
+    "section_padding_bottom_xs": 60,
+    "checkout_header_image": "",
+    "checkout_logo_image": "shopify://shop_images/logo.png",
+    "checkout_logo_position": "left",
+    "checkout_logo_size": "medium",
+    "checkout_body_background_image": "",
+    "checkout_body_background_color": "#fff",
+    "checkout_input_background_color_mode": "white",
+    "checkout_sidebar_background_image": "",
+    "checkout_sidebar_background_color": "#fafafa",
+    "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_accent_color": "#333333",
+    "checkout_button_color": "#333333",
+    "checkout_error_color": "#e32c2b",
+    "blog_read_btn": "Read more",
+    "newsletter_bgimg": "shopify://shop_images/popup.jpg",
+    "newsletter_text": "On your first purchase",
+    "box_enable": true,
+    "color_body_bg": "#fff",
+    "color_third": "#f2fa42",
+    "wishlist_empty_title1": "Your",
+    "wishlist_empty_title2": "wishlist",
+    "wishlist_empty_title3": "is currently",
+    "wishlist_empty_title4": "Empty!",
+    "login_sub_text": "Please login below account detail",
+    "register_sub_text": "Please register below account detail",
+    "company_details": "Lpsum is simply dummy text of the printing and typesetting industry has been \nthe industry's standard dummy text",
+    "add_icon": "<i class=\"ri-map-pin-line\"></i>",
+    "add1": "Calista Wise 7292 Str,",
+    "add2": "Sample State. Sample city",
+    "con_icon": "<i class=\"ri-phone-line\"></i>",
+    "mail_icon": "<i class=\"ri-mail-line\"></i>",
+    "email2": "youdomain@gmail.com",
+    "breadcrumb_padding_top_xs": 10,
+    "breadcrumb_padding_bottom_xs": 10,
+    "newsletter_action": "",
+    "company_logo": "shopify://shop_images/logo_70516c9a-9198-49b8-aa29-5603397cc109.png",
+    "company_logo_footer": "shopify://shop_images/logo_70516c9a-9198-49b8-aa29-5603397cc109.png",
+    "new_title": "New",
+    "sale_title": "Sale",
+    "soldout_title": "Soldout",
+    "sale_percent_enable": true,
+    "enable_preloader": false,
+    "preloader_bg": "#ffffff",
+    "preloader_color": "#000000",
+    "preloader_border_color": "#ffffff",
+    "preloader_border_width": "5px",
+    "topbar_notification_enable": true,
+    "notification_txt_color": "#333333",
+    "topbar_notification_text1": "Call : (000) 123 456 7890",
+    "enable_box": false,
+    "customer_page_bgimg": "shopify://shop_images/contact.jpg",
+    "cart_button_title": "Add to cart",
+    "unavailable_title": "Soldout",
+    "soldout_button_title": "Soldout",
+    "product_variant_handle": "product_variant_swatch_option",
+    "product_variant_color_image_enable": false,
+    "popup_close_button_color": "#333333",
+    "popup_close_button_bgcolor": "rgba(0,0,0,0)",
+    "popup_close_button_hvr_color": "#1977f2",
+    "popup_close_button_hvr_bgcolor": "rgba(0,0,0,0)",
+    "newsletter_img": "shopify://shop_images/popup.jpg",
+    "newletter_popup_title": "Subscribe <span>Votto</span>",
+    "popup_newsletter_title_color": "#333333",
+    "social_1_name": "",
+    "social_2_name": "",
+    "social_3_name": "",
+    "social_4_name": "",
+    "payment_visaimg": "shopify://shop_images/payment-method-icon-01.jpg",
+    "payment_masterimg": "shopify://shop_images/payment-method-icon-03.jpg",
+    "payment_paypalimg": "shopify://shop_images/payment-method-icon-06.jpg",
+    "payment_expressimg": "shopify://shop_images/payment-method-icon-02.jpg",
+    "payment_discoverimg": "shopify://shop_images/payment-method-icon-04.jpg",
+    "logo_font_size": 20,
+    "logo_font_weight": 600,
+    "header_style": "Style7",
+    "footer_style": "Style7",
+    "one_day_popup_enable": true,
+    "offer_text_enable": false,
+    "offer_label_img": "",
+    "offer_label_img_enable": false,
+    "offer1": "Every day upto 45% off",
+    "offer2": "End of hot summer sale",
+    "offer3": "Get 50% off on lens",
+    "wait_title": "",
+    "added_title": "",
+    "affiliate_cart_button_title": "Buy from amazon",
+    "successfull_note": "Added to cart successfully!",
+    "view_cart_button2": "View Cart",
+    "categories_title": "Categories",
+    "app_img_enable": false,
+    "truck_img": "",
+    "truck_icon": "",
+    "shipping_title": "Free Shipping",
+    "shipping_desc": "Oredr over $150 free",
+    "money_img": "",
+    "money_icon": "",
+    "money_title": "Money Back",
+    "money_desc": "100% Moneyback",
+    "support_img": "",
+    "support_icon": "",
+    "support_title": "Quality Support",
+    "support_desc": "Send within 30 days",
+    "gift_img": "",
+    "gift_icon": "",
+    "gift_title": "Gift & Voucher",
+    "gift_desc": "Oredr above $200",
+    "preloader_style": "Style_3",
+    "topbar_notification_text2": "Summer sale discount off 20%",
+    "topbar_notification_text_link": "Shop Now",
+    "topbar_notification_text_url": "shopify://collections/best-for-gym",
+    "notification_bg_color": "#ffffff",
+    "section_title_img": "",
+    "qcv_cart_added_text": "",
+    "qcv_cart_error_text": "",
+    "qcv_cart_wait_text": "",
+    "heading_4041": "Page error!!!",
+    "opps_404": "shopify://shop_images/404_f5fb5968-1375-41f0-b7fb-32f938ad4a23.png",
+    "sub_text_4041": "Not",
+    "sub_text_4042": "Found",
+    "desc_text_404": "Sorry but the page you are looking for does not exist, have been removed, name changed or is temporarity unavailable.",
+    "button_title": "Go to home page",
+    "button_url": "/",
+    "email": "info@yourdomain.com",
+    "contact": "Phone: 1-800-222-000 Fax: 1-800-222-002",
+    "notification_banner_enable": false,
+    "notification_bg_img": "",
+    "notification_banner1_img": "",
+    "notification_banner_offer": "70% off",
+    "notification_banner_offer_text": "on electronics today offer",
+    "notification_banner2_img": "",
+    "notification_banner3_img": "",
+    "categories_list_limit_hanlde": "50",
+    "vendors_title": "Vendors",
+    "vendors_list_limit_hanlde": "50",
+    "types_title": "Products Types",
+    "types_list_limit_hanlde": "50",
+    "color_title": "Color",
+    "color_picker": "DarkKhaki,\nBurlyWood,\nAntiqueWhite,\nGrey,\nLightSeaGreen,\nLightSalmon,\nFloralWhite,\nDarkSeaGreen,\nPaleVioletRed,\nPaleGoldenRod,\nMistyRose,\nSkyBlue,\nSilver,\nLinen,\nSkyBlue,\nSilver,\nSeaShell,\nTomato,\nThistle,\nSnow,\nWhite,\nSandyBrown,\nBlack,\nRosyBrown,\nPowderBlue,\nPapayaWhip,\nPink,\nRosyBrown,\nLinen,\nLightSlateGrey,\nMaroon,\nLightSteelBlue,\nWhite,\nBlack,",
+    "colors_list_limit_hanlde": "50",
+    "size_title": "Size",
+    "size_picker": "1/kg,\n5/kg,\n2/kg,\n3\",\n4\",\n5\",\n9\",\n2.5\",\n8cm,\n9cm,\n10cm,\n15cm,\n9x6,\n12x10,\n5x5,\n30x30,\n18x18,\n20x20,\n15cm,\n6cm,\n2cm,\n30x30,\n35x35,\n15x24,\n1/kg,\n2/kg,\n5/kg,\n11\",12\",8\",\n15\",16\",28\",\n12rose,\n24rose,\n48rose,",
+    "size_list_limit_hanlde": "50",
+    "tags_title": "Tags",
+    "tags_list_limit_hanlde": "50",
+    "best_product_limit_hanlde": "",
+    "best_product__title": "Best product",
+    "best_product_limit_hanlde5": "3",
+    "heading_4042": "0",
+    "heading_4043": "4",
+    "sub_text_4043": "Be",
+    "sub_text_4044": "Found",
+    "topbar_notification_text": "Welcome to fashcart store",
+    "acc_opacity": 0.1,
+    "log_term_con_syn": "*",
+    "log_term_con_text": "Terms & Conditions.",
+    "log_term_con_url": "",
+    "log_pri_pol_desc": "Your privacy and security are important to us. For more information on how we use your data read our",
+    "log_pri_pol_text": "privacy policy",
+    "log_pri_pol_url": "",
+    "breadcrumb_banner_image": "",
+    "breadcrumb_banner_bg": "#fafafa",
+    "breadcrumb_banner_overlay_color": "#000000",
+    "breadcrumb_banner_opacity": 0,
+    "breadcurmb_title_color": "#717171",
+    "breadcurmb_page_title_color": "#717171",
+    "active_breadcurmb_page_title_color": "#80bb01",
+    "company_logonotification_bg_img": "shopify://shop_images/download_eab40c7c-6d47-4dd9-bb28-9cb5aa63bf60.jpg",
+    "foot_bg_img": "",
+    "foot_bg_img_enable": true,
+    "foot_bg_color": "#d8eadd",
+    "foot_bg_color_enable": true,
+    "notification_text": "Welcome to starplant store online",
+    "notification_text_color": "#222222",
+    "custom_page_margin_top": "100",
+    "custom_page_margin_bottom": "100",
+    "section_margin_top_xs": "70",
+    "section_margin_bottom_xs": "70",
+    "social_icon_7_name": "",
+    "social_7_name": "",
+    "social_icon_7_link": "",
+    "newsletter_button_name": "Subscribe",
+    "popup_newsletter_description_color": "#000000",
+    "input_fild_border_color": "#eee",
+    "input_fild_color": "#dddddd",
+    "newsletter_bg_img": "",
+    "newsletter_overlay_bgcolor": "#000",
+    "newsletter_overlay_opacicty": 0.1,
+    "notification_button_name": "",
+    "notification_button_url": "",
+    "notification_bg_image": "",
+    "topbar_color_1": "rgba(0,0,0,0)",
+    "topbar_color_2": "rgba(0,0,0,0)",
+    "notification_overlay_color": "rgba(0,0,0,0)",
+    "notification_overlay_opacity": 0,
+    "notificaction_button_bg_color": "#61ab00",
+    "notificaction_button_border_color": "#61ab00",
+    "notificaction_button_color": "#ffffff",
+    "notificaction_button_hover_bg_color": "rgba(0,0,0,0)",
+    "notificaction_button_hover_border_color": "#61ab00",
+    "notificaction_button_hover_color": "#61ab00",
+    "notificaction_close_button_bg_color": "",
+    "notificaction_close_button_border_color": "rgba(0,0,0,0)",
+    "notificaction_close_button_color": "#ffffff",
+    "notificaction_close_button_hover_bg_color": "rgba(0,0,0,0)",
+    "notificaction_close_button_hover_border_color": "rgba(0,0,0,0)",
+    "notificaction_close_button_hover_color": "#ffffff",
+    "heading_404": "404",
+    "sub_text_404": "PAGE NOT BE FOUND",
+    "button_name": "Subscribe",
+    "newsletter_overlay_color": "#000",
+    "newsletter_button_bg_color": "#d92542",
+    "newsletter_button_color": "#ffffff",
+    "newsletter_button_hover_bg_color": "#232323",
+    "newsletter_button_hover_color": "#fff",
+    "close_icon_color": "#ffffff",
+    "recent_post_title": "Recent Post",
+    "currency_enable": true,
+    "supported_currencies": "USD, USD - US Dollar | EUR, EUR - Euro | GBP, GBP - British Pound | INR, INR - Indian Rupee | BDT, BDT - Bangladesh Taka | JPY, JPY - Japan Yen | CAD, CAD - Canada Dollar | AUD, AUD - Australian Dollar",
+    "supported_currencies_code": "USD, USD - US Dollar | EUR, EUR - Euro | GBP, GBP - British Pound",
+    "h_social_icon_1_name": "twitter",
+    "h_social_icon_2_name": "instagram",
+    "h_social_icon_3_name": "google-plus",
+    "h_social_icon_4_name": "linkedin",
+    "h_social_icon_5_name": "pinterest",
+    "h_social_icon_6_name": "",
+    "h_social_icon_7_name": "",
+    "notification_overlay_rgb_colo": "#000000",
+    "notification_overlay_rgb_color": "0, 0, 0",
+    "product_quickview_description_enable": true,
+    "paragraph_font": "raleway_n4",
+    "body_font": "alfie_n4",
+    "type_header_font": "abril_fatface_n4",
+    "heading_font": "alfie_n4",
+    "breadcrumb_banner_image_enable": false,
+    "cart_notes_enable": true,
+    "cart_vendor_enable": false,
+    "ajax_cart_method": "drawer",
+    "logo_use_image": false,
+    "logo_max_width": "450",
+    "favicon_enable": false,
+    "show_multiple_currencies": true,
+    "currency_format": "money_with_currency_format",
+    "default_currency": "USD",
+    "color_body_text": "#333333",
+    "color_borders": "#e5e5e5",
+    "color_footer_bg": "#f2f2f2",
+    "color_footer_social_link": "#bbbbbb",
+    "color_footer_text": "#636363",
+    "footer_newsletter_enable": true,
+    "footer_social_enable": true,
+    "social_facebook_link": "",
+    "social_twitter_link": "",
+    "sections": {
+      "header": {
+        "type": "header",
+        "custom_css": [
+          ".megamenu-content ul.main-menu li.menu-link a.link-title span.sp-link-title {font-size: 14px;}"
+        ],
+        "settings": {
+          "header_sticky_enable": true,
+          "header_top_bg_color": "#ffffff",
+          "header_main_menu": "main-menu",
+          "offer_link_text": "",
+          "offer_link_url": "/pages/contact",
+          "offer_link_text_color": "#113071"
+        }
+      },
+      "product-template": {
+        "type": "product-template",
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 0,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 0
+        }
+      },
+      "related-product": {
+        "type": "related-product",
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_lg": 70,
+          "section_padding_bottom_lg": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50,
+          "section_title": "Related Product",
+          "section_product_limit_handle": "10"
+        }
+      },
+      "single-product-tab": {
+        "type": "single-product-tab",
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 0,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 0
+        }
+      },
+      "blog-template": {
+        "type": "blog-template",
+        "settings": {
+          "blog_news_column": "6",
+          "blog_news_limit_handle": "6",
+          "blog_news_through": "By",
+          "blog_news_read_btn": "Read More",
+          "blog_news_cmt": "Comment",
+          "blog_news_sidebar_handle": "left_sidebar_handle",
+          "blog_search_bar_enable": true,
+          "recent_post_enable": true,
+          "archive_enable": true,
+          "tags_enable": true
+        }
+      },
+      "article-template": {
+        "type": "article-template",
+        "settings": {
+          "article_check": false,
+          "article_bgcolor": "rgba(0,0,0,0)",
+          "article_through": "By",
+          "article_cmt": "Comments",
+          "comment_post_limit_handle": "5",
+          "article_avtar_enable": false,
+          "sidebar_handle": "left_sidebar_handle",
+          "blog_search_bar_enable": true,
+          "recent_post_enable": true,
+          "archive_enable": true,
+          "tags_enable": true,
+          "recent_post_limit_handle": "4"
+        }
+      },
+      "cart-template": {
+        "type": "cart-template",
+        "settings": {
+          "cart_vendor_enable": true,
+          "shipping_calculator_heading": "Shipping Info",
+          "shipping_calculator_button_title": "Calculate",
+          "cart_note_title": "Special instructions for seller",
+          "cart_total_title": "Total",
+          "checkout_button_title": "Checkout",
+          "cart_empty_title1": "Your",
+          "cart_continue_title": "Continue browsing",
+          "here_title": "here"
+        }
+      },
+      "testimonial": {
+        "type": "testimonial",
+        "settings": {}
+      },
+      "brand-logo": {
+        "type": "brand-logo",
+        "blocks": {
+          "1578114441052": {
+            "type": "single_brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/lecxi_e270b527-ebcb-442e-8179-fa45c7a147a5.png"
+            }
+          },
+          "1578114454082": {
+            "type": "single_brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/bags_6e895ed3-77e9-418c-b21c-9ebcaa8a33cd.png"
+            }
+          },
+          "1578114460303": {
+            "type": "single_brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/baxo_0c70c54d-d1d1-47cf-a629-07d0cc4797d9.png"
+            }
+          },
+          "1578114465107": {
+            "type": "single_brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/collect_fdb2f6fa-bda4-4189-863d-622c9cd96116.png"
+            }
+          },
+          "1578114470202": {
+            "type": "single_brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/lecxi_e270b527-ebcb-442e-8179-fa45c7a147a5.png"
+            }
+          },
+          "1593869320576": {
+            "type": "single_brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/bags_6e895ed3-77e9-418c-b21c-9ebcaa8a33cd.png"
+            }
+          }
+        },
+        "block_order": [
+          "1578114441052",
+          "1578114454082",
+          "1578114460303",
+          "1578114465107",
+          "1578114470202",
+          "1593869320576"
+        ],
+        "settings": {
+          "brand_padding_top": 100,
+          "brand_padding_bottom": 100,
+          "brand_padding_top_lg": 60,
+          "brand_padding_bottom_lg": 60,
+          "brand_padding_top_xs": 40,
+          "brand_padding_bottom_xs": 40
+        }
+      },
+      "list-collection-template": {
+        "type": "list-collection-template",
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_lg": 70,
+          "section_padding_bottom_lg": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50,
+          "items_products": "Product",
+          "coll_btn": "Shop now"
+        }
+      },
+      "sitemap": {
+        "type": "sitemap",
+        "settings": {
+          "menu": "main-menu"
+        }
+      },
+      "our-services": {
+        "type": "our-services",
+        "blocks": {
+          "1598098392907": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-truck",
+              "service_title": "Free delivery",
+              "service_desc": "For all orders over $150",
+              "service_url": ""
+            }
+          },
+          "1598098476898": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-credit-card",
+              "service_title": "Safe payment",
+              "service_desc": "100% secure payment",
+              "service_url": ""
+            }
+          },
+          "1598098814123": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-clock",
+              "service_title": "24/7 Help center",
+              "service_desc": "Dedicated 24/7 support",
+              "service_url": ""
+            }
+          },
+          "221dcf68-0608-4c60-8d27-37109d4255b1": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-award",
+              "service_title": "Friendly services",
+              "service_desc": "30 Day guarantee",
+              "service_url": ""
+            }
+          }
+        },
+        "block_order": [
+          "1598098392907",
+          "1598098476898",
+          "1598098814123",
+          "221dcf68-0608-4c60-8d27-37109d4255b1"
+        ],
+        "settings": {
+          "section_padding_top": 30,
+          "section_padding_bottom": 30,
+          "section_padding_top_lg": 30,
+          "section_padding_bottom_lg": 30,
+          "section_padding_top_xs": 30,
+          "section_padding_bottom_xs": 30,
+          "section_bgcolor_enable": true,
+          "section_bgcolor": "#31af68",
+          "border": 1,
+          "border_color": "#eeeeee",
+          "border_enable": false,
+          "border_color_opacity": 1
+        }
+      },
+      "slider": {
+        "type": "slider",
+        "blocks": {
+          "1b3db085-a0de-4b68-8bd1-0726d19326b5": {
+            "type": "slide",
+            "settings": {
+              "slider_img": "shopify://shop_images/slider3.jpg"
+            }
+          },
+          "1593690674739": {
+            "type": "slide",
+            "settings": {
+              "slider_img": "shopify://shop_images/slider1_e0adcdc9-e716-4d48-8698-4d0036f36fbf.jpg"
+            }
+          },
+          "1593690709269": {
+            "type": "slide",
+            "settings": {
+              "slider_img": "shopify://shop_images/slider2_161a06fa-ed89-470e-9090-a76dda4d67b8.jpg"
+            }
+          }
+        },
+        "block_order": [
+          "1b3db085-a0de-4b68-8bd1-0726d19326b5",
+          "1593690674739",
+          "1593690709269"
+        ],
+        "settings": {}
+      },
+      "featured-product": {
+        "type": "featured-product",
+        "blocks": {
+          "1593691077346": {
+            "type": "product_tab",
+            "settings": {}
+          },
+          "1593691084479": {
+            "type": "product_tab",
+            "settings": {}
+          },
+          "1593691089351": {
+            "type": "product_tab",
+            "settings": {}
+          }
+        },
+        "block_order": [
+          "1593691077346",
+          "1593691084479",
+          "1593691089351"
+        ],
+        "settings": {}
+      },
+      "blog-home": {
+        "type": "blog-home",
+        "settings": {
+          "blog_padding_top": 50,
+          "blog_padding_bottom": 0,
+          "blog_padding_top_xs": 40,
+          "blog_padding_bottom_xs": 40,
+          "blog_bgcolor": "rgba(0,0,0,0)"
+        }
+      },
+      "copy-right": {
+        "type": "copy-right",
+        "settings": {
+          "copyright_enable": true,
+          "section_padding_top": 20,
+          "section_padding_bottom": 20,
+          "section_bg_color": "rgba(0,0,0,0)",
+          "copyright_text_color": "#808080",
+          "border": 1,
+          "border_color": "#808080",
+          "border_enable": true,
+          "border_color_opacity": 0.2,
+          "copy_right_text1": "Copyright",
+          "copy_right_icon": "fa fa-copyright",
+          "copy_right_text2": "2024 by \n qodex<sup>TM</sup>"
+        }
+      },
+      "our-vision": {
+        "type": "our-vision",
+        "blocks": {
+          "1601796485635": {
+            "type": "our-vision",
+            "settings": {
+              "mission_icon": "shopify://shop_images/mission.png",
+              "vision_title": "Our mission",
+              "vision_desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit., rutrum massa quis, porttitor lorem. Aliquam non est a ipsum facilisis scelerisque eu sed lectus."
+            }
+          },
+          "1601796536563": {
+            "type": "our-vision",
+            "settings": {
+              "mission_icon": "shopify://shop_images/vission.png",
+              "vision_title": "Our vision",
+              "vision_desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit., rutrum massa quis, porttitor lorem. Aliquam non est a ipsum facilisis scelerisque eu sed lectus."
+            }
+          }
+        },
+        "block_order": [
+          "1601796485635",
+          "1601796536563"
+        ],
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_lg": 70,
+          "section_padding_bottom_lg": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50
+        }
+      },
+      "our-team": {
+        "type": "our-team",
+        "blocks": {
+          "1601884127448": {
+            "type": "our-vision",
+            "settings": {
+              "member_img": "shopify://shop_images/t6.jpg"
+            }
+          },
+          "1601884136910": {
+            "type": "our-vision",
+            "settings": {
+              "member_img": "shopify://shop_images/t7.jpg"
+            }
+          },
+          "1601884137770": {
+            "type": "our-vision",
+            "settings": {
+              "member_img": "shopify://shop_images/t5.jpg"
+            }
+          },
+          "1601884138661": {
+            "type": "our-vision",
+            "settings": {
+              "member_img": "shopify://shop_images/t3.jpg"
+            }
+          }
+        },
+        "block_order": [
+          "1601884127448",
+          "1601884136910",
+          "1601884137770",
+          "1601884138661"
+        ],
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_lg": 70,
+          "section_padding_bottom_lg": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50
+        }
+      },
+      "special-category": {
+        "type": "special-category",
+        "settings": {}
+      },
+      "contact-us": {
+        "type": "contact-us",
+        "settings": {
+          "main_padding_top": 100,
+          "main_padding_bottom": 100,
+          "main_padding_top_lg": 70,
+          "main_padding_bottom_lg": 70,
+          "main_padding_top_xs": 50,
+          "main_padding_bottom_xs": 50,
+          "name_placeholder": "Your name",
+          "email_placeholder": "Your email address",
+          "mobile_placeholder": "Your Mobile",
+          "message_placeholder": "Your message here...",
+          "form_button_name": "Submit"
+        }
+      },
+      "terms-conditions": {
+        "type": "terms-conditions",
+        "blocks": {
+          "1601892801515": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable."
+            }
+          },
+          "1601892832399": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text."
+            }
+          },
+          "1601892845738": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
+            }
+          },
+          "1601892854484": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable."
+            }
+          },
+          "1601892863674": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."
+            }
+          },
+          "1601892870367": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            }
+          },
+          "1601892903269": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+            }
+          },
+          "1601892925344": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+            }
+          },
+          "1601892933214": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem."
+            }
+          },
+          "1601892948131": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness."
+            }
+          },
+          "1601893030566": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful."
+            }
+          },
+          "1601893034727": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure."
+            }
+          },
+          "1601893081514": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga."
+            }
+          },
+          "1601893111882": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+            }
+          },
+          "1601893124450": {
+            "type": "terms-condition",
+            "settings": {
+              "terms_condi_point": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae."
+            }
+          }
+        },
+        "block_order": [
+          "1601892801515",
+          "1601892832399",
+          "1601892845738",
+          "1601892854484",
+          "1601892863674",
+          "1601892870367",
+          "1601892903269",
+          "1601892925344",
+          "1601892933214",
+          "1601892948131",
+          "1601893030566",
+          "1601893034727",
+          "1601893081514",
+          "1601893111882",
+          "1601893124450"
+        ],
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_lg": 70,
+          "section_padding_bottom_lg": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50
+        }
+      },
+      "404-template": {
+        "type": "404-template",
+        "settings": {
+          "page_button_title": "Back to homepage",
+          "button_url": "/"
+        }
+      },
+      "wishlist": {
+        "type": "wishlist",
+        "settings": {
+          "wish_title": "My Wishlist:",
+          "wish_item_title": "Item",
+          "wish_cart_title": "Add to cart",
+          "wish_cart_add": "Done!",
+          "wish_cart_unvlbe": "ion-android-alert",
+          "wish_cart_stock_out": "Out Of Stock",
+          "wish_buy_now": "Buy Now",
+          "wish_cart_conti": "Continue Shopping",
+          "wish_cart_clear": "Clear Wishlist"
+        }
+      },
+      "return-policy": {
+        "type": "return-policy",
+        "blocks": {
+          "e203eda0-d3aa-44ea-b721-b4480787ca17": {
+            "type": "accordion_area1",
+            "settings": {
+              "accordion_ans1": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "677a415e-3a97-4252-ac3c-a07fd303595a": {
+            "type": "accordion_area1",
+            "settings": {
+              "accordion_ans1": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "46069cbc-d8c6-4c41-bfcc-9eccdf3ed974": {
+            "type": "accordion_area1",
+            "settings": {
+              "accordion_ans1": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "25417b60-a062-4b47-aa8a-e9aa830596d9": {
+            "type": "accordion_area2",
+            "settings": {
+              "accordion_ans2": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "22eebcc3-5b22-4b4c-8703-4e0c5949a3b0": {
+            "type": "accordion_area2",
+            "settings": {
+              "accordion_ans2": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "715620d4-8a54-4167-98e7-61cefcc1a4b9": {
+            "type": "accordion_area2",
+            "settings": {
+              "accordion_ans2": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "f6f539ba-7a6c-4bbe-bb84-f69728d1df71": {
+            "type": "accordion_area3",
+            "settings": {
+              "accordion_ans3": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "6c30c401-a42e-45bf-8f45-f9daaa482484": {
+            "type": "accordion_area3",
+            "settings": {
+              "accordion_ans3": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "ce315a30-de27-42d9-a8e6-11d921fef369": {
+            "type": "accordion_area3",
+            "settings": {
+              "accordion_ans3": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "28199609-3ed3-4527-a2c8-af5d47b8f437": {
+            "type": "accordion_area4",
+            "settings": {
+              "accordion_ans4": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "08460bc3-9b6b-49a9-b795-9ae5a643d402": {
+            "type": "accordion_area4",
+            "settings": {
+              "accordion_ans4": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          },
+          "822132ec-0939-4b82-81dd-fdaf71d7a1fe": {
+            "type": "accordion_area4",
+            "settings": {
+              "accordion_ans4": "As Sample Store uses some of the latest graphics designs which may not be supported in lower version of browsers designs which may not be supported in lower version of browsers"
+            }
+          }
+        },
+        "block_order": [
+          "e203eda0-d3aa-44ea-b721-b4480787ca17",
+          "677a415e-3a97-4252-ac3c-a07fd303595a",
+          "46069cbc-d8c6-4c41-bfcc-9eccdf3ed974",
+          "25417b60-a062-4b47-aa8a-e9aa830596d9",
+          "22eebcc3-5b22-4b4c-8703-4e0c5949a3b0",
+          "715620d4-8a54-4167-98e7-61cefcc1a4b9",
+          "f6f539ba-7a6c-4bbe-bb84-f69728d1df71",
+          "6c30c401-a42e-45bf-8f45-f9daaa482484",
+          "ce315a30-de27-42d9-a8e6-11d921fef369",
+          "28199609-3ed3-4527-a2c8-af5d47b8f437",
+          "08460bc3-9b6b-49a9-b795-9ae5a643d402",
+          "822132ec-0939-4b82-81dd-fdaf71d7a1fe"
+        ],
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_ipad": 70,
+          "section_padding_bottom_ipad": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50,
+          "section_title2": "Return Policy <span>30 Day</span>",
+          "section_title3": "What is a <span>Return Policy</span>",
+          "section_title4": "Secure With Your <span>Payment</span>",
+          "section_bg_color": "#ffffff"
+        }
+      },
+      "payment-policy": {
+        "type": "payment-policy",
+        "blocks": {
+          "670b6195-e3c8-4149-bc8b-18936754d550": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Eway payment method",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "eef444e8-e742-44b7-9cd7-3543750f76d6": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Paypal Online Payment",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "b06be19d-462c-41f9-9679-05d3dcbe43ee": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Discover Payment",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "4d427822-beba-42ec-a0bf-13e5e1917456": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Sage Online Payment",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "82fd4ca0-46b6-4b07-a0c1-9aae34a04791": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Mastercard Payment",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "8e16b832-992b-4948-bca1-68aa3ce97bcc": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "American Express",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "9bdc6a27-47d1-4323-8e66-fa17f0ef8e84": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Payment Introduction",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          },
+          "aaac5f6f-f482-46a2-ae57-fd39cddcc5ad": {
+            "type": "payment-policy",
+            "settings": {
+              "pay_policy_que": "Policy Introduction",
+              "pay_policy_ans1": "Lorem ipsum is simply dummy text of the printing and typesetting industry. ipsum has been the industry's standard dummy text ever an unknown printer."
+            }
+          }
+        },
+        "block_order": [
+          "670b6195-e3c8-4149-bc8b-18936754d550",
+          "eef444e8-e742-44b7-9cd7-3543750f76d6",
+          "b06be19d-462c-41f9-9679-05d3dcbe43ee",
+          "4d427822-beba-42ec-a0bf-13e5e1917456",
+          "82fd4ca0-46b6-4b07-a0c1-9aae34a04791",
+          "8e16b832-992b-4948-bca1-68aa3ce97bcc",
+          "9bdc6a27-47d1-4323-8e66-fa17f0ef8e84",
+          "aaac5f6f-f482-46a2-ae57-fd39cddcc5ad"
+        ],
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_ipad": 70,
+          "section_padding_bottom_ipad": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50,
+          "pay_policy_title": "Payment Policy"
+        }
+      },
+      "top-nocification-bar": {
+        "type": "top-nocification-bar",
+        "settings": {
+          "topbar_notification_enable": true,
+          "section_padding_top": 8,
+          "section_padding_bottom": 8,
+          "topbar_notification_bg_color": "#b3261e",
+          "topbar_notification_txt_color": "#ffffff",
+          "info_text_1": "<p>Call :- +66 123 456 789</p>",
+          "offer_text": "<p>Check out our classic <a href=\"/collections/eyeglasses\" title=\"Eyeglasses\"><strong>eyeglasses</strong></a> collection</p>",
+          "custom_link_1": "<p><a href=\"/account\" title=\"/account\">Track order</a></p>",
+          "custom_link_2": "<p><a href=\"/pages/faqs\" title=\"Faqs\">Help</a></p>",
+          "login_title": "Login",
+          "register_title": "Register",
+          "account_title": "Account",
+          "logout_title": "Logout"
+        }
+      },
+      "slider-category": {
+        "type": "slider-category",
+        "blocks": {
+          "f990250e-1281-466a-825d-79787851e874": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "drone-360"
+            }
+          },
+          "6229a67b-607f-40cb-9182-1a603ab22417": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "fresh-vegetables"
+            }
+          },
+          "5a6ff482-de6d-4313-bc88-e4aa46079369": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "cooking-food"
+            }
+          },
+          "3eb4efb5-d475-41bb-9cac-1ed5781cb947": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "healthy-juice"
+            }
+          },
+          "8d58ccb0-d933-40d7-9c53-60d2ecd8978d": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "exotic-dryfruit-2"
+            }
+          },
+          "c1d7b327-c6d6-4729-b59a-ab591decd994": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "exotic-dryfruit-2"
+            }
+          },
+          "db2311bf-dffc-4525-9304-745a102c0b18": {
+            "type": "product_tab",
+            "settings": {
+              "slider_category_handle": "exotic-dryfruit-1"
+            }
+          }
+        },
+        "block_order": [
+          "f990250e-1281-466a-825d-79787851e874",
+          "6229a67b-607f-40cb-9182-1a603ab22417",
+          "5a6ff482-de6d-4313-bc88-e4aa46079369",
+          "3eb4efb5-d475-41bb-9cac-1ed5781cb947",
+          "8d58ccb0-d933-40d7-9c53-60d2ecd8978d",
+          "c1d7b327-c6d6-4729-b59a-ab591decd994",
+          "db2311bf-dffc-4525-9304-745a102c0b18"
+        ],
+        "settings": {}
+      },
+      "password-header": {
+        "type": "password-header",
+        "settings": {
+          "pwd_heder_soon_title": "Coming soon"
+        }
+      },
+      "password-content": {
+        "type": "password-content",
+        "settings": {
+          "newsletter_enable": true,
+          "newsletter_form_heading": "Be the first to know when we launch.",
+          "newsletter_form_subheading": "Promotions, new products and sales. Directly to your inbox.",
+          "newsletter_placeholder": "Email address",
+          "newsletter_button_text": "Notify me"
+        }
+      },
+      "password-footer": {
+        "type": "password-footer",
+        "settings": {
+          "show_share_buttons": true,
+          "social_message": "Spread the word"
+        }
+      },
+      "newsletter": {
+        "type": "newsletter",
+        "settings": {
+          "news_padding_top": 15,
+          "news_padding_bottom": 15,
+          "news_padding_top_ip": 15,
+          "news_padding_bottom_ip": 15,
+          "news_padding_top_xs": 15,
+          "news_padding_bottom_xs": 15,
+          "newsletter_title": "Subscribe newsletter",
+          "newsletter_title_color": "#333333"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "logo_info_cCNeUF": {
+            "type": "logo_info",
+            "settings": {
+              "container_width": 41
+            }
+          },
+          "contact_info_R3N898": {
+            "type": "contact_info",
+            "settings": {
+              "container_width": 25,
+              "footer_contact_title": "Contact us",
+              "contact_info_1_icon": "feather-map-pin",
+              "contact_info_1_text": "<p>The Trendy Building, Sukhumvit Soi 13 (Saengchan), Khlong Toei Nuea Subdistrict, Watthana District, Bangkok 10110</p>",
+              "contact_info_2_icon": "feather-phone-call",
+              "contact_info_2_text": "<p>+66 123 456 789</p>",
+              "contact_info_3_icon": "feather-mail",
+              "contact_info_3_text": "<p>sales@glassessiam.com</p>"
+            }
+          },
+          "2581febf-5c4d-4d75-bfe7-8ca9578d5337": {
+            "type": "footer_menu",
+            "settings": {
+              "container_width": 17,
+              "show_nav_title": true,
+              "footer_menu_handle": "footer"
+            }
+          },
+          "5fc28ab4-8f0b-4745-a0d6-0ae58b9d5c19": {
+            "type": "footer_menu",
+            "settings": {
+              "container_width": 17,
+              "show_nav_title": true,
+              "footer_menu_handle": ""
+            }
+          }
+        },
+        "block_order": [
+          "logo_info_cCNeUF",
+          "contact_info_R3N898",
+          "2581febf-5c4d-4d75-bfe7-8ca9578d5337",
+          "5fc28ab4-8f0b-4745-a0d6-0ae58b9d5c19"
+        ],
+        "settings": {
+          "foot_padding_top": 100,
+          "foot_padding_bottom": 100,
+          "foot_padding_top_ipad": 80,
+          "foot_padding_bottom_ipad": 80,
+          "foot_padding_top_xs": 60,
+          "foot_padding_bottom_xs": 60,
+          "footer_bg_img_enable": false,
+          "footer_bg_color": "rgba(0,0,0,0)",
+          "text_color": "#808080",
+          "heading_color": "#113071",
+          "border": 1,
+          "border_color": "#808080",
+          "border_enable": true,
+          "border_color_opacity": 0.2,
+          "copy_right_text1": "Copyright",
+          "copy_right_icon": "fa fa-copyright",
+          "copy_right_text2": "2026 by Glasses Siam<sup></sup>",
+          "newsletter_title": "Subscribe to us",
+          "newsletter_desc": "Sign up to receive exclusive offers and new product releases."
+        }
+      },
+      "our_services_KfcxzE": {
+        "type": "our-services",
+        "blocks": {
+          "our_services_qaN4mV": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-package",
+              "service_title": "Speedy delivery",
+              "service_desc": "Orders from all item",
+              "service_url": ""
+            }
+          },
+          "our_services_RRMePh": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-refresh-cw",
+              "service_title": "Easy returns",
+              "service_desc": "On all unused items",
+              "service_url": ""
+            }
+          },
+          "our_services_bYccpY": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-headphones",
+              "service_title": "Online support",
+              "service_desc": "Alway online 24/7",
+              "service_url": ""
+            }
+          },
+          "our_services_Xbd9BV": {
+            "type": "our_services",
+            "settings": {
+              "service_icon": "feather-credit-card",
+              "service_title": "Secure payment",
+              "service_desc": "100% Secure payment",
+              "service_url": ""
+            }
+          }
+        },
+        "block_order": [
+          "our_services_qaN4mV",
+          "our_services_RRMePh",
+          "our_services_bYccpY",
+          "our_services_Xbd9BV"
+        ],
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_lg": 80,
+          "section_padding_bottom_lg": 80,
+          "section_padding_top_xs": 60,
+          "section_padding_bottom_xs": 60,
+          "section_bgcolor_enable": true,
+          "section_bgcolor": "#f7f7f7",
+          "border": 1,
+          "border_color": "#eeeeee",
+          "border_enable": false,
+          "border_color_opacity": 1
+        }
+      },
+      "about_banner_NaChwU": {
+        "type": "about-banner",
+        "name": "About banner",
+        "settings": {
+          "section_padding_top": 100,
+          "section_padding_bottom": 100,
+          "section_padding_top_ip": 70,
+          "section_padding_bottom_ip": 70,
+          "section_padding_top_xs": 50,
+          "section_padding_bottom_xs": 50,
+          "banner_img": "shopify://shop_images/Frame_156_4536e4cc-56e5-460d-81ec-bf27041ed0e8.png",
+          "banner_title_1": "Finding your perfect pair is our mission.",
+          "banner_description": "At GlassesSiam, we believe great eyewear should be accessible to everyone in Thailand. From prescription glasses to designer sunglasses, we combine expert lens crafting with top-tier brands — all at honest Thai Baht prices.",
+          "banner_button": "Explore our lenses",
+          "banner_url": "",
+          "banner_button_style": "btn-style1"
+        }
+      },
+      "new_product_arPhJd": {
+        "type": "new-product",
+        "name": "New Product",
+        "settings": {
+          "category_special_padding_top": 100,
+          "category_special_padding_bottom": 100,
+          "category_special_padding_top_ip": 80,
+          "category_special_padding_bottom_ip": 80,
+          "category_special_padding_top_xs": 60,
+          "category_special_padding_bottom_xs": 60,
+          "section_bgcolor": "#ffffff",
+          "section_bgcolor_enable": true,
+          "border": 1,
+          "border_color": "#c19d60",
+          "border_enable": false,
+          "border_color_opacity": 0.3,
+          "section_subtitle": "NEW IN",
+          "section_title": "Latest Sunglasses",
+          "category_special_product_limit_handle": "12",
+          "category_special_product_col": "1",
+          "category_special_product_limit": "4",
+          "special_label_product": "sunglasses",
+          "category_special_button_text": "View all sunglasses",
+          "category_special_button_style": "btn-style2",
+          "category_special_button_enable": true
+        }
+      },
+      "new_product_AEjmBA": {
+        "type": "new-product",
+        "name": "New Product",
+        "settings": {
+          "category_special_padding_top": 100,
+          "category_special_padding_bottom": 100,
+          "category_special_padding_top_ip": 80,
+          "category_special_padding_bottom_ip": 80,
+          "category_special_padding_top_xs": 60,
+          "category_special_padding_bottom_xs": 60,
+          "section_bgcolor": "#ffffff",
+          "section_bgcolor_enable": true,
+          "border": 1,
+          "border_color": "#c19d60",
+          "border_enable": false,
+          "border_color_opacity": 0.3,
+          "section_subtitle": "NEW IN",
+          "section_title": "Latest Eyeglasses",
+          "category_special_product_limit_handle": "12",
+          "category_special_product_col": "1",
+          "category_special_product_limit": "4",
+          "special_label_product": "eyeglasses",
+          "category_special_button_text": "View all eyeglasses",
+          "category_special_button_style": "btn-style2",
+          "category_special_button_enable": true
+        }
+      },
+      "ss_simple_faq_GdE4VA": {
+        "type": "ss-simple-faq",
+        "blocks": {
+          "text_RbGfUV": {
+            "type": "text",
+            "settings": {
+              "question": "What types of eyewear can I buy at GlassesSiam.com?",
+              "answer": "<p>We offer a full range of eyewear, includingprescription eyeglasses, non-prescription glasses, sunglasses, andprescription sunglassesfor adults and kids. We also carrycontact lensesfrom leading brands, making it easy to get everything you need for your vision in one place.</p>"
+            }
+          },
+          "text_CKjgdx": {
+            "type": "text",
+            "settings": {
+              "question": "Do you offer free shipping?",
+              "answer": "<p>Yes, standard shipping is free for all eyeglass, sunglass, and contact lens orders – no minimum required.</p>"
+            }
+          },
+          "text_DJ3iyy": {
+            "type": "text",
+            "settings": {
+              "question": "What payment methods can I use?",
+              "answer": "<p>We accept a wide range of payment options to make checkout quick and convenient. You can pay with Visa, MasterCard, American Express, Discover, PayPal, Apple Pay, and Google Pay.</p>"
+            }
+          }
+        },
+        "block_order": [
+          "text_RbGfUV",
+          "text_CKjgdx",
+          "text_DJ3iyy"
+        ],
+        "name": "SS - FAQ #1",
+        "settings": {
+          "heading": "Frequently Asked Questions",
+          "icon_color": "#ffffff",
+          "hover_color": "#efefef",
+          "question_color": "#ffffff",
+          "background_color": "#113071",
+          "answer_color": "#000000",
+          "answer_bg_color": "#ffffff",
+          "questions-font-size": 1.5
+        }
+      },
+      "brand_logo_pills_TX8BNW": {
+        "type": "brand-logo-pills",
+        "blocks": {
+          "brand_et3jUE": {
+            "type": "brand",
+            "settings": {
+              "logo": "shopify://shop_images/oaklet.png",
+              "name": "",
+              "url": ""
+            }
+          },
+          "brand_XfM4Uw": {
+            "type": "brand",
+            "settings": {
+              "logo": "shopify://shop_images/herrera.png",
+              "name": "",
+              "url": ""
+            }
+          },
+          "brand_nnNnwT": {
+            "type": "brand",
+            "settings": {
+              "logo": "shopify://shop_images/rayban.png",
+              "name": "",
+              "url": ""
+            }
+          },
+          "brand_m63WrM": {
+            "type": "brand",
+            "settings": {
+              "logo": "shopify://shop_images/revel.png",
+              "name": "",
+              "url": ""
+            }
+          }
+        },
+        "block_order": [
+          "brand_et3jUE",
+          "brand_XfM4Uw",
+          "brand_nnNnwT",
+          "brand_m63WrM"
+        ],
+        "name": "Brand logo pills",
+        "settings": {}
+      },
+      "hero_carousel_with_trustbar_A4wLRp": {
+        "type": "hero-carousel-with-trustbar",
+        "blocks": {
+          "slide_6aMnza": {
+            "type": "slide",
+            "settings": {
+              "image": "shopify://shop_images/slide-1.png",
+              "overlay_opacity": 40,
+              "heading": "Thailand's Premier Online Eyewear Store",
+              "subheading": "Shop 500+ frames from top brands. Upload your prescription and choose your perfect lenses. Free shipping nationwide.",
+              "primary_label": "Shop Frames",
+              "primary_url": "/collections/all",
+              "secondary_label": "Explore Lenses",
+              "secondary_url": "/pages/lenses"
+            }
+          }
+        },
+        "block_order": [
+          "slide_6aMnza"
+        ],
+        "name": "Hero carousel + trust bar",
+        "settings": {
+          "hero_height": 520,
+          "heading_color": "#ffffff",
+          "subheading_color": "#ffffff",
+          "primary_button_bg": "#113071",
+          "primary_button_text": "#ffffff",
+          "secondary_button_bg": "#ffffff",
+          "secondary_button_text": "#113071",
+          "autoplay": true,
+          "autoplay_speed": 6000
+        }
+      },
+      "promo_split_card_6DUVnP": {
+        "type": "promo-split-card",
+        "name": "Promo split card",
+        "settings": {
+          "image": "shopify://shop_images/round-black-sunglasses-repeated-on-yellow-background.jpg",
+          "heading": "Designer Sunglasses for Every Occasion",
+          "text": "Protect your eyes in style. Shop Ray-Ban, Oakley, and Carolina Herrera sunglasses with 100% UV400 protection. Free prescription lenses available.",
+          "cta_label": "Shop Sunglasses",
+          "cta_url": ""
+        }
+      },
+      "feature_grid_CxeGiQ": {
+        "type": "feature-grid",
+        "blocks": {
+          "feature_q4jpVi": {
+            "type": "feature",
+            "settings": {
+              "image_type": "icon",
+              "icon_size": 110,
+              "image_radius": 30,
+              "title": "Try Before You Buy",
+              "title_size": 22,
+              "description": "Use our free virtual try-on tool to see exactly how any frame looks on your face — no commitment needed. Find your perfect fit from home.",
+              "link_text": "Try frames now",
+              "link_url": "/collections/eyeglasses"
+            }
+          },
+          "feature_cBmzkP": {
+            "type": "feature",
+            "settings": {
+              "image_type": "icon",
+              "icon_size": 80,
+              "image_radius": 30,
+              "title": "Prescription-Ready Lenses",
+              "title_size": 22,
+              "description": "Upload your prescription and choose from single vision, progressive, blue light blocking, and more. Lenses crafted to your exact needs from ฿690.",
+              "link_text": "Explore lenses",
+              "link_url": "/pages/lenses"
+            }
+          },
+          "feature_zei8mj": {
+            "type": "feature",
+            "settings": {
+              "image_type": "icon",
+              "icon_size": 80,
+              "image_radius": 30,
+              "title": "Top Brands, Thai Prices",
+              "title_size": 22,
+              "description": "Shop genuine Ray-Ban, Oakley, Carolina Herrera and more — all priced in Thai Baht with no hidden import fees. Free shipping on every order.",
+              "link_text": "Shop all brands",
+              "link_url": "/collections/all"
+            }
+          }
+        },
+        "block_order": [
+          "feature_q4jpVi",
+          "feature_cBmzkP",
+          "feature_zei8mj"
+        ],
+        "name": "Feature Grid",
+        "settings": {
+          "heading": "Why Shop at GlassesSiam",
+          "heading_color": "#113071",
+          "background_color": "#ffffff",
+          "title_color": "#000000",
+          "text_color": "#666666",
+          "link_color": "#0066cc",
+          "padding_top": 70,
+          "padding_bottom": 70
+        }
+      },
+      "trust_bar_GlassesSiam": {
+        "type": "trust-bar",
+        "blocks": {
+          "tb_shipping": {
+            "type": "item",
+            "settings": {
+              "icon": "shipping",
+              "label": "Free Shipping Nationwide",
+              "sublabel": "On every order, always"
+            }
+          },
+          "tb_tryon": {
+            "type": "item",
+            "settings": {
+              "icon": "return",
+              "label": "45-Day Home Try-On",
+              "sublabel": "Love them or return free"
+            }
+          },
+          "tb_warranty": {
+            "type": "item",
+            "settings": {
+              "icon": "warranty",
+              "label": "365-Day Warranty",
+              "sublabel": "Full frame protection"
+            }
+          },
+          "tb_rating": {
+            "type": "item",
+            "settings": {
+              "icon": "star",
+              "label": "4.8★ Rated",
+              "sublabel": "10,000+ happy customers"
+            }
+          }
+        },
+        "block_order": [
+          "tb_shipping",
+          "tb_tryon",
+          "tb_warranty",
+          "tb_rating"
+        ],
+        "settings": {
+          "background_color": "#ffffff",
+          "icon_color": "#113071",
+          "label_color": "#111827"
+        }
+      }
+    },
+    "content_for_index": [
+      "hero_carousel_with_trustbar_A4wLRp",
+      "trust_bar_GlassesSiam",
+      "brand_logo_pills_TX8BNW",
+      "new_product_AEjmBA",
+      "about_banner_NaChwU",
+      "our_services_KfcxzE",
+      "feature_grid_CxeGiQ",
+      "new_product_arPhJd",
+      "promo_split_card_6DUVnP",
+      "ss_simple_faq_GdE4VA"
+    ],
+    "blocks": {
+      "17000325640471124546": {
+        "type": "shopify://apps/glasson/blocks/collection-try-on/0a836efa-448b-4ab0-a9e4-df105b0d9627",
+        "disabled": false,
+        "settings": {
+          "mode": "live",
+          "buttonText": "",
+          "alignment": "top-right",
+          "offsetX": 0,
+          "offsetY": 0,
+          "size": "54",
+          "iconColor": "#000000",
+          "backgroundColor": "",
+          "customSelector": ""
+        }
+      },
+      "582829182825352728": {
+        "type": "shopify://apps/glasson/blocks/featured-collection-try-on/0a836efa-448b-4ab0-a9e4-df105b0d9627",
+        "disabled": false,
+        "settings": {
+          "mode": "live",
+          "buttonText": "",
+          "alignment": "top-right",
+          "offsetX": 0,
+          "offsetY": 0,
+          "size": "54",
+          "iconColor": "#000000",
+          "backgroundColor": "",
+          "customSelector": ""
+        }
+      },
+      "14352282602675302068": {
+        "type": "shopify://apps/xcloud-search-product-filter/blocks/cloudsearch_opt/8ddbd0bf-e311-492e-ab28-69d0ad268fac",
+        "disabled": false,
+        "settings": {}
+      }
+    }
+  },
+  "presets": {
+    "Default": {
+      "ajax_cart_method": "drawer",
+      "cart_notes_enable": true,
+      "color_body_bg": "#fff",
+      "color_body_text": "#333333",
+      "color_borders": "#e5e5e5",
+      "color_footer_bg": "#f2f2f2",
+      "color_footer_social_link": "#bbbbbb",
+      "color_footer_text": "#636363",
+      "color_primary": "#747474",
+      "color_secondary": "#bbb",
+      "favicon_enable": false,
+      "footer_newsletter_enable": true,
+      "footer_social_enable": true,
+      "logo_use_image": false,
+      "social_facebook_link": "",
+      "social_twitter_link": ""
+    }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      "span.cart-icon {display: none;}"
+    ]
+  }
+}

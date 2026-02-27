@@ -1,0 +1,584 @@
+{% comment %}
+  Lens Coatings Tabs — tabbed section for lenses page
+  Tabs: Blue Light, Transitions, Polarized, Anti-Reflective, etc.
+{% endcomment %}
+
+<section class="coatings" style="background: {{ section.settings.background_color }}; padding: {{ section.settings.padding_top }}px 2rem {{ section.settings.padding_bottom }}px;">
+  <div class="coatings__inner">
+
+    {% if section.settings.heading != blank %}
+      <div class="coatings__header">
+        {% if section.settings.eyebrow != blank %}
+          <p class="coatings__eyebrow">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        <h2 class="coatings__heading">{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="coatings__subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% assign coating_blocks = section.blocks | where: 'type', 'coating' %}
+
+    {% if coating_blocks.size > 0 %}
+      <!-- Tab nav -->
+      <div class="coatings__tabs" role="tablist">
+        {% for block in coating_blocks %}
+          <button
+            class="coatings__tab{% if forloop.first %} is-active{% endif %}"
+            role="tab"
+            data-tab="coating-{{ block.id }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {% if block.settings.tab_icon == 'blue-light' %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            {% elsif block.settings.tab_icon == 'transitions' %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
+            {% elsif block.settings.tab_icon == 'polarized' %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            {% elsif block.settings.tab_icon == 'anti-reflective' %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            {% else %}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+            {% endif %}
+            {{ block.settings.tab_label }}
+          </button>
+        {% endfor %}
+      </div>
+
+      <!-- Tab panels -->
+      <div class="coatings__panels">
+        {% for block in coating_blocks %}
+          <div
+            class="coatings__panel{% if forloop.first %} is-active{% endif %}"
+            id="coating-{{ block.id }}"
+            role="tabpanel"
+          >
+            <div class="coatings__panel-image">
+              {% if block.settings.image %}
+                <img
+                  src="{{ block.settings.image | image_url: width: 700 }}"
+                  alt="{{ block.settings.title | escape }}"
+                  loading="lazy"
+                  width="700"
+                >
+              {% else %}
+                <div class="coatings__img-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="coatings__panel-content">
+              <h3 class="coatings__panel-title">{{ block.settings.title }}</h3>
+              {% if block.settings.description != blank %}
+                <p class="coatings__panel-desc">{{ block.settings.description }}</p>
+              {% endif %}
+
+              {% assign has_features = false %}
+              {% for i in (1..5) %}
+                {% assign feat_key = 'feature_' | append: i %}
+                {% if block.settings[feat_key] != blank %}
+                  {% assign has_features = true %}
+                {% endif %}
+              {% endfor %}
+
+              {% if has_features %}
+                <ul class="coatings__features">
+                  {% for i in (1..5) %}
+                    {% assign feat_key = 'feature_' | append: i %}
+                    {% if block.settings[feat_key] != blank %}
+                      <li>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        {{ block.settings[feat_key] }}
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              <div class="coatings__panel-footer">
+                {% if block.settings.price != blank %}
+                  <span class="coatings__price">
+                    <span class="coatings__price-label">Add from</span>
+                    <span class="coatings__price-val">{{ block.settings.price }}</span>
+                  </span>
+                {% endif %}
+                {% if block.settings.cta_text != blank %}
+                  <a href="{{ block.settings.cta_url | default: '#' }}" class="coatings__cta">
+                    {{ block.settings.cta_text }}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<script>
+(function() {
+  var tabs = document.querySelectorAll('.coatings__tab');
+  var panels = document.querySelectorAll('.coatings__panel');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var targetId = this.getAttribute('data-tab');
+
+      tabs.forEach(function(t) {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      panels.forEach(function(p) { p.classList.remove('is-active'); });
+
+      this.classList.add('is-active');
+      this.setAttribute('aria-selected', 'true');
+      var panel = document.getElementById(targetId);
+      if (panel) panel.classList.add('is-active');
+    });
+  });
+})();
+</script>
+
+{% style %}
+.coatings__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.coatings__header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.coatings__eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #113071;
+  margin-bottom: 0.6rem;
+}
+
+.coatings__heading {
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+  margin-bottom: 0.6rem;
+}
+
+.coatings__subheading {
+  font-size: 16px;
+  color: #6b7280;
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* Tabs nav */
+.coatings__tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.coatings__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  color: #374151;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coatings__tab:hover {
+  border-color: #113071;
+  color: #113071;
+}
+
+.coatings__tab.is-active {
+  background: #113071;
+  border-color: #113071;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(17,48,113,0.25);
+}
+
+/* Panels */
+.coatings__panel {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+  background: #f8f9fb;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  border: 1px solid #e8ecf0;
+}
+
+.coatings__panel.is-active {
+  display: grid;
+}
+
+/* Panel image */
+.coatings__panel-image {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #e8ecf0;
+}
+
+.coatings__panel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.coatings__panel:hover .coatings__panel-image img {
+  transform: scale(1.03);
+}
+
+.coatings__img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Panel content */
+.coatings__panel-content {
+  padding: 2.5rem 2.5rem 2.5rem 1rem;
+}
+
+.coatings__panel-title {
+  font-size: clamp(1.3rem, 2vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+  margin-bottom: 0.8rem;
+}
+
+.coatings__panel-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 1.25rem;
+}
+
+/* Features */
+.coatings__features {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.coatings__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.coatings__features svg {
+  color: #113071;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Footer */
+.coatings__panel-footer {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.coatings__price {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.coatings__price-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+}
+
+.coatings__price-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.coatings__cta {
+  display: inline-flex;
+  align-items: center;
+  background: #113071;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(17,48,113,0.25);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.coatings__cta:hover {
+  background: #0d2458;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(17,48,113,0.3);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .coatings__panel.is-active {
+    grid-template-columns: 1fr;
+  }
+  .coatings__panel-image {
+    aspect-ratio: 16/9;
+  }
+  .coatings__panel-content {
+    padding: 1.75rem;
+  }
+  .coatings__tabs {
+    gap: 6px;
+  }
+  .coatings__tab {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Lens Coatings Tabs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Lens Upgrades"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Upgrade Your Lenses"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sub-heading",
+      "default": "Enhance your vision with our premium lens coatings and treatments."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f8f9fb"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "coating",
+      "name": "Coating Tab",
+      "settings": [
+        {
+          "type": "select",
+          "id": "tab_icon",
+          "label": "Tab Icon",
+          "options": [
+            { "value": "blue-light", "label": "Blue Light / Sun" },
+            { "value": "transitions", "label": "Transitions / Half Circle" },
+            { "value": "polarized", "label": "Polarized / Eye" },
+            { "value": "anti-reflective", "label": "Anti-Reflective / Shield" },
+            { "value": "generic", "label": "Generic / Clock" }
+          ],
+          "default": "blue-light"
+        },
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab Label",
+          "default": "Blue Light"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Panel Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Panel Title",
+          "default": "Blue Light Blocking"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Our blue light blocking coating filters the harmful high-energy visible light emitted by digital screens."
+        },
+        {
+          "type": "text",
+          "id": "feature_1",
+          "label": "Feature 1",
+          "default": "Reduces digital eye strain"
+        },
+        {
+          "type": "text",
+          "id": "feature_2",
+          "label": "Feature 2",
+          "default": "Improves sleep quality"
+        },
+        {
+          "type": "text",
+          "id": "feature_3",
+          "label": "Feature 3",
+          "default": "Clear lenses — no yellow tint"
+        },
+        {
+          "type": "text",
+          "id": "feature_4",
+          "label": "Feature 4 (optional)"
+        },
+        {
+          "type": "text",
+          "id": "feature_5",
+          "label": "Feature 5 (optional)"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price From (optional)",
+          "info": "e.g. $19"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "CTA Button Text",
+          "default": "Add This Coating"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "CTA Button URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lens Coatings Tabs",
+      "blocks": [
+        {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "blue-light",
+            "tab_label": "Blue Light",
+            "title": "Blue Light Blocking",
+            "description": "Filter harmful blue light from screens to reduce eye strain and protect your sleep cycle.",
+            "feature_1": "Reduces digital eye strain significantly",
+            "feature_2": "Supports natural sleep rhythms",
+            "feature_3": "Clear lenses — not yellow tinted",
+            "feature_4": "Works on any prescription",
+            "price": "$19",
+            "cta_text": "Add Blue Light Coating"
+          }
+        },
+        {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "transitions",
+            "tab_label": "Transitions",
+            "title": "Transitions® Lenses",
+            "description": "Automatically adapt from clear indoors to dark outside — no need for a second pair of sunglasses.",
+            "feature_1": "Darkens in sunlight in seconds",
+            "feature_2": "100% UV protection outdoors",
+            "feature_3": "Returns to clear quickly indoors",
+            "feature_4": "Available in multiple colours",
+            "price": "$99",
+            "cta_text": "Add Transitions Lenses"
+          }
+        },
+        {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "polarized",
+            "tab_label": "Polarized",
+            "title": "Polarized Lenses",
+            "description": "Eliminate glare from water, roads, and reflective surfaces for unbeatable outdoor clarity.",
+            "feature_1": "Eliminates horizontal glare completely",
+            "feature_2": "Enhanced contrast and colour",
+            "feature_3": "Perfect for driving and water sports",
+            "feature_4": "100% UV400 protection",
+            "price": "$39",
+            "cta_text": "Add Polarized Coating"
+          }
+        },
+        {
+          "type": "coating",
+          "settings": {
+            "tab_icon": "anti-reflective",
+            "tab_label": "Anti-Reflective",
+            "title": "Anti-Reflective Coating",
+            "description": "Eliminate reflections and glare from artificial lighting for clearer, more comfortable vision.",
+            "feature_1": "Removes distracting lens reflections",
+            "feature_2": "Easier for others to see your eyes",
+            "feature_3": "Scratch-resistant layer included",
+            "feature_4": "Easier to clean — repels smudges",
+            "price": "$15",
+            "cta_text": "Add Anti-Reflective Coating"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

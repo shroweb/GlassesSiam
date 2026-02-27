@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(ruby --version)",
+      "Bash(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh)",
+      "Bash(bash)",
+      "Bash(shopify theme push --only layout/theme.liquid config/settings_schema.json)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm --version)",
+      "Bash(nvm install --lts)",
+      "Bash(npm install -g @shopify/cli)",
+      "Bash(shopify version)",
+      "Bash(shopify theme push --only layout/theme.liquid)",
+      "Bash(shopify theme list --store 9se3hg-ti.myshopify.com)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only layout/theme.liquid)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only layout/theme.liquid --allow-live)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only sections/header.liquid --allow-live)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only sections/top-nocification-bar.liquid --allow-live)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only sections/top-nocification-bar.liquid layout/theme.liquid --allow-live)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only snippets/face-shape-analyzer.liquid,snippets/header-icon.liquid,layout/theme.liquid --allow-live)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only snippets/header-icon.liquid --allow-live)",
+      "Bash(shopify theme pull --store 9se3hg-ti.myshopify.com --theme 180680982857 --only layout/theme.liquid)",
+      "Bash(shopify theme pull --store 9se3hg-ti.myshopify.com --theme 180680982857 --only snippets/face-shape-analyzer.liquid)",
+      "Bash(shopify theme push --store 9se3hg-ti.myshopify.com --theme 180680982857 --only snippets/face-shape-analyzer.liquid --allow-live)",
+      "mcp__Claude_in_Chrome__navigate",
+      "Bash(~/.nvm/versions/node/v18.20.7/bin/shopify theme push --only snippets/face-shape-analyzer.liquid --allow-live)",
+      "Bash(~/.nvm/versions/node/v24.14.0/bin/shopify theme push --only snippets/face-shape-analyzer.liquid --allow-live)",
+      "Bash(export PATH=\"$HOME/.nvm/versions/node/v24.14.0/bin:$PATH\")",
+      "Bash(shopify theme push --only snippets/face-shape-analyzer.liquid --allow-live)",
+      "Bash(shopify theme push --theme 180680982857 --store 9se3hg-ti.myshopify.com --only snippets/face-shape-analyzer.liquid --allow-live)"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{% assign vendors = collection.all_products | map: 'vendor' | uniq | sort %}
+
+<div class="vendor-filter">
+  <h3>Filter by Brand</h3>
+  <form id="vendor-filter-form">
+    {% for vendor in vendors %}
+      <div class="vendor-option">
+        <input 
+          type="checkbox" 
+          id="vendor-{{ vendor | handleize }}" 
+          value="{{ vendor }}"
+          onchange="filterByVendor()"
+        >
+        <label for="vendor-{{ vendor | handleize }}">{{ vendor }}</label>
+      </div>
+    {% endfor %}
+  </form>
+</div>
+
+<script>
+function filterByVendor() {
+  const checkboxes = document.querySelectorAll('#vendor-filter-form input:checked');
+  const selectedVendors = Array.from(checkboxes).map(cb => cb.value);
+  const products = document.querySelectorAll('.product-item, .grid__item');
+  
+  products.forEach(product => {
+    const vendor = product.dataset.vendor || product.querySelector('[data-vendor]')?.dataset.vendor;
+    if (selectedVendors.length === 0 || selectedVendors.includes(vendor)) {
+      product.style.display = '';
+    } else {
+      product.style.display = 'none';
+    }
+  });
+}
+</script>
+
+<style>
+.vendor-filter {
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+.vendor-filter h3 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.vendor-option {
+  margin-bottom: 10px;
+}
+.vendor-option input {
+  margin-right: 8px;
+}
+.vendor-option label {
+  cursor: pointer;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Vendor Filter",
+  "settings": []
+}
+{% endschema %}

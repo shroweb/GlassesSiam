@@ -1,0 +1,68 @@
+{% if product.available %}
+<button type="submit" class="btn add-to-cart ajax-spin-cart" id="AddToCart">
+  <span class="cart-title" id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+  <span class="cart-loading load-anim"><i class="ri-loader-4-line"></i></span>
+  <span class="cart-added"><i class="ri-check-line"></i></span>
+  <span class="cart-unavailable">{{ 'products.product.sold_out' | t }}</span>
+</button>
+{% else %}
+<button class="btn add-to-cart disabled" disabled="disabled">
+  <span class="cart-text">{{ 'products.product.sold_out' | t }}</span>
+</button>
+{% endif %}
+<script type="text/javascript">
+window.addEventListener("DOMContentLoaded", function() {
+  
+    $('.ajax-spin-cart').on("click", function(e){
+      e.preventDefault();
+      Shopify.addItemFromForm('add-item-form');
+    });
+  
+});   
+  
+</script>
+<style>
+  .product-actions button.add-to-cart {
+    background-color: #113071;
+    color: #fff;
+    font-size: 15px;
+    padding: 0 32px;
+    line-height: 1;
+    height: 54px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 3px 12px rgba(17,48,113,0.2);
+  }
+  .product-actions button.add-to-cart:hover {
+    background-color: #0d2458;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(17,48,113,0.3);
+  }
+  .product-actions button.add-to-cart:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  .product-actions button.add-to-cart.btn[disabled],
+  .product-actions button.add-to-cart.btn.disabled {
+    color: #eaeaea;
+    background-color: #c4c9d4;
+    opacity: 1;
+    pointer-events: none;
+    box-shadow: none;
+  }
+  @media (max-width: 767px) {
+    .product-actions button.add-to-cart {
+      margin-top: 12px;
+    }
+  }
+</style>

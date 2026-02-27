@@ -1,0 +1,246 @@
+{% comment %}
+  Trust Bar — icon strip with trust signals
+  Items: Free Shipping, 60-Day Try-On, 365-Day Warranty, Star Rating
+{% endcomment %}
+
+<section class="trust-bar">
+  <div class="trust-bar__inner">
+    {% for block in section.blocks %}
+      {% if block.type == 'item' %}
+        <div class="trust-bar__item" {{ block.shopify_attributes }}>
+          <div class="trust-bar__icon">
+            {% if block.settings.icon == 'shipping' %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            {% elsif block.settings.icon == 'return' %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.56"/>
+              </svg>
+            {% elsif block.settings.icon == 'warranty' %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+              </svg>
+            {% elsif block.settings.icon == 'star' %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            {% elsif block.settings.icon == 'eye' %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            {% elsif block.settings.icon == 'tag' %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+            {% else %}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            {% endif %}
+          </div>
+          <div class="trust-bar__text">
+            <span class="trust-bar__label">{{ block.settings.label }}</span>
+            {% if block.settings.sublabel != blank %}
+              <span class="trust-bar__sublabel">{{ block.settings.sublabel }}</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% style %}
+.trust-bar {
+  background: {{ section.settings.background_color }};
+  border-top: 1px solid #e8ecf0;
+  border-bottom: 1px solid #e8ecf0;
+  padding: 1.1rem 2rem;
+}
+
+.trust-bar__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.trust-bar__item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 2.25rem;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.trust-bar__item + .trust-bar__item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2rem;
+  width: 1px;
+  background: #e2e6ea;
+}
+
+.trust-bar__icon {
+  color: {{ section.settings.icon_color }};
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.trust-bar__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.trust-bar__label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: {{ section.settings.label_color }};
+  white-space: nowrap;
+}
+
+.trust-bar__sublabel {
+  font-size: 11.5px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .trust-bar__inner {
+    gap: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .trust-bar__inner::-webkit-scrollbar {
+    display: none;
+  }
+  .trust-bar__item {
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .trust-bar {
+    padding: 0.9rem 1rem;
+  }
+  .trust-bar__item {
+    padding: 0.4rem 1.1rem;
+  }
+  .trust-bar__label {
+    font-size: 12.5px;
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Trust Bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Color",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label Color",
+      "default": "#111827"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Trust Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping / Truck" },
+            { "value": "return", "label": "Return / Refresh" },
+            { "value": "warranty", "label": "Shield / Warranty" },
+            { "value": "star", "label": "Star / Rating" },
+            { "value": "eye", "label": "Eye" },
+            { "value": "tag", "label": "Price Tag" },
+            { "value": "check", "label": "Checkmark" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "sublabel",
+          "label": "Sub-label (optional)",
+          "default": "On orders over $50"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Bar",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "icon": "shipping",
+            "label": "Free Shipping",
+            "sublabel": "On all orders"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "return",
+            "label": "60-Day Home Try-On",
+            "sublabel": "Love them or return free"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "warranty",
+            "label": "365-Day Warranty",
+            "sublabel": "Full frame protection"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "star",
+            "label": "4.8★ Rated",
+            "sublabel": "10,000+ reviews"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

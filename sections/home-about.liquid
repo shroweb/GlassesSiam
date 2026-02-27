@@ -1,0 +1,430 @@
+<section class="home-about-area" {% if section.settings.testi_bgimg_enable %}style="background-image: url('{% if section.settings.testi_bgimg %}{{ section.settings.testi_bgimg | image_url }}{% else %}https://dummyimage.com/1920x800/f7f7f7/999999{% endif %}');"{% endif %}>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div class="home-about-main">
+          <div class="home-about-image">
+            <div class="about-image">
+              <span class="image">
+                {% comment %}
+                <img src="https://dummyimage.com/895x570/e2e2e2/999999" class="img-fluid" alt="category-image">
+                {% endcomment %}
+                {%- if section.settings.about_image -%}
+                {{ section.settings.about_image | image_url: width: 1080 | image_tag:
+                  loading: 'lazy',
+                  width: section.settings.about_image.width,
+                  height: section.settings.about_image.height,
+                  class: "img-fluid",
+                  alt: section.settings.about_image.alt | escape }}
+                {%- else -%}
+                {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+                {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </span>
+            </div>
+          </div>
+          <div class="home-about-content">
+            <div class="about-content">
+              <div class="section-capture">
+                <div class="section-title">
+                  {% if section.settings.section_subtitle != '' %}
+                  <span>{{ section.settings.section_subtitle }}</span>
+                  {% endif %}
+                  {% if section.settings.section_title != '' %}
+                  <h2>{{ section.settings.section_title }}</h2>
+                  {% endif %}
+                </div>
+              </div>
+              {% if section.settings.about_content_desc != '' %}
+              <p>{{ section.settings.about_content_desc }}</p>
+              {% endif %}
+              {% if section.settings.about_small_title != '' %}
+              <h4 class="small-title">{{ section.settings.about_small_title }}</h4>
+              {% endif %}
+              {% if section.settings.about_content_btn_text != '' %}
+              <a href="{{ section.settings.about_content_btn_url }}" class="btn {% if section.settings.about_content_btn_style == 'btn-style1' %}btn-style{% elsif section.settings.about_content_btn_style == 'btn-style2' %}btn-style2{% else %}btn-style3{% endif %}">{{ section.settings.about_content_btn_text }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 
+
+{% schema %}
+{
+  "name": "Home About",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop / Laptop / tablet"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "paragraph",
+      "content": "Ipad pro / Ipad"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_ip",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_ip",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_xs",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_xs",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Section background Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_bg_color_enable",
+      "label": "Show Background Color",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background Color",
+      "default": "#F7F7F7"
+    },
+    {
+      "type": "header",
+      "content": "Section Backgorund Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "testi_bgimg",
+      "label": "Backgorund Image",
+      "info": "Recommended Size: 1920px x 800px"
+    },
+    {
+      "type": "checkbox",
+      "id": "testi_bgimg_enable",
+      "label": "Show Backgorund Images",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section Border"
+    },
+    {
+      "type": "checkbox",
+      "id": "border_enable",
+      "label": "Show Section Border",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "border",
+      "label": "Border",
+      "min": 0,
+      "max": 2,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#C19D60"
+    },
+    {
+      "type": "range",
+      "id": "border_color_opacity",
+      "label": "Theme Border Color Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.3
+    },
+    {
+      "type": "header",
+      "content": "Home About Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "about_image",
+      "label": "Image",
+      "info": "Recommended Size: 895x570px"
+    },
+    {
+      "type": "header",
+      "content": "Home About Content"
+    },
+    {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Trending products buy 1 get 1"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Title",
+      "default": "For the sunglasses you don't yet know."
+    },
+    {
+      "type": "textarea",
+      "id": "about_content_desc",
+      "label": "Description",
+      "default": "If you use this site regularly and would like to help keep the site on the Internet, please consider donating a small sum to help pay for the hosting and bandwidth bill."
+    },
+    {
+      "type": "text",
+      "id": "about_small_title",
+      "label": "Small Title",
+      "default": "Best selling price at $120"
+    },
+    {
+      "type": "text",
+      "id": "about_content_btn_text",
+      "label": "Button Text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "about_content_btn_url",
+      "label": "Button url"
+    },
+    {
+      "type": "select",
+      "id": "about_content_btn_style",
+      "label": "Button Style",
+      "options": [
+        {
+          "label": "Button Style1",
+          "value": "btn-style1"
+        },
+        {
+          "label": "Button Style2",
+          "value": "btn-style2"
+        },
+        {
+          "label": "Button Style3",
+          "value": "btn-style3"
+        }
+      ],
+      "default": "btn-style2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home About"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.home-about-area {
+  padding-top: {{ section.settings.section_padding_top }}px;
+  padding-bottom: {{ section.settings.section_padding_bottom }}px;
+  {% if section.settings.section_bg_color_enable %}
+  background-color: {{ section.settings.section_bg_color }};
+  {% endif %}
+  {% if section.settings.testi_bgimg_enable %}
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  {% endif %}
+  {% if section.settings.border_enable %}
+  border-top: {{ section.settings.border }}px solid {{ section.settings.border_color | color_modify: 'alpha', section.settings.border_color_opacity }};
+  {% endif %}
+}
+@media (max-width: 1199px) {
+  .home-about-area {
+    padding-top: {{ section.settings.section_padding_top_ip }}px;
+    padding-bottom: {{ section.settings.section_padding_bottom_ip }}px;
+  }
+}
+@media (max-width: 767px) {
+  .home-about-area {
+    padding-top: {{ section.settings.section_padding_top_xs }}px;
+    padding-bottom: {{ section.settings.section_padding_bottom_xs }}px;
+  }
+}
+
+/* main css */
+.home-about-area .home-about-main {
+  display: flex;
+  flex-wrap: wrap;
+  {%- if settings.enable_rtl -%}
+  margin-right: -30px;
+  {%- else -%}
+  margin-left: -30px;
+  {%- endif -%}
+}
+.home-about-area .home-about-main .home-about-image {
+  width: calc(66.67% - 30px);
+  {%- if settings.enable_rtl -%}
+  margin-right: 30px;
+  {%- else -%}
+  margin-left: 30px;
+  {%- endif -%}
+}
+.home-about-area .home-about-main .home-about-content {
+  width: calc(33.33% - 30px);
+  {%- if settings.enable_rtl -%}
+  margin-right: 30px;
+  {%- else -%}
+  margin-left: 30px;
+  {%- endif -%}
+}
+@media (max-width: 991px) {
+  .home-about-area .home-about-main {
+    {%- if settings.enable_rtl -%}
+    margin-right: 0px;
+    {%- else -%}
+    margin-left: 0px;
+    {%- endif -%}
+  }
+  .home-about-area .home-about-main .home-about-image,
+  .home-about-area .home-about-main .home-about-content {
+    width: calc(100% - 0px);
+    {%- if settings.enable_rtl -%}
+    margin-right: 0px;
+    {%- else -%}
+    margin-left: 0px;
+    {%- endif -%}
+  }
+  .home-about-area .home-about-main .home-about-content {
+    margin-top: 34px;
+  }
+}
+@media (max-width: 767px) {
+  .home-about-area .home-about-main .home-about-content {
+    margin-top: 24px;
+  }
+}
+
+
+/* about image css */
+.home-about-area .home-about-main .home-about-image .about-image {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+{%- if settings.enable_rtl -%}
+.home-about-area .home-about-main .home-about-image .about-image span.image img {
+  transform: scaleX(-1);
+}
+{% endif %}
+.home-about-area .home-about-main .home-about-image .about-image span.image svg {
+  width: 100%;
+}
+
+/* about content css */
+.home-about-area .home-about-main .home-about-content .about-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 auto;
+}
+.home-about-area .home-about-main .home-about-content .about-content .section-capture {
+  margin-bottom: 12px;
+}
+.home-about-area .home-about-main .home-about-content .about-content .section-capture .section-title {
+  {%- if settings.enable_rtl -%}
+  text-align: right;
+  {%- else -%}
+  text-align: left;
+  {%- endif -%}
+}
+.home-about-area .home-about-main .home-about-content .about-content h4.small-title {
+  color: var(--font-color-primary);
+  font-size: 24px;
+  margin-top: 12px;
+  font-weight: var(--font-custom-weight-section-header);
+}
+.home-about-area .home-about-main .home-about-content .about-content h4.small-title span {
+  line-height: 1;
+  border-bottom: 2px solid var(--font-color-primary);
+}
+.home-about-area .home-about-main .home-about-content .about-content a {
+  margin-top: 51px;
+}
+@media (max-width: 1199px) {
+  .home-about-area .home-about-main .home-about-content .about-content a {
+    margin-top: 31px;
+  }
+}
+@media (max-width: 767px) {
+  .home-about-area .home-about-main .home-about-content .about-content .section-capture {
+    margin-bottom: 17px;
+  }
+  .home-about-area .home-about-main .home-about-content .about-content h4.small-title {
+    font-size: 20px;
+    margin-top: 14px;
+  }
+  .home-about-area .home-about-main .home-about-content .about-content a {
+    margin-top: 21px;
+  }
+}
+</style>

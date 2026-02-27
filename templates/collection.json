@@ -1,0 +1,127 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "brand_logo_pills_wFVG4D": {
+      "type": "brand-logo-pills",
+      "blocks": {
+        "brand_t4nWda": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/revel.png",
+            "name": "",
+            "url": "https://9se3hg-ti.myshopify.com/a/search/brands?filter_brand=Revel"
+          }
+        },
+        "brand_NerGkp": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/rayban.png",
+            "name": "",
+            "url": "https://9se3hg-ti.myshopify.com/a/search/brands?filter_brand=Ray-Ban"
+          }
+        },
+        "brand_UmtfaJ": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/herrera.png",
+            "name": "",
+            "url": "https://9se3hg-ti.myshopify.com/a/search/brands?filter_brand=Carolina+Herrera"
+          }
+        },
+        "brand_ekMbax": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/oaklet.png",
+            "name": "",
+            "url": "http://9se3hg-ti.myshopify.com/a/search/brands?filter_brand=Oakley"
+          }
+        }
+      },
+      "block_order": [
+        "brand_t4nWda",
+        "brand_NerGkp",
+        "brand_UmtfaJ",
+        "brand_ekMbax"
+      ],
+      "name": "Brand logo pills",
+      "settings": {}
+    },
+    "1768937175fd4b2256": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "17685124544a9c3ea8": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "collection-template": {
+      "type": "collection-template",
+      "settings": {
+        "collection_bgcolor": "rgba(0,0,0,0)",
+        "collection_bgcolor_enable": true,
+        "border": 1,
+        "border_color": "#808080",
+        "border_enable": false,
+        "border_color_opacity": 0.1,
+        "collection_categories_title": "Categories",
+        "collection_categories_enable": false,
+        "sidebar_banner_url": "shopify://collections/all",
+        "sidebar_banner_enable": false,
+        "collection_info_enable": false,
+        "collection_image_enable": false,
+        "collection_desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+        "collection_desc_enable": false,
+        "tab_bar_enable": true,
+        "short_by_enable": true,
+        "sidebar_handle": "left_sidebar_handle",
+        "products_limit_handle": "12"
+      }
+    },
+    "filter_pills_mnWq9W": {
+      "type": "filter-pills",
+      "name": "Collection Filter Bar",
+      "settings": {
+        "background_color": "#ffffff",
+        "sticky_position": "relative",
+        "box_shadow": "0 2px 4px rgba(0,0,0,0.05)",
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "show_price": true,
+        "show_brand": true,
+        "show_product_type": true,
+        "show_availability": true,
+        "show_sort": true,
+        "show_search": true,
+        "button_bg": "#b93a3a",
+        "button_color": "#ffffff",
+        "button_border": "#b93a3a",
+        "button_hover_bg": "#a32e2e",
+        "button_hover_border": "#a32e2e",
+        "button_active_bg": "#8b2525",
+        "button_active_border": "#8b2525",
+        "button_active_color": "#ffffff",
+        "button_radius": 50,
+        "button_padding_v": 14,
+        "button_padding_h": 30,
+        "button_text_size": 16,
+        "button_gap": 10,
+        "dropdown_border": "#e0e0e0"
+      }
+    }
+  },
+  "order": [
+    "brand_logo_pills_wFVG4D",
+    "filter_pills_mnWq9W",
+    "1768937175fd4b2256",
+    "17685124544a9c3ea8",
+    "collection-template"
+  ]
+}

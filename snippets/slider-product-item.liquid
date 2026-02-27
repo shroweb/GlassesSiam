@@ -1,0 +1,21 @@
+<div class="single-product-wrap{% unless product.available %} stock-out{% endunless %}">
+  <div class="product-image{% unless product.available %} stock-out{% endunless %}">
+    <a class="pro-img" href="{{ product.url | within: collection }}">
+      <img class="img-fluid{% if settings.pro_hvr_enable %} img1{% endif %}{% unless settings.mobile_pro_hvr_enable %} resp-img1{% endunless %}" src="{{ product.featured_image.src | image_url: width: 640, height: 625, crop: 'center' }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" alt="{{ product.featured_image.alt }}" loading="lazy">
+      {% if settings.pro_hvr_enable or product.images[1] %}
+      <img class="img-fluid{% if settings.pro_hvr_enable %} img2{% endif %}{% unless settings.mobile_pro_hvr_enable %} resp-img2{% endunless %}" src="{{ product.images[1] | image_url: width: 640, height: 625, crop: 'center' }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" alt="{{ product.featured_image.alt }}" loading="lazy">
+      {% endif %}
+    </a>
+  </div>
+  <div class="product-content">
+    <h6>
+    	<a href="{{ product.url | within: collection }}" title="{{ product.title }}">{{ product.title }}</a>
+    </h6>
+    <div class="price-box">
+			<span class="new-price">{{ product.price | money }}</span>
+			{% if product.compare_at_price_max > product.price %}
+			<span class="old-price">{{ product.compare_at_price | money }}</span>
+    	{% endif %}
+    </div>
+  </div>
+</div>

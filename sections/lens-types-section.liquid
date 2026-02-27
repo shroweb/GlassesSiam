@@ -1,0 +1,484 @@
+{% comment %}
+  Lens Types Section — alternating image+text rows
+  Each row: image side, content side with feature checklist
+{% endcomment %}
+
+<section class="lens-types" style="background: {{ section.settings.background_color }}; padding: {{ section.settings.padding_top }}px 2rem {{ section.settings.padding_bottom }}px;">
+  <div class="lens-types__inner">
+
+    {% if section.settings.heading != blank %}
+      <div class="lens-types__header">
+        {% if section.settings.eyebrow != blank %}
+          <p class="lens-types__eyebrow">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        <h2 class="lens-types__heading">{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="lens-types__subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% for block in section.blocks %}
+      {% if block.type == 'lens_type' %}
+        {% assign row_index = forloop.index0 %}
+        <div
+          class="lens-type-row{% if row_index == 0 %} lens-type-row--first{% endif %}{% if row_index contains 1 or row_index == 1 or row_index == 3 %} lens-type-row--reverse{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+
+          <div class="lens-type-row__image">
+            {% if block.settings.image %}
+              <img
+                src="{{ block.settings.image | image_url: width: 700 }}"
+                alt="{{ block.settings.title | escape }}"
+                loading="lazy"
+                width="700"
+              >
+            {% else %}
+              <div class="lens-type-row__img-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+            {% endif %}
+            {% if block.settings.badge != blank %}
+              <span class="lens-type-row__badge">{{ block.settings.badge }}</span>
+            {% endif %}
+          </div>
+
+          <div class="lens-type-row__content">
+            {% if block.settings.eyebrow != blank %}
+              <p class="lens-type-row__eyebrow">{{ block.settings.eyebrow }}</p>
+            {% endif %}
+            <h3 class="lens-type-row__title">{{ block.settings.title }}</h3>
+            {% if block.settings.description != blank %}
+              <p class="lens-type-row__desc">{{ block.settings.description }}</p>
+            {% endif %}
+
+            {% assign has_features = false %}
+            {% for i in (1..4) %}
+              {% assign feat_key = 'feature_' | append: i %}
+              {% if block.settings[feat_key] != blank %}
+                {% assign has_features = true %}
+              {% endif %}
+            {% endfor %}
+
+            {% if has_features %}
+              <ul class="lens-type-row__features">
+                {% for i in (1..4) %}
+                  {% assign feat_key = 'feature_' | append: i %}
+                  {% if block.settings[feat_key] != blank %}
+                    <li>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      {{ block.settings[feat_key] }}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if block.settings.price_from != blank %}
+              <p class="lens-type-row__price">
+                <span class="lens-type-row__price-from">Starting from</span>
+                <span class="lens-type-row__price-val">{{ block.settings.price_from }}</span>
+              </p>
+            {% endif %}
+
+            {% if block.settings.cta_text != blank %}
+              <a href="{{ block.settings.cta_url | default: '#' }}" class="lens-type-row__cta">
+                {{ block.settings.cta_text }}
+              </a>
+            {% endif %}
+          </div>
+
+        </div>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</section>
+
+{% style %}
+.lens-types__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.lens-types__header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.lens-types__eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #113071;
+  margin-bottom: 0.6rem;
+}
+
+.lens-types__heading {
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.lens-types__subheading {
+  font-size: 16px;
+  color: #6b7280;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* Row */
+.lens-type-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+  padding: 3rem 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+
+.lens-type-row--first {
+  padding-top: 0;
+}
+
+.lens-type-row--reverse {
+  direction: rtl;
+}
+
+.lens-type-row--reverse > * {
+  direction: ltr;
+}
+
+/* Image */
+.lens-type-row__image {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background: #f1f5f9;
+}
+
+.lens-type-row__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.lens-type-row:hover .lens-type-row__image img {
+  transform: scale(1.03);
+}
+
+.lens-type-row__img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lens-type-row__badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: #113071;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+/* Content */
+.lens-type-row__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #113071;
+  margin-bottom: 0.5rem;
+}
+
+.lens-type-row__title {
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+  margin-bottom: 0.9rem;
+}
+
+.lens-type-row__desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 1.25rem;
+}
+
+/* Features list */
+.lens-type-row__features {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.lens-type-row__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 14.5px;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.lens-type-row__features svg {
+  color: #113071;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Price */
+.lens-type-row__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 1.4rem;
+}
+
+.lens-type-row__price-from {
+  font-size: 12.5px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.lens-type-row__price-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* CTA */
+.lens-type-row__cta {
+  display: inline-flex;
+  align-items: center;
+  background: #113071;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 13px 28px;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(17,48,113,0.25);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.lens-type-row__cta:hover {
+  background: #0d2458;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(17,48,113,0.3);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lens-type-row {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    direction: ltr;
+  }
+  .lens-type-row--reverse > * {
+    direction: ltr;
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Lens Types",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Our Lenses"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Choose the Right Lenses"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sub-heading",
+      "default": "Every pair comes with expert lens recommendations based on your prescription and lifestyle."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lens_type",
+      "name": "Lens Type",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Lens Image"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge (optional)",
+          "info": "e.g. Most Popular, New"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow Label"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Lens Name",
+          "default": "Single Vision Lenses"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Perfect for everyday wear, correcting either near or distance vision."
+        },
+        {
+          "type": "text",
+          "id": "feature_1",
+          "label": "Feature 1",
+          "default": "Clear, sharp vision all day"
+        },
+        {
+          "type": "text",
+          "id": "feature_2",
+          "label": "Feature 2",
+          "default": "Available in multiple materials"
+        },
+        {
+          "type": "text",
+          "id": "feature_3",
+          "label": "Feature 3",
+          "default": "Anti-reflective coating included"
+        },
+        {
+          "type": "text",
+          "id": "feature_4",
+          "label": "Feature 4 (optional)"
+        },
+        {
+          "type": "text",
+          "id": "price_from",
+          "label": "Price From (optional)",
+          "info": "e.g. $29"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "CTA Button Text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "CTA Button URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lens Types",
+      "blocks": [
+        {
+          "type": "lens_type",
+          "settings": {
+            "eyebrow": "Best Seller",
+            "title": "Single Vision Lenses",
+            "description": "Our most popular option. Ideal for correcting near-sightedness, far-sightedness, or astigmatism.",
+            "feature_1": "Sharp, clear vision at one distance",
+            "feature_2": "Lightweight materials available",
+            "feature_3": "Anti-reflective coating included",
+            "feature_4": "UV protection as standard",
+            "price_from": "$29",
+            "cta_text": "Get Single Vision Lenses",
+            "badge": "Most Popular"
+          }
+        },
+        {
+          "type": "lens_type",
+          "settings": {
+            "eyebrow": "For Over 40s",
+            "title": "Progressive Lenses",
+            "description": "Seamlessly transition from distance to reading with no visible line — the modern alternative to bifocals.",
+            "feature_1": "Distance, intermediate & near in one lens",
+            "feature_2": "No bifocal line — looks great",
+            "feature_3": "Premium corridor technology",
+            "feature_4": "Digitally surfaced for accuracy",
+            "price_from": "$89",
+            "cta_text": "Get Progressive Lenses"
+          }
+        },
+        {
+          "type": "lens_type",
+          "settings": {
+            "eyebrow": "Modern Protection",
+            "title": "Blue Light Blocking",
+            "description": "Filter harmful blue light from screens to reduce eye strain, improve sleep, and protect long-term eye health.",
+            "feature_1": "Reduces digital eye strain",
+            "feature_2": "Better sleep with less screen glare",
+            "feature_3": "Clear lenses — not yellow tinted",
+            "feature_4": "Add to any frame or prescription",
+            "price_from": "$49",
+            "cta_text": "Get Blue Light Lenses"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

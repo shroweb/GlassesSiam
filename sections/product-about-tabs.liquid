@@ -1,0 +1,828 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<section class="product-about-tabs-section" id="product-about-tabs">
+  <div class="container">
+
+    {%- comment -%} Tab Navigation {%- endcomment -%}
+    <div class="pat-tab-nav">
+      <button class="pat-tab-btn pat-tab-btn--active" data-tab="about">
+        <span class="pat-tab-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/></svg>
+        </span>
+        {{ section.settings.tab_about_title }}
+      </button>
+      <button class="pat-tab-btn" data-tab="shipping">
+        <span class="pat-tab-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        {{ section.settings.tab_shipping_title }}
+      </button>
+    </div>
+    <div class="pat-tab-divider"></div>
+
+    {%- comment -%} About the Frame Tab {%- endcomment -%}
+    <div class="pat-tab-content pat-tab-content--active" id="pat-tab-about">
+
+      {%- comment -%} Description + Specs Grid {%- endcomment -%}
+      <div class="pat-about-grid">
+        <div class="pat-about-desc">
+          <h3 class="pat-about-title">{{ product.title }}</h3>
+          <div class="pat-about-text">{{ product.description }}</div>
+        </div>
+        <div class="pat-specs-table-wrap">
+          <table class="pat-specs-table">
+            <tbody>
+              {%- assign specs = '' -%}
+              {%- if product.metafields.custom.size != blank or product.metafields.custom.color != blank -%}
+              <tr>
+                <th>{{ section.settings.label_size }}</th>
+                <td>{{ product.metafields.custom.size | default: '—' }}</td>
+                <th>{{ section.settings.label_color }}</th>
+                <td>{{ product.metafields.custom.color | default: '—' }}</td>
+              </tr>
+              {%- endif -%}
+              {%- if product.metafields.custom.material != blank or product.metafields.custom.gender != blank -%}
+              <tr>
+                <th>{{ section.settings.label_material }}</th>
+                <td>{{ product.metafields.custom.material | default: '—' }}</td>
+                <th>{{ section.settings.label_gender }}</th>
+                <td>{{ product.metafields.custom.gender | default: '—' }}</td>
+              </tr>
+              {%- endif -%}
+              {%- if product.metafields.custom.shape != blank or product.metafields.custom.frame_type != blank -%}
+              <tr>
+                <th>{{ section.settings.label_shape }}</th>
+                <td>{{ product.metafields.custom.shape | default: '—' }}</td>
+                <th>{{ section.settings.label_type }}</th>
+                <td>{{ product.metafields.custom.frame_type | default: '—' }}</td>
+              </tr>
+              {%- endif -%}
+              {%- if product.metafields.custom.spring_hinges != blank or product.metafields.custom.lens_feature != blank -%}
+              <tr>
+                <th>{{ section.settings.label_spring_hinges }}</th>
+                <td>{{ product.metafields.custom.spring_hinges | default: '—' }}</td>
+                <th>{{ section.settings.label_lens_feature }}</th>
+                <td>{{ product.metafields.custom.lens_feature | default: '—' }}</td>
+              </tr>
+              {%- endif -%}
+              {%- if product.metafields.custom.progressive_bifocal != blank -%}
+              <tr>
+                <th>{{ section.settings.label_progressive }}</th>
+                <td>{{ product.metafields.custom.progressive_bifocal | default: '—' }}</td>
+                <th></th>
+                <td></td>
+              </tr>
+              {%- endif -%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {%- comment -%} Expandable Features Section {%- endcomment -%}
+      {%- assign has_features = false -%}
+      {%- for i in (1..6) -%}
+        {%- assign key = 'feature_' | append: i -%}
+        {%- if section.settings[key] != blank -%}{%- assign has_features = true -%}{%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_features or section.settings.feature_image_1 != blank or section.settings.feature_image_2 != blank or section.settings.lifestyle_image != blank -%}
+      <div class="pat-features-wrap" id="pat-features-wrap">
+        <div class="pat-features-inner pat-features-collapsed" id="pat-features-inner">
+          <div class="pat-features-row">
+
+            {%- comment -%} Feature checklist {%- endcomment -%}
+            <div class="pat-features-list-col">
+              <ul class="pat-features-list">
+                {%- for i in (1..6) -%}
+                  {%- assign key = 'feature_' | append: i -%}
+                  {%- if section.settings[key] != blank -%}
+                  <li class="pat-features-item">
+                    <span class="pat-features-check">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    <span>{{ section.settings[key] }}</span>
+                  </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+
+            {%- comment -%} Feature images {%- endcomment -%}
+            {%- if section.settings.feature_image_1 != blank -%}
+            <div class="pat-features-img-col">
+              <img src="{{ section.settings.feature_image_1 | image_url: width: 500 }}" alt="{{ section.settings.feature_image_1.alt | escape }}" class="pat-features-img" loading="lazy" width="500" height="400">
+            </div>
+            {%- endif -%}
+            {%- if section.settings.feature_image_2 != blank -%}
+            <div class="pat-features-img-col">
+              <img src="{{ section.settings.feature_image_2 | image_url: width: 500 }}" alt="{{ section.settings.feature_image_2.alt | escape }}" class="pat-features-img" loading="lazy" width="500" height="400">
+            </div>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Lifestyle / 180° image {%- endcomment -%}
+          {%- if section.settings.lifestyle_image != blank -%}
+          <div class="pat-lifestyle-row">
+            <div class="pat-lifestyle-img-wrap">
+              {%- if section.settings.show_360_badge -%}
+              <span class="pat-badge-360">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                180°
+              </span>
+              {%- endif -%}
+              <img src="{{ section.settings.lifestyle_image | image_url: width: 900 }}" alt="{{ section.settings.lifestyle_image.alt | escape }}" class="pat-lifestyle-img" loading="lazy" width="900" height="600">
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Show More / Show Less toggle {%- endcomment -%}
+        <div class="pat-toggle-wrap">
+          <button class="pat-toggle-btn" id="pat-toggle-btn" aria-expanded="false">
+            <span class="pat-toggle-label-more">{{ section.settings.show_more_label }}</span>
+            <span class="pat-toggle-label-less" style="display:none;">{{ section.settings.show_less_label }}</span>
+            <svg class="pat-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+      {%- endif -%}
+
+      {%- comment -%} Including Bar {%- endcomment -%}
+      {%- assign has_includes = false -%}
+      {%- for i in (1..4) -%}
+        {%- assign key = 'include_label_' | append: i -%}
+        {%- if section.settings[key] != blank -%}{%- assign has_includes = true -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if has_includes -%}
+      <div class="pat-includes-bar">
+        <span class="pat-includes-label">{{ section.settings.includes_heading }}</span>
+        <div class="pat-includes-items">
+          {%- for i in (1..4) -%}
+            {%- assign label_key = 'include_label_' | append: i -%}
+            {%- assign icon_key = 'include_icon_' | append: i -%}
+            {%- if section.settings[label_key] != blank -%}
+            {%- unless forloop.first -%}<span class="pat-includes-divider">|</span>{%- endunless -%}
+            <span class="pat-includes-item">
+              {%- if section.settings[icon_key] != blank -%}
+              <img src="{{ section.settings[icon_key] | image_url: width: 28 }}" alt="" class="pat-includes-icon" width="28" height="28" loading="lazy">
+              {%- else -%}
+              <svg class="pat-includes-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              {%- endif -%}
+              {{ section.settings[label_key] }}
+            </span>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- endif -%}
+
+    </div>{%- comment -%} /pat-tab-about {%- endcomment -%}
+
+    {%- comment -%} Shipping & Returns Tab {%- endcomment -%}
+    <div class="pat-tab-content" id="pat-tab-shipping">
+      <div class="pat-shipping-content">
+        {{ section.settings.shipping_content }}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  var tabBtns = document.querySelectorAll('#product-about-tabs .pat-tab-btn');
+  var tabContents = {
+    'about': document.getElementById('pat-tab-about'),
+    'shipping': document.getElementById('pat-tab-shipping')
+  };
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabBtns.forEach(function(b) { b.classList.remove('pat-tab-btn--active'); });
+      Object.values(tabContents).forEach(function(c) { if(c) c.classList.remove('pat-tab-content--active'); });
+      btn.classList.add('pat-tab-btn--active');
+      var target = tabContents[btn.getAttribute('data-tab')];
+      if (target) target.classList.add('pat-tab-content--active');
+    });
+  });
+
+  var toggleBtn = document.getElementById('pat-toggle-btn');
+  var featuresInner = document.getElementById('pat-features-inner');
+  if (toggleBtn && featuresInner) {
+    toggleBtn.addEventListener('click', function() {
+      var expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', !expanded);
+      featuresInner.classList.toggle('pat-features-collapsed', expanded);
+      featuresInner.classList.toggle('pat-features-expanded', !expanded);
+      toggleBtn.querySelector('.pat-toggle-label-more').style.display = expanded ? '' : 'none';
+      toggleBtn.querySelector('.pat-toggle-label-less').style.display = expanded ? 'none' : '';
+      toggleBtn.querySelector('.pat-toggle-icon').style.transform = expanded ? '' : 'rotate(180deg)';
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "About Frame Tabs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tab Labels"
+    },
+    {
+      "type": "text",
+      "id": "tab_about_title",
+      "label": "About Tab Label",
+      "default": "About the frame"
+    },
+    {
+      "type": "text",
+      "id": "tab_shipping_title",
+      "label": "Shipping Tab Label",
+      "default": "Shipping & Returns"
+    },
+    {
+      "type": "header",
+      "content": "Spec Table Labels"
+    },
+    {
+      "type": "text",
+      "id": "label_size",
+      "label": "Size label",
+      "default": "Size:"
+    },
+    {
+      "type": "text",
+      "id": "label_color",
+      "label": "Color label",
+      "default": "Color:"
+    },
+    {
+      "type": "text",
+      "id": "label_material",
+      "label": "Material label",
+      "default": "Material:"
+    },
+    {
+      "type": "text",
+      "id": "label_gender",
+      "label": "Gender label",
+      "default": "Gender:"
+    },
+    {
+      "type": "text",
+      "id": "label_shape",
+      "label": "Shape label",
+      "default": "Shape:"
+    },
+    {
+      "type": "text",
+      "id": "label_type",
+      "label": "Type label",
+      "default": "Type:"
+    },
+    {
+      "type": "text",
+      "id": "label_spring_hinges",
+      "label": "Spring Hinges label",
+      "default": "Spring Hinges:"
+    },
+    {
+      "type": "text",
+      "id": "label_lens_feature",
+      "label": "Lens Feature label",
+      "default": "Lens Feature:"
+    },
+    {
+      "type": "text",
+      "id": "label_progressive",
+      "label": "Progressive / Bifocal label",
+      "default": "Progressive / Bifocal eligible:"
+    },
+    {
+      "type": "header",
+      "content": "Features Checklist"
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Feature 1"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Feature 2"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature 3"
+    },
+    {
+      "type": "text",
+      "id": "feature_4",
+      "label": "Feature 4"
+    },
+    {
+      "type": "text",
+      "id": "feature_5",
+      "label": "Feature 5"
+    },
+    {
+      "type": "text",
+      "id": "feature_6",
+      "label": "Feature 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_image_1",
+      "label": "Feature Image (centre)"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_image_2",
+      "label": "Feature Image (right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "lifestyle_image",
+      "label": "Lifestyle / Model Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_360_badge",
+      "label": "Show 180° badge on lifestyle image",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "show_more_label",
+      "label": "Show More button text",
+      "default": "Show More"
+    },
+    {
+      "type": "text",
+      "id": "show_less_label",
+      "label": "Show Less button text",
+      "default": "Show Less"
+    },
+    {
+      "type": "header",
+      "content": "Including Bar"
+    },
+    {
+      "type": "text",
+      "id": "includes_heading",
+      "label": "Heading",
+      "default": "Including:"
+    },
+    {
+      "type": "text",
+      "id": "include_label_1",
+      "label": "Item 1 Label",
+      "default": "Scratch-resistant coating"
+    },
+    {
+      "type": "image_picker",
+      "id": "include_icon_1",
+      "label": "Item 1 Icon (optional)"
+    },
+    {
+      "type": "text",
+      "id": "include_label_2",
+      "label": "Item 2 Label",
+      "default": "365-day warranty"
+    },
+    {
+      "type": "image_picker",
+      "id": "include_icon_2",
+      "label": "Item 2 Icon (optional)"
+    },
+    {
+      "type": "text",
+      "id": "include_label_3",
+      "label": "Item 3 Label",
+      "default": "Case & cleaning cloth"
+    },
+    {
+      "type": "image_picker",
+      "id": "include_icon_3",
+      "label": "Item 3 Icon (optional)"
+    },
+    {
+      "type": "text",
+      "id": "include_label_4",
+      "label": "Item 4 Label"
+    },
+    {
+      "type": "image_picker",
+      "id": "include_icon_4",
+      "label": "Item 4 Icon (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Shipping & Returns Content"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_content",
+      "label": "Shipping & Returns content",
+      "default": "<p>Enter your shipping and returns information here.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Padding Top (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Padding Bottom (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_xs",
+      "label": "Padding Top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_xs",
+      "label": "Padding Bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Frame Tabs"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.product-about-tabs-section {
+  padding-top: {{ section.settings.section_padding_top }}px;
+  padding-bottom: {{ section.settings.section_padding_bottom }}px;
+}
+@media (max-width: 767px) {
+  .product-about-tabs-section {
+    padding-top: {{ section.settings.section_padding_top_xs }}px;
+    padding-bottom: {{ section.settings.section_padding_bottom_xs }}px;
+  }
+}
+
+/* ── Tab Navigation ── */
+.pat-tab-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0;
+}
+.pat-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #888;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.pat-tab-btn:hover {
+  color: #333;
+}
+.pat-tab-btn--active {
+  color: #111;
+  border-bottom-color: #111;
+}
+.pat-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+.pat-tab-btn--active .pat-tab-icon {
+  background: #e8ecf5;
+  color: var(--font-color-primary, #113071);
+}
+.pat-tab-divider {
+  border-top: 1.5px solid #e5e5e5;
+  margin-bottom: 36px;
+}
+
+/* ── Tab Content ── */
+.pat-tab-content {
+  display: none;
+}
+.pat-tab-content--active {
+  display: block;
+}
+
+/* ── About: Description + Specs ── */
+.pat-about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+@media (max-width: 991px) {
+  .pat-about-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+.pat-about-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #111;
+}
+.pat-about-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #444;
+}
+
+/* Specs table */
+.pat-specs-table-wrap {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pat-specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.pat-specs-table tr {
+  border-bottom: 1px solid #e5e5e5;
+}
+.pat-specs-table tr:last-child {
+  border-bottom: none;
+}
+.pat-specs-table th,
+.pat-specs-table td {
+  padding: 13px 16px;
+  text-align: left;
+  line-height: 1.4;
+}
+.pat-specs-table th {
+  background: #f7f7f7;
+  font-weight: 600;
+  color: #444;
+  width: 26%;
+  white-space: nowrap;
+}
+.pat-specs-table td {
+  color: #111;
+  background: #fff;
+  width: 24%;
+}
+@media (max-width: 767px) {
+  .pat-specs-table th,
+  .pat-specs-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+/* ── Features Section ── */
+.pat-features-wrap {
+  margin-bottom: 32px;
+}
+.pat-features-inner {
+  overflow: hidden;
+  transition: max-height 0.45s ease;
+}
+.pat-features-collapsed {
+  max-height: 340px;
+}
+.pat-features-expanded {
+  max-height: 2000px;
+}
+.pat-features-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+@media (max-width: 767px) {
+  .pat-features-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pat-features-list-col {
+    grid-column: 1 / -1;
+  }
+}
+.pat-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pat-features-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f0f4fb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+  line-height: 1.4;
+}
+.pat-features-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--font-color-primary, #113071);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.pat-features-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+.pat-features-img-col {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Lifestyle row */
+.pat-lifestyle-row {
+  width: 100%;
+}
+.pat-lifestyle-img-wrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 540px;
+}
+.pat-lifestyle-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+.pat-badge-360 {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Show More / Less */
+.pat-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+.pat-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.pat-toggle-btn:hover {
+  border-color: #888;
+  color: #111;
+}
+.pat-toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+/* ── Including Bar ── */
+.pat-includes-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 28px;
+  background: #f5f7ff;
+  border-radius: 40px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.pat-includes-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--font-color-primary, #113071);
+  flex-shrink: 0;
+}
+.pat-includes-items {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
+.pat-includes-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: #333;
+}
+.pat-includes-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.pat-includes-icon-svg {
+  color: #555;
+  flex-shrink: 0;
+}
+.pat-includes-divider {
+  color: #ccc;
+  padding: 0 4px;
+}
+@media (max-width: 600px) {
+  .pat-includes-bar {
+    padding: 14px 18px;
+    border-radius: 16px;
+    gap: 10px;
+  }
+  .pat-includes-divider {
+    display: none;
+  }
+}
+
+/* ── Shipping Tab ── */
+.pat-shipping-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #444;
+  max-width: 800px;
+}
+.pat-shipping-content h2,
+.pat-shipping-content h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin: 20px 0 8px;
+}
+.pat-shipping-content p {
+  margin-bottom: 12px;
+}
+</style>

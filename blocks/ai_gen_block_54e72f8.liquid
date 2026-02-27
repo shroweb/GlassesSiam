@@ -1,0 +1,552 @@
+{% doc %}
+  @prompt
+    need a filter for brands
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-brand-filter-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-brand-filter__heading-{{ ai_gen_id }} {
+    margin: 0 0 {{ block.settings.heading_spacing }}px;
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: {{ block.settings.heading_weight }};
+    color: {{ block.settings.heading_color }};
+    text-transform: {{ block.settings.heading_transform }};
+  }
+
+  .ai-brand-filter__list-{{ ai_gen_id }} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.item_spacing }}px;
+  }
+
+  .ai-brand-filter__item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ai-brand-filter__checkbox-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    cursor: pointer;
+  }
+
+  .ai-brand-filter__checkbox-{{ ai_gen_id }} {
+    width: {{ block.settings.checkbox_size }}px;
+    height: {{ block.settings.checkbox_size }}px;
+    border: 2px solid {{ block.settings.checkbox_border_color }};
+    border-radius: {{ block.settings.checkbox_border_radius }}px;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: {{ block.settings.checkbox_active_color }};
+  }
+
+  .ai-brand-filter__label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.label_color }};
+    cursor: pointer;
+    flex-grow: 1;
+  }
+
+  .ai-brand-filter__count-{{ ai_gen_id }} {
+    font-size: {{ block.settings.count_size }}px;
+    color: {{ block.settings.count_color }};
+    margin-left: auto;
+  }
+
+  .ai-brand-filter__show-more-{{ ai_gen_id }} {
+    margin-top: {{ block.settings.item_spacing }}px;
+    padding: 8px 16px;
+    background: none;
+    border: 1px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_text_size }}px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .ai-brand-filter__show-more-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg }};
+    color: {{ block.settings.button_hover_text }};
+    border-color: {{ block.settings.button_hover_border }};
+  }
+
+  .ai-brand-filter__item-{{ ai_gen_id }}.hidden {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-brand-filter-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px {{ block.settings.padding_bottom | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<brand-filter-{{ ai_gen_id }} class="ai-brand-filter-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.heading != blank %}
+    <h3 class="ai-brand-filter__heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h3>
+  {% endif %}
+
+  <ul class="ai-brand-filter__list-{{ ai_gen_id }}">
+    {% assign all_vendors = '' %}
+    {% for product in collections.all.products %}
+      {% unless all_vendors contains product.vendor %}
+        {% assign all_vendors = all_vendors | append: product.vendor | append: ',' %}
+      {% endunless %}
+    {% endfor %}
+    
+    {% assign vendors_array = all_vendors | split: ',' %}
+    {% assign sorted_vendors = vendors_array | sort %}
+    
+    {% for vendor in sorted_vendors %}
+      {% if vendor != blank %}
+        {% assign vendor_count = 0 %}
+        {% for product in collections.all.products %}
+          {% if product.vendor == vendor %}
+            {% assign vendor_count = vendor_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+        
+        {% assign item_index = forloop.index %}
+        {% assign is_hidden = false %}
+        {% if block.settings.show_more_enabled and item_index > block.settings.initial_items %}
+          {% assign is_hidden = true %}
+        {% endif %}
+        
+        <li class="ai-brand-filter__item-{{ ai_gen_id }} {% if is_hidden %}hidden{% endif %}" data-brand-item>
+          <label class="ai-brand-filter__checkbox-wrapper-{{ ai_gen_id }}">
+            <input 
+              type="checkbox" 
+              class="ai-brand-filter__checkbox-{{ ai_gen_id }}"
+              name="vendor"
+              value="{{ vendor | handle }}"
+              data-vendor="{{ vendor | handle }}"
+            >
+            <span class="ai-brand-filter__label-{{ ai_gen_id }}">{{ vendor }}</span>
+          </label>
+          {% if block.settings.show_count %}
+            <span class="ai-brand-filter__count-{{ ai_gen_id }}">({{ vendor_count }})</span>
+          {% endif %}
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+  {% if block.settings.show_more_enabled %}
+    {% assign total_vendors = sorted_vendors | size %}
+    {% if total_vendors > block.settings.initial_items %}
+      <button 
+        class="ai-brand-filter__show-more-{{ ai_gen_id }}"
+        data-show-more-btn
+        aria-expanded="false"
+      >
+        {{ block.settings.show_more_text }}
+      </button>
+    {% endif %}
+  {% endif %}
+</brand-filter-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class BrandFilter{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.checkboxes = this.querySelectorAll('.ai-brand-filter__checkbox-{{ ai_gen_id }}');
+        this.showMoreBtn = this.querySelector('[data-show-more-btn]');
+        this.hiddenItems = this.querySelectorAll('[data-brand-item].hidden');
+      }
+
+      connectedCallback() {
+        this.setupEventListeners();
+        this.loadSavedFilters();
+      }
+
+      setupEventListeners() {
+        this.checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', () => this.handleFilterChange());
+        });
+
+        if (this.showMoreBtn) {
+          this.showMoreBtn.addEventListener('click', () => this.toggleShowMore());
+        }
+      }
+
+      handleFilterChange() {
+        const selectedVendors = Array.from(this.checkboxes)
+          .filter(cb => cb.checked)
+          .map(cb => cb.value);
+
+        this.saveFilters(selectedVendors);
+        this.applyFilters(selectedVendors);
+      }
+
+      applyFilters(selectedVendors) {
+        const currentUrl = new URL(window.location.href);
+        
+        if (selectedVendors.length > 0) {
+          const vendorFilter = selectedVendors.map(v => `vendor:${v}`).join(' OR ');
+          currentUrl.searchParams.set('filter.v.option.vendor', vendorFilter);
+        } else {
+          currentUrl.searchParams.delete('filter.v.option.vendor');
+        }
+
+        window.location.href = currentUrl.toString();
+      }
+
+      saveFilters(selectedVendors) {
+        sessionStorage.setItem('brandFilters{{ ai_gen_id }}', JSON.stringify(selectedVendors));
+      }
+
+      loadSavedFilters() {
+        const saved = sessionStorage.getItem('brandFilters{{ ai_gen_id }}');
+        if (saved) {
+          const selectedVendors = JSON.parse(saved);
+          this.checkboxes.forEach(checkbox => {
+            if (selectedVendors.includes(checkbox.value)) {
+              checkbox.checked = true;
+            }
+          });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const vendorParam = urlParams.get('filter.v.option.vendor');
+        if (vendorParam) {
+          const vendors = vendorParam.split(' OR ').map(v => v.replace('vendor:', ''));
+          this.checkboxes.forEach(checkbox => {
+            if (vendors.includes(checkbox.value)) {
+              checkbox.checked = true;
+            }
+          });
+        }
+      }
+
+      toggleShowMore() {
+        const isExpanded = this.showMoreBtn.getAttribute('aria-expanded') === 'true';
+        
+        this.hiddenItems.forEach(item => {
+          item.classList.toggle('hidden');
+        });
+
+        this.showMoreBtn.setAttribute('aria-expanded', !isExpanded);
+        this.showMoreBtn.textContent = isExpanded 
+          ? '{{ block.settings.show_more_text }}' 
+          : '{{ block.settings.show_less_text }}';
+      }
+    }
+
+    customElements.define('brand-filter-{{ ai_gen_id }}', BrandFilter{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Brand filter",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Filter by brand"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "label": "Weight",
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#333333"
+    },
+    {
+      "type": "select",
+      "id": "heading_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom spacing",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Filter items"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show product count",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Item spacing",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Label size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "count_size",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Count size",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "count_color",
+      "label": "Count color",
+      "default": "#808080"
+    },
+    {
+      "type": "header",
+      "content": "Checkbox style"
+    },
+    {
+      "type": "range",
+      "id": "checkbox_size",
+      "min": 14,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "checkbox_border_color",
+      "label": "Border color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "checkbox_active_color",
+      "label": "Active color",
+      "default": "#113071"
+    },
+    {
+      "type": "range",
+      "id": "checkbox_border_radius",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Show more"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_more_enabled",
+      "label": "Enable show more",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "initial_items",
+      "min": 3,
+      "max": 15,
+      "step": 1,
+      "label": "Initial items to show",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "show_more_text",
+      "label": "Show more text",
+      "default": "Show more"
+    },
+    {
+      "type": "text",
+      "id": "show_less_text",
+      "label": "Show less text",
+      "default": "Show less"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Button hover background",
+      "default": "#113071"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Button hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border",
+      "label": "Button hover border",
+      "default": "#113071"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 25,
+      "step": 1,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Container style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding horizontal",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand filter"
+    }
+  ]
+}
+{% endschema %}

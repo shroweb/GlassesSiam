@@ -1,0 +1,192 @@
+
+{% comment %}
+==============================================
+SECTION 4: Brand Pills/Buttons
+==============================================
+{% endcomment %}
+
+{% comment %} File: sections/brand-pills.liquid {% endcomment %}
+<section class="brand-pills" style="
+  padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  background-color: {{ section.settings.background_color }};
+  text-align: center;
+">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    {% if section.settings.heading != blank %}
+      <h2 style="
+        font-size: {{ section.settings.heading_size }}px;
+        color: {{ section.settings.heading_color }};
+        margin-bottom: 40px;
+        font-weight: bold;
+      ">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+    
+    <div class="pills-container" style="
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+    ">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.link }}" style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px 35px;
+          background-color: {{ section.settings.pill_bg }};
+          border: 2px solid {{ section.settings.pill_border }};
+          border-radius: 50px;
+          text-decoration: none;
+          transition: all 0.3s;
+          min-width: 180px;
+          height: 65px;
+        " class="brand-pill">
+          {% if block.settings.logo != blank %}
+            <img src="{{ block.settings.logo | img_url: '200x' }}" 
+                 alt="{{ block.settings.brand_name }}" 
+                 style="max-width: 140px; max-height: 40px; object-fit: contain;">
+          {% else %}
+            <span style="
+              font-size: {{ section.settings.text_size }}px;
+              font-weight: 600;
+              color: {{ section.settings.text_color }};
+            ">
+              {{ block.settings.brand_name }}
+            </span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .brand-pill:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Brand Pills",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "All the brands you love."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "pill_bg",
+      "label": "Pill Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pill_border",
+      "label": "Pill Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Brand Logo",
+          "info": "Optional - leave empty to show text only"
+        },
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand Name",
+          "default": "Brand Name"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Brand Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Pills",
+      "blocks": [
+        {"type": "brand"},
+        {"type": "brand"},
+        {"type": "brand"},
+        {"type": "brand"},
+        {"type": "brand"},
+        {"type": "brand"},
+        {"type": "brand"},
+        {"type": "brand"}
+      ]
+    }
+  ]
+}
+{% endschema %}
+

@@ -1,0 +1,171 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "product-template": {
+      "type": "product-template",
+      "blocks": {
+        "title_wrap": {
+          "type": "title_wrap",
+          "settings": {}
+        },
+        "short_description": {
+          "type": "short_description",
+          "settings": {}
+        },
+        "9286de46-bae8-48d3-96cb-39329fcfe05c": {
+          "type": "product_variant_picker",
+          "settings": {
+            "product_variant_handle": "product_variant_swatch_option",
+            "product_variant_color_image_enable": false
+          }
+        },
+        "glasson_app_block_both_f6EaMM": {
+          "type": "shopify://apps/glasson/blocks/app-block-both/0a836efa-448b-4ab0-a9e4-df105b0d9627",
+          "settings": {
+            "colour": "#1f2937",
+            "backgroundColor": "",
+            "alignment": "center",
+            "tryonLabel": "TRY-ON",
+            "view360Label": "360 VIEW",
+            "button_visibility": "both"
+          }
+        },
+        "lens_configurator_T3dK9H": {
+          "type": "lens_configurator",
+          "settings": {
+            "button_alignment": "center"
+          }
+        },
+        "product_sku": {
+          "type": "product_sku",
+          "settings": {
+            "product_sku_title": "SKU:",
+            "social_share_enable": true,
+            "social_share_title": "Share:"
+          }
+        },
+        "payment_img": {
+          "type": "payment_img",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title_wrap",
+        "short_description",
+        "9286de46-bae8-48d3-96cb-39329fcfe05c",
+        "glasson_app_block_both_f6EaMM",
+        "lens_configurator_T3dK9H",
+        "product_sku",
+        "payment_img"
+      ],
+      "settings": {
+        "section_padding_top": 100,
+        "section_padding_bottom": 100,
+        "section_padding_top_ipad": 80,
+        "section_padding_bottom_ipad": 80,
+        "section_padding_top_xs": 60,
+        "section_padding_bottom_xs": 40,
+        "product_style_handle": "style_1",
+        "pro_bg_color": "#f7f7f7",
+        "border": 1,
+        "border_color": "#808080",
+        "border_enable": false,
+        "border_color_opacity": 0.2,
+        "zoom_enable": true,
+        "availability_title": "Availability:",
+        "brand_title": "Brand:",
+        "in_stock_title": "In stock",
+        "out_of_stock_title": "Out of stock"
+      }
+    },
+    "product-about-tabs": {
+      "type": "product-about-tabs",
+      "settings": {
+        "tab_about_title": "About the frame",
+        "tab_shipping_title": "Shipping & Returns",
+        "label_size": "Size:",
+        "label_color": "Color:",
+        "label_material": "Material:",
+        "label_gender": "Gender:",
+        "label_shape": "Shape:",
+        "label_type": "Type:",
+        "label_spring_hinges": "Spring Hinges:",
+        "label_lens_feature": "Lens Feature:",
+        "label_progressive": "Progressive / Bifocal eligible:",
+        "includes_heading": "Including:",
+        "include_label_1": "Scratch-resistant coating",
+        "include_label_2": "365-day warranty",
+        "include_label_3": "Case & cleaning cloth",
+        "show_more_label": "Show More",
+        "show_less_label": "Show Less",
+        "show_360_badge": true,
+        "shipping_content": "<p>Enter your shipping and returns information here.<\/p>",
+        "section_padding_top": 80,
+        "section_padding_bottom": 80,
+        "section_padding_top_xs": 40,
+        "section_padding_bottom_xs": 40
+      }
+    },
+    "product-frame-measurements": {
+      "type": "product-frame-measurements",
+      "settings": {
+        "heading": "Frame Measurements:",
+        "label_lens_width": "Lens Width:",
+        "label_lens_height": "Lens Height:",
+        "label_bridge_width": "Bridge Width:",
+        "label_temple_length": "Temple Length:",
+        "find_my_size_prefix": "Need help finding your size?",
+        "find_my_size_label": "Find My Size",
+        "find_my_size_url": "",
+        "section_padding_top": 60,
+        "section_padding_bottom": 80,
+        "section_padding_top_xs": 40,
+        "section_padding_bottom_xs": 40
+      }
+    },
+    "related-product": {
+      "type": "related-product",
+      "settings": {
+        "section_padding_top": 100,
+        "section_padding_bottom": 100,
+        "section_padding_top_lg": 80,
+        "section_padding_bottom_lg": 80,
+        "section_padding_top_xs": 60,
+        "section_padding_bottom_xs": 60,
+        "section_bg_color": "#f7f7f7",
+        "border": 1,
+        "border_color": "#808080",
+        "border_enable": false,
+        "border_color_opacity": 0.3,
+        "section_title": "Related product",
+        "category_special_product_col": "1",
+        "category_special_product_limit": "4",
+        "section_product_limit_handle": "10"
+      }
+    },
+    "1767722773d7b341aa": {
+      "type": "apps",
+      "settings": {}
+    },
+    "1767910403655e00b3": {
+      "type": "_blocks",
+      "settings": {}
+    }
+  },
+  "order": [
+    "product-template",
+    "product-about-tabs",
+    "product-frame-measurements",
+    "related-product",
+    "1767722773d7b341aa",
+    "1767910403655e00b3"
+  ]
+}

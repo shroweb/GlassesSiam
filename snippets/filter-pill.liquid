@@ -1,0 +1,18 @@
+<div class="filter-pill">
+  <button class="filter-pill__btn">
+    {{ filter.label }}
+  </button>
+
+  <div class="filter-panel">
+    {% for value in filter.values %}
+      <label>
+        <input
+          type="checkbox"
+          {% if value.active %}checked{% endif %}
+          onclick="location.href='{{ value.url_to_add }}'"
+        >
+        {{ value.label }} ({{ value.count }})
+      </label>
+    {% endfor %}
+  </div>
+</div>

@@ -1,0 +1,291 @@
+{% comment %}
+  Image comparison slider section
+  - Before / after draggable slider
+  - Editable images + labels
+  - Editable content + features + CTA
+{% endcomment %}
+
+<section class="image-compare">
+  <div class="image-compare__inner">
+
+    <!-- LEFT: IMAGE COMPARISON -->
+    <div class="compare">
+      <div class="compare__wrapper">
+
+        {% if section.settings.after_image %}
+          <img
+            class="compare__image compare__image--after"
+            src="{{ section.settings.after_image | image_url: width: 1600 }}"
+            alt="After"
+            loading="lazy"
+          >
+        {% endif %}
+
+        <div class="compare__overlay" style="width: 50%;">
+          {% if section.settings.before_image %}
+            <img
+              class="compare__image compare__image--before"
+              src="{{ section.settings.before_image | image_url: width: 1600 }}"
+              alt="Before"
+              loading="lazy"
+            >
+          {% endif %}
+        </div>
+
+        <div class="compare__handle">
+          <span></span>
+        </div>
+
+        <span class="compare__label compare__label--left">
+          {{ section.settings.before_label }}
+        </span>
+
+        <span class="compare__label compare__label--right">
+          {{ section.settings.after_label }}
+        </span>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: CONTENT -->
+    <div class="image-compare__content">
+      <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.text }}</p>
+
+      <ul class="image-compare__features">
+        {% for block in section.blocks %}
+          {% if block.type == 'feature' %}
+            <li {{ block.shopify_attributes }}>
+              <span class="icon">✓</span>
+              {{ block.settings.text }}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+
+      {% if section.settings.cta_label != blank %}
+        <a
+          href="{{ section.settings.cta_url }}"
+          class="image-compare__cta"
+        >
+          {{ section.settings.cta_label }} →
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+{% style %}
+.image-compare {
+  padding: 6rem 2rem;
+}
+
+.image-compare__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* Comparison */
+.compare {
+  position: relative;
+}
+
+.compare__wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.compare__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.compare__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.compare__handle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: 2px;
+  background: #fff;
+  cursor: ew-resize;
+}
+
+.compare__handle span {
+  position: absolute;
+  top: 50%;
+  left: -16px;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.compare__label {
+  position: absolute;
+  top: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0,0,0,0.4);
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+}
+
+.compare__label--left {
+  left: 1rem;
+}
+
+.compare__label--right {
+  right: 1rem;
+}
+
+/* Content */
+.image-compare__content h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.image-compare__features {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.image-compare__features li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.image-compare__cta {
+  font-weight: 600;
+  text-decoration: none;
+  color: #1a73e8;
+}
+
+@media (max-width: 900px) {
+  .image-compare__inner {
+    grid-template-columns: 1fr;
+  }
+}
+{% endstyle %}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const compare = document.querySelector('.compare__wrapper');
+  if (!compare) return;
+
+  const overlay = compare.querySelector('.compare__overlay');
+  const handle = compare.querySelector('.compare__handle');
+
+  const slide = (x) => {
+    const rect = compare.getBoundingClientRect();
+    let pos = ((x - rect.left) / rect.width) * 100;
+    pos = Math.max(0, Math.min(100, pos));
+    overlay.style.width = pos + '%';
+    handle.style.left = pos + '%';
+  };
+
+  let dragging = false;
+
+  handle.addEventListener('mousedown', () => dragging = true);
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('mousemove', e => dragging && slide(e.clientX));
+
+  handle.addEventListener('touchstart', () => dragging = true);
+  window.addEventListener('touchend', () => dragging = false);
+  window.addEventListener('touchmove', e => dragging && slide(e.touches[0].clientX));
+});
+</script>
+
+{% schema %}
+{
+  "name": "Image comparison",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "Before image (Non-polarized)"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "After image (Polarized)"
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "Before label",
+      "default": "Non-Polarized"
+    },
+    {
+      "type": "text",
+      "id": "after_label",
+      "label": "After label",
+      "default": "Polarized"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Polarized sunglasses"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Shop Polarized Sunglasses"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image comparison",
+      "blocks": [
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" }
+      ]
+    }
+  ]
+}
+{% endschema %}

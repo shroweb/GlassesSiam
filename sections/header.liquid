@@ -1,0 +1,230 @@
+<!-- header-area start -->
+<section class="header-kaj">
+  <div class="header-area">
+    <div class="header-main-area">
+      <div class="container-fluid">
+        <div class="header-main">
+            <div class="header-element logo-wrap">
+              {%- render 'company-logo' -%}
+            </div>
+            <div class="header-element megamenu-block">
+              <nav class="main-navigation">
+                <div class="megamenu-content">
+                  <ul class="main-menu">
+                    {% assign header_main_menu = section.settings.header_main_menu %}
+                    {% for link in linklists[header_main_menu].links %}
+                    {% if linklists[header_main_menu].links != '' %}
+                    {% render 'main-menu', link: link %}
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              </nav>
+            </div>
+            <div class="header-element right-block">
+              <div class="right-block-area">
+                {% if section.settings.offer_link_text != '' %}
+                <div class="offer-link">
+                  <a href="{{ section.settings.offer_link_url }}" class="link">{{ section.settings.offer_link_text }}</a>
+                </div>
+                {% endif %}
+                {%- render 'search-bar', section: section -%}
+                {%- render 'header-icon', section: section -%}
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-menu">
+    <div class="main-menu-area">
+      <nav class="main-navigation">
+        <div class="box-header">
+          <button class="close-box" type="button"><i class="ri-close-line"></i></button>
+        </div>
+        {% if section.settings.offer_link_text != '' %}
+        <div class="offer-link">
+          <a href="{{ section.settings.offer_link_url }}" class="link">{{ section.settings.offer_link_text }}</a>
+        </div>
+        {% endif %}
+        <div class="info-menu">
+          <div class="megamenu-content">
+            <ul class="main-menu">
+              {%- liquid
+              assign header_main_menu = section.settings.header_main_menu
+              for link in linklists[header_main_menu].links
+              if linklists[header_main_menu].links != ''
+              render 'main-menu', link: link
+              endif
+              endfor
+              -%}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+{%- render 'search-popup-modal' -%}
+{% render 'mini-cart-drawer' %}
+
+<script>  
+  addEventListener('DOMContentLoaded', (event) => {
+    var slides = document.querySelectorAll('ul.single-service-xs li.service-content');
+    var currentSlide = 0;
+    var slideInterval = setInterval(nextSlide, 3000);
+    function nextSlide(){
+      slides[currentSlide].className = 'service-content';
+      currentSlide = (currentSlide+1)%slides.length;
+      slides[currentSlide].className = 'service-content show';
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo Notice"
+    },
+    {
+      "type": "paragraph",
+      "content": "For logo go to 'Theme Settings' click on 'Company Logo' & set both Header-Footer Logo"
+    },
+    {
+      "type": "header",
+      "content": "Header Sticky Option"
+    },
+    {
+      "type": "checkbox",
+      "id": "header_sticky_enable",
+      "label": "Show Header Sticky",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "This option available only for 'index', 'collection' & 'product' template respectively"
+    },
+    {
+      "type": "header",
+      "content": "Header Background Color"
+    },
+    {
+      "type": "color",
+      "id": "header_top_bg_color",
+      "label": "Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Main Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "header_main_menu",
+      "label": "Select mainmenu"
+    },
+    {
+      "type": "header",
+      "content": "Offer Text"
+    },
+    {
+      "type": "text",
+      "id": "offer_link_text",
+      "label": "Text",
+      "default": "% offer"
+    },
+    {
+      "type": "url",
+      "id": "offer_link_url",
+      "label": "url"
+    },
+    {
+      "type": "color",
+      "id": "offer_link_text_color",
+      "label": "Text Color",
+      "default": "#ED1C24"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+{% if section.settings.header_sticky_enable %}
+{% if template == 'index' or template == 'collection' or template == 'product' %}
+/* sticky menu css */
+.is-sticky{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+}
+.header-area.is-sticky{
+  animation: smoothScroll 1s forwards;
+  border-bottom: none;
+}
+@keyframes smoothScroll {
+  0% {
+    transform: translateY(-200px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+{% endif %}
+{% endif %}
+
+/* header border css */
+{% if template == "product" %}
+.header-kaj {
+  border-bottom: {{ section.settings.border }}px solid {{ section.settings.border_color | color_modify: 'alpha', section.settings.border_color_opacity }};
+}
+{% endif %}
+
+/* header top css */
+.header-area .header-main-area {
+  background-color: {{ section.settings.header_top_bg_color }};
+}  
+
+.offer-link a.link {
+  color:{{ section.settings.offer_link_text_color }};
+  border-bottom: 2px solid;
+  line-height: 1;
+  font-weight: 700;
+}
+.offer-link a.link:hover {
+  color: var(--font-color-primary);
+}
+
+/* Improved nav text readability */
+.megamenu-content ul.main-menu li.menu-link a.link-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #1a1a2e;
+}
+.megamenu-content ul.main-menu li.menu-link a.link-title.active,
+.megamenu-content ul.main-menu li.menu-link:hover a.link-title {
+  color: #113071;
+}
+.header-accessibility-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--font-color-primary, #113071);
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  vertical-align: middle;
+}
+.header-accessibility-btn:hover {
+  opacity: 1;
+}
+</style>

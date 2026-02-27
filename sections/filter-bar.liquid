@@ -1,0 +1,147 @@
+{% comment %}
+  Collection Filter Bar
+  - Shopify native filters
+  - Pill-style UI
+{% endcomment %}
+ 
+{% if collection %}
+<section
+  class="filter-bar"
+  style="
+    --pill-bg: {{ section.settings.pill_bg }};
+    --pill-text: {{ section.settings.pill_text }};
+    --pill-active-bg: {{ section.settings.pill_active_bg }};
+    --pill-active-text: {{ section.settings.pill_active_text }};
+    --pill-radius: {{ section.settings.pill_radius }}px;
+    --panel-bg: {{ section.settings.panel_bg }};
+  "
+>
+  <div class="filter-bar__inner">
+    <div class="filter-bar__pills">
+
+      {% for filter in collection.filters %}
+        {% case filter.type %}
+
+          {% when 'price_range' %}
+            {% if section.settings.show_price %}
+              {% render 'filter-pill', filter: filter %}
+            {% endif %}
+
+          {% when 'list' %}
+            {% if filter.label == 'Vendor' and section.settings.show_brand %}
+              {% render 'filter-pill', filter: filter %}
+            {% elsif filter.label == 'Product type' and section.settings.show_product_type %}
+              {% render 'filter-pill', filter: filter %}
+            {% elsif filter.label == 'Availability' and section.settings.show_availability %}
+              {% render 'filter-pill', filter: filter %}
+            {% elsif section.settings.show_tags %}
+              {% render 'filter-pill', filter: filter %}
+            {% endif %}
+
+        {% endcase %}
+      {% endfor %}
+
+      {% if section.settings.show_sort %}
+        <div class="filter-pill">
+          <button class="filter-pill__btn">
+            Sort by: {{ collection.sort_by | default: 'Best selling' }}
+          </button>
+
+          <div class="filter-panel">
+            {% for option in collection.sort_options %}
+              <a href="{{ option.url }}">{{ option.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% style %}
+.filter-bar {
+  padding: 1.5rem 0;
+}
+
+.filter-bar__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filter-pill {
+  position: relative;
+}
+
+.filter-pill__btn {
+  background: var(--pill-bg);
+  color: var(--pill-text);
+  border-radius: var(--pill-radius);
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.filter-pill__btn:hover {
+  background: var(--pill-active-bg);
+  color: var(--pill-active-text);
+}
+
+.filter-panel {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: var(--panel-bg);
+  padding: 16px;
+  border-radius: 12px;
+  min-width: 220px;
+  z-index: 50;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.filter-pill:hover .filter-panel {
+  display: block;
+}
+
+.filter-panel label,
+.filter-panel a {
+  display: block;
+  margin-bottom: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.filter-panel input {
+  margin-right: 8px;
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Collection filter bar",
+  "settings": [
+    { "type": "checkbox", "id": "show_price", "label": "Show price filter", "default": true },
+    { "type": "checkbox", "id": "show_brand", "label": "Show brand filter", "default": true },
+    { "type": "checkbox", "id": "show_product_type", "label": "Show product type", "default": true },
+    { "type": "checkbox", "id": "show_tags", "label": "Show tags", "default": true },
+    { "type": "checkbox", "id": "show_availability", "label": "Show availability", "default": true },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sort", "default": true },
+
+    { "type": "color", "id": "pill_bg", "label": "Pill background", "default": "#a33226" },
+    { "type": "color", "id": "pill_text", "label": "Pill text", "default": "#ffffff" },
+    { "type": "color", "id": "pill_active_bg", "label": "Active pill background", "default": "#7f241c" },
+    { "type": "color", "id": "pill_active_text", "label": "Active pill text", "default": "#ffffff" },
+    { "type": "color", "id": "panel_bg", "label": "Dropdown background", "default": "#ffffff" },
+
+    { "type": "range", "id": "pill_radius", "label": "Pill radius", "min": 6, "max": 40, "step": 2, "default": 40 }
+  ],
+  "presets": [
+    { "name": "Collection filter bar" }
+  ]
+}
+{% endschema %}

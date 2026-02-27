@@ -1,0 +1,814 @@
+<section class="home-banner-grid">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <ul class="banner-ul">
+          {% for block in section.blocks %}
+          {% case block.type %}
+          {% when 'single_banner' %}
+          <li class="banner-li one-banner">
+            <div class="banner-block">
+              <a href="{{ block.settings.full_banner_url }}" class="banner-img">
+                <span class="image">
+                  {% comment %}
+                  <img src="https://dummyimage.com/750x1055/e2e2e2/999999" class="img-fluid" alt="category-image">
+                  {% endcomment %}
+                  {%- if block.settings.full_banner_img -%}
+                    {{ block.settings.full_banner_img | image_url: width: 1499 | image_tag:
+                    loading: 'lazy',
+                    width: block.settings.full_banner_img.width,
+                    height: block.settings.full_banner_img.height,
+                    class: "img-fluid",
+                    alt: block.settings.full_banner_img.alt | escape }}
+                    {%- else -%}
+                  {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+                    {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </span>
+                <div class="banner-content">
+                  <div class="banner-text">
+                    {% if block.settings.banner_subtitle != '' %}
+                    <span class="subtitle" style="color: {{ block.settings.banner_subtitle_color }};">{{ block.settings.banner_subtitle }}</span>
+                    {% endif %}
+                    {% if block.settings.banner_title != '' %}
+                    <h2 class="title" style="color: {{ block.settings.banner_title_color }};">
+                      {% if block.settings.banner_title_1 != '' %}
+                      <span>{{ block.settings.banner_title_1 }}</span>
+                      {% endif %}
+                      {% if block.settings.banner_title_2 != '' %}
+                      <span>{{ block.settings.banner_title_2 }}</span>
+                      {% endif %}
+                    </h2>
+                    {% endif %}
+                  </div>
+                  <div class="banner-button">
+                    {% if block.settings.full_banner_btn_text != '' %}
+                    <span class="banner-btn btn {% if block.settings.banner_btn_style == 'btn-style1' %}btn-style{% elsif block.settings.banner_btn_style == 'btn-style2' %}btn-style2{% else %}btn-style3{% endif %}">{{ block.settings.full_banner_btn_text }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </li>
+
+          {% when 'grid_banner' %}
+          <li class="banner-li multiple-banner">
+            <ul class="grid-banner-ul">
+              <li class="grid-banner-li full-banner">
+                <div class="banner-block">
+                  <a href="{{ block.settings.f_banner_url }}" class="banner-img">
+                    <span class="image">
+                      {% comment %}
+                      <img src="https://dummyimage.com/775x335/e2e2e2/999999" class="img-fluid" alt="category-image">
+                      {% endcomment %}
+                      {%- if block.settings.full_banner_image -%}
+                      {{ block.settings.full_banner_image | image_url: width: 1024 | image_tag:
+                      loading: 'lazy',
+                      width: block.settings.full_banner_image.width,
+                      height: block.settings.full_banner_image.height,
+                      class: "img-fluid",
+                      alt: block.settings.full_banner_image.alt | escape }}
+                      {%- else -%}
+                      {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+                      {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </span>
+                    <div class="banner-content">
+                      {% if block.settings.f_banner_subtitle != '' %}
+                      <span class="subtitle" style="color: {{ block.settings.f_banner_subtitle_color }};">{{ block.settings.f_banner_subtitle }}</span>
+                      {% endif %}
+                      {% if block.settings.f_banner_title_1 != '' or block.settings.f_banner_title_2 != '' %}
+                      <h2 class="title" style="color: {{ block.settings.f_banner_title_color }};">
+                        {% if block.settings.f_banner_title_1 != '' %}
+                        <span>{{ block.settings.f_banner_title_1 }}</span>
+                        {% endif %}
+                        {% if block.settings.f_banner_title_2 != '' %}
+                        <span>{{ block.settings.f_banner_title_2 }}</span>
+                        {% endif %}
+                      </h2>
+                      {% endif %}
+                      {% if block.settings.f_banner_button_text != '' %}
+                      <span class="banner-btn btn {% if block.settings.f_banner_btn_style == 'btn-style1' %}btn-style{% elsif block.settings.f_banner_btn_style == 'btn-style2' %}btn-style2{% else %}btn-style3{% endif %}">{{ block.settings.f_banner_button_text }}</span>
+                      {% endif %}
+                    </div>
+                  </a>
+                </div>
+              </li>
+              <li class="grid-banner-li small-banner">
+                <div class="banner-block">
+                  <a href="{{ block.settings.small_banner_url }}" class="banner-img">
+                    <span class="image">
+                      {% comment %}
+                      <img src="https://dummyimage.com/445x410/e2e2e2/999999" class="img-fluid" alt="category-image">
+                      {% endcomment %}
+                      {%- if block.settings.small_banner_image -%}
+                      {{ block.settings.small_banner_image | image_url: width: 1024 | image_tag:
+                      loading: 'lazy',
+                      width: block.settings.small_banner_image.width,
+                      height: block.settings.small_banner_image.height,
+                      class: "img-fluid",
+                      alt: block.settings.small_banner_image.alt | escape }}
+                      {%- else -%}
+                      {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+                      {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </span>
+                    <div class="banner-content">
+                      {% if block.settings.s_banner_subtitle != '' %}
+                      <span class="subtitle" style="color: {{ block.settings.s_banner_subtitle_color }};">{{ block.settings.s_banner_subtitle }}</span>
+                      {% endif %}
+                      {% if block.settings.s_banner_title != '' %}
+                      <h2 class="title" style="color: {{ block.settings.s_banner_title_color }};">{{ block.settings.s_banner_title }}</h2>
+                      {% endif %}
+                    </div>
+                  </a>
+                </div>
+              </li>
+              <li class="grid-banner-li short-banner">
+                <div class="banner-block">
+                  <a href="{{ block.settings.short_banner_url }}" class="banner-img">
+                    <span class="image">
+                      {% comment %}
+                      <img src="https://dummyimage.com/410x540/e2e2e2/999999" class="img-fluid" alt="category-image">
+                      {% endcomment %}
+                      {%- if block.settings.short_banner_image -%}
+                      {{ block.settings.short_banner_image | image_url: width: 1024 | image_tag:
+                      loading: 'lazy',
+                      width: block.settings.short_banner_image.width,
+                      height: block.settings.short_banner_image.height,
+                      class: "img-fluid",
+                      alt: block.settings.short_banner_image.alt | escape }}
+                      {%- else -%}
+                      {%- capture placeholder -%}collection-{% cycle 1, 2, 3, 4, 5, 6 %}{%- endcapture -%}
+                      {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </span>
+                    <div class="banner-content">
+                      {% if block.settings.short_banner_subtitle != '' %}
+                      <span class="subtitle" style="color: {{ block.settings.short_banner_subtitle_color }};">{{ block.settings.short_banner_subtitle }}</span>
+                      {% endif %}
+                      {% if block.settings.short_banner_title != '' %}
+                      <h2 class="title" style="color: {{ block.settings.short_banner_title_color }};">{{ block.settings.short_banner_title }}</h2>
+                      {% endif %}
+                    </div>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          {% endcase %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Banner Grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "paragraph",
+      "content": "Ipad Pro / Ipad"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_ip",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_ip",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_xs",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_xs",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "single_banner",
+      "name": "Single Banner",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Banner Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "full_banner_img",
+          "label": "Banner Image",
+          "info": "Recommended Size: 750x1055px"
+        },
+        {
+          "type": "paragraph",
+          "content": "Banner Content"
+        },
+        {
+          "type": "text",
+          "id": "banner_subtitle",
+          "label": "Banner Subtitle",
+          "default": "Starting at $144.00"
+        },
+        {
+          "type": "color",
+          "id": "banner_subtitle_color",
+          "label": "Banner Subtitle Color",
+          "default": "#808080"
+        },
+        {
+          "type": "text",
+          "id": "banner_title_1",
+          "label": "Title 1",
+          "default": "Eyecare at"
+        },
+        {
+          "type": "text",
+          "id": "banner_title_2",
+          "label": "Title 2",
+          "default": "its best"
+        },
+        {
+          "type": "color",
+          "id": "banner_title_color",
+          "label": "Banner Title Color",
+          "default": "#333333"
+        },
+        {
+          "type": "text",
+          "id": "full_banner_btn_text",
+          "label": "Button Text",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "full_banner_url",
+          "label": "Banner url"
+        },
+        {
+          "type": "select",
+          "id": "banner_btn_style",
+          "label": "Button Style",
+          "options": [
+            {
+              "label": "Button Style1",
+              "value": "btn-style1"
+            },
+            {
+              "label": "Button Style2",
+              "value": "btn-style2"
+            },
+            {
+              "label": "Button Style3",
+              "value": "btn-style3"
+            }
+          ],
+          "default": "btn-style3"
+        }
+      ]
+    },
+    {
+      "type": "grid_banner",
+      "name": "Grid banner",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Full Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "full_banner_image",
+          "label": "Banner Image",
+          "info": "Recommended Size: 775x335px"
+        },
+        {
+          "type": "text",
+          "id": "f_banner_subtitle",
+          "label": "Subtitle",
+          "default": "Let’s elevate your frame"
+        },
+        {
+          "type": "color",
+          "id": "f_banner_subtitle_color",
+          "label": "Banner Subtitle Color",
+          "default": "#808080"
+        },
+        {
+          "type": "text",
+          "id": "f_banner_title_1",
+          "label": "Title 1",
+          "default": "Get the vision"
+        },
+        {
+          "type": "text",
+          "id": "f_banner_title_2",
+          "label": "Title 2",
+          "default": "you deserve"
+        },
+        {
+          "type": "color",
+          "id": "f_banner_title_color",
+          "label": "Banner Title Color",
+          "default": "#333333"
+        },
+        {
+          "type": "text",
+          "id": "f_banner_button_text",
+          "label": "Button Text",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "f_banner_url",
+          "label": "Banner url"
+        },
+        {
+          "type": "select",
+          "id": "f_banner_btn_style",
+          "label": "Button Style",
+          "options": [
+            {
+              "label": "Button Style1",
+              "value": "btn-style1"
+            },
+            {
+              "label": "Button Style2",
+              "value": "btn-style2"
+            },
+            {
+              "label": "Button Style3",
+              "value": "btn-style3"
+            }
+          ],
+          "default": "btn-style3"
+        },
+        {
+          "type": "header",
+          "content": "Small Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "small_banner_image",
+          "label": "Banner Image",
+          "info": "Recommended Size: 445x410px"
+        },
+        {
+          "type": "text",
+          "id": "s_banner_subtitle",
+          "label": "Subtitle",
+          "default": "Couple eyeglasses combo"
+        },
+        {
+          "type": "color",
+          "id": "s_banner_subtitle_color",
+          "label": "Banner Subtitle Color",
+          "default": "#808080"
+        },
+        {
+          "type": "text",
+          "id": "s_banner_title",
+          "label": "Title 1",
+          "default": "Vision for life"
+        },
+        {
+          "type": "color",
+          "id": "s_banner_title_color",
+          "label": "Banner Title Color",
+          "default": "#333333"
+        },
+        {
+          "type": "url",
+          "id": "small_banner_url",
+          "label": "Banner url"
+        },
+        {
+          "type": "header",
+          "content": "Short Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "short_banner_image",
+          "label": "Banner Image",
+          "info": "Recommended Size: 410x540px"
+        },
+        {
+          "type": "text",
+          "id": "short_banner_subtitle",
+          "label": "Subtitle",
+          "default": "let’s buy smart"
+        },
+        {
+          "type": "color",
+          "id": "short_banner_subtitle_color",
+          "label": "Banner Subtitle Color",
+          "default": "#808080"
+        },
+        {
+          "type": "text",
+          "id": "short_banner_title",
+          "label": "Title 1",
+          "default": "For life long"
+        },
+        {
+          "type": "color",
+          "id": "short_banner_title_color",
+          "label": "Banner Title Color",
+          "default": "#333333"
+        },
+        {
+          "type": "url",
+          "id": "short_banner_url",
+          "label": "Banner url"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner Grid"
+    }
+  ]
+}
+{% endschema %}
+<style>
+  .home-banner-grid {
+    padding-top: {{ section.settings.section_padding_top }}px;
+    padding-bottom: {{ section.settings.section_padding_bottom }}px;
+  }
+  @media(max-width: 1199px) {
+    .home-banner-grid {
+      padding-top: {{ section.settings.section_padding_top_ip }}px;
+      padding-bottom: {{ section.settings.section_padding_bottom_ip }}px;
+    }
+  }
+  @media(max-width: 767px) {
+    .home-banner-grid {
+      padding-top: {{ section.settings.section_padding_top_xs }}px;
+      padding-bottom: {{ section.settings.section_padding_bottom_xs }}px;
+    }
+  }
+
+  /*=====================================
+      banner css
+  ======================================*/
+  /* main css */
+  .home-banner-grid ul.banner-ul {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    {%- if settings.enable_rtl -%}
+    margin: -30px -30px 0px 0px;
+    {%- else -%}
+    margin: -30px 0px 0px -30px;
+    {%- endif -%}
+  }
+  .home-banner-grid ul.banner-ul li.banner-li {
+    {%- if settings.enable_rtl -%}
+    margin: 30px 30px 0px 0px;
+    {%- else -%}
+    margin: 30px 0px 0px 30px;
+    {%- endif -%}
+  }
+  .home-banner-grid ul.banner-ul li.banner-li.one-banner {
+    width: calc(41.67% - 30px);
+  }
+  .home-banner-grid ul.banner-ul li.banner-li.multiple-banner {
+    width: calc(58.33% - 30px);
+  }
+  @media (max-width: 991px) {
+    .home-banner-grid ul.banner-ul li.banner-li.one-banner,
+    .home-banner-grid ul.banner-ul li.banner-li.multiple-banner {
+      width: calc(100% - 30px);
+    }
+  }
+  /* one banner css */
+  .one-banner .banner-block {
+    position: relative;
+  }
+  .one-banner .banner-block,
+  .one-banner .banner-block a.banner-img,
+  .one-banner .banner-block a.banner-img span.image,
+  .one-banner .banner-block a.banner-img span.image img {
+    height: 100%;
+  }
+  .one-banner .banner-block a.banner-img span.image img {
+    object-fit: cover;
+    {%- if settings.enable_rtl -%}
+    transform: scaleX(-1);
+    {%- endif -%}
+    border-radius: var(--sti-border-radius);
+  }
+  .one-banner .banner-block a.banner-img span.image svg {
+    width: 100%;
+  }
+  .one-banner .banner-block a.banner-img .banner-content {
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    left: 60px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .one-banner .banner-block a.banner-img .banner-content .banner-text span.subtitle {
+    margin-bottom: 15px;
+  }
+  .one-banner .banner-block a.banner-img .banner-content .banner-text h2.title {
+    font-size: 40px;
+    {% if settings.section_header_custom_font_handle_enable %}
+    font-family: var(--font-custom-stack-section-header);
+    font-weight: var(--font-custom-weight-section-header);
+    font-style: var(--font-custom-style-section-header);
+    {% else %}
+    font-family: var(--font-stack-section-header);
+    font-weight: var(--font-weight-section-header);
+    font-style: var(--font-style-section-header);
+    {% endif %}
+    line-height: 1.2; 
+  }
+  .one-banner .banner-block a.banner-img .banner-content .banner-button span.banner-btn {
+    width: max-content;
+  }
+  @media (max-width: 1399px) {
+    .one-banner .banner-block a.banner-img .banner-content {
+      top: 30px;
+      right: 30px;
+      left: 30px;
+    }
+    .one-banner .banner-block a.banner-img .banner-content .banner-text h2.title {
+      font-size: 32px;
+    }
+  }
+  @media (max-width: 1199px) {
+    .one-banner .banner-block a.banner-img .banner-content .banner-text span.subtitle {
+      margin-bottom: 8px;
+    }
+    .one-banner .banner-block a.banner-img .banner-content .banner-text h2.title {
+      font-size: 24px;
+    }
+  }
+  @media (max-width: 991px) {
+    .one-banner .banner-block,
+    .one-banner .banner-block a.banner-img,
+    .one-banner .banner-block a.banner-img span.image,
+    .one-banner .banner-block a.banner-img span.image img {
+      height: unset;
+    }
+  }
+  @media (max-width: 767px) {
+    .one-banner .banner-block a.banner-img .banner-content {
+      right: 12px;
+      left: 12px;
+    }
+  }
+  @media (max-width: 479px) {
+    .one-banner .banner-block a.banner-img .banner-content {
+      flex-direction: column;
+      align-items: flex-start;
+    } 
+    .one-banner .banner-block a.banner-img .banner-content .banner-button {
+      margin-top: 12px;
+    }
+  }
+
+  /* grid banner css */
+  .multiple-banner ul.grid-banner-ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: -30px;
+    {%- if settings.enable_rtl -%}
+    margin-right: -30px;
+    {%- else -%}
+    margin-left: -30px;
+    {%- endif -%}
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li {
+    margin-top: 30px;
+    {%- if settings.enable_rtl -%}
+    margin-right: 30px;
+    {%- else -%}
+    margin-left: 30px;
+    {%- endif -%}
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li.full-banner {
+    width: calc(100% - 30px);
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li.small-banner {
+    width: calc(58.33% - 30px);
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li.short-banner {
+    width: calc(41.67% - 30px);
+  }
+  @media (max-width: 767px) {
+    .multiple-banner ul.grid-banner-ul {
+      {%- if settings.enable_rtl -%}
+      margin-right: -12px;
+      {%- else -%}
+      margin-left: -12px;
+      {%- endif -%}
+    }
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li {
+      {%- if settings.enable_rtl -%}
+      margin-right: 12px;
+      {%- else -%}
+      margin-left: 12px;
+      {%- endif -%}
+    }
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li.full-banner {
+      width: calc(100% - 12px);
+    }
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li.small-banner {
+      width: calc(58.33% - 12px);
+    }
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li.short-banner {
+      width: calc(41.67% - 12px);
+    }
+  }
+  @media (max-width: 479px) {
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li.small-banner,
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li.short-banner {
+      width: calc(100% - 12px);
+    }
+  }
+  /* image css */
+  .multiple-banner ul.grid-banner-ul li.small-banner .banner-block,
+  .multiple-banner ul.grid-banner-ul li.short-banner .banner-block,
+  .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img,
+  .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img,
+  .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img span.image,
+  .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img span.image,
+  .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img span.image img,
+  .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img span.image img {
+    height: 100%;
+  }
+  .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img span.image img,
+  .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img span.image img {
+    object-fit: cover;
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img span.image img {
+    border-radius: var(--sti-border-radius);
+    {%- if settings.enable_rtl -%}
+    transform: scaleX(-1);
+    {%- endif -%}
+  }
+  /* text css */
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block {
+    position: relative;
+  }
+  .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img {
+    display: flex;
+    align-items: center;
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img span.image svg {
+    width: 100%;
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content {
+    position: absolute;
+  }
+  .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img .banner-content {
+    {%- if settings.enable_rtl -%}
+    right: 60px;
+    {%- else -%}
+    left: 60px;
+    {%- endif -%}
+  }
+  .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img .banner-content,
+  .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img .banner-content {
+    top: 60px;
+    left: 30px;
+    right: 30px;
+    text-align: center;
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content span.subtitle {
+    margin-bottom: 15px;
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content h2.title {
+    font-size: 40px;
+    {% if settings.section_header_custom_font_handle_enable %}
+    font-family: var(--font-custom-stack-section-header);
+    font-weight: var(--font-custom-weight-section-header);
+    font-style: var(--font-custom-style-section-header);
+    {% else %}
+    font-family: var(--font-stack-section-header);
+    font-weight: var(--font-weight-section-header);
+    font-style: var(--font-style-section-header);
+    {% endif %}
+    line-height: 1.2; 
+  }
+  .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content h2.title span {
+    display: block;
+  }
+  .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img .banner-content span.banner-btn {
+    margin-top: 17px;
+  }
+  @media (max-width: 1399px) {
+    .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img .banner-content {
+      {%- if settings.enable_rtl -%}
+      right: 30px;
+      {%- else -%}
+      left: 30px;
+      {%- endif -%}
+    }
+    .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img .banner-content,
+    .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img .banner-content {
+      top: 30px;
+    }
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content h2.title {
+      font-size: 32px;
+    }
+  }
+  @media (max-width: 1199px) {
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content span.subtitle {
+      margin-bottom: 8px;
+    }
+    .multiple-banner ul.grid-banner-ul li.grid-banner-li .banner-block a.banner-img .banner-content h2.title {
+      font-size: 24px;
+    }
+  }
+  @media (max-width: 767px) {
+    .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img .banner-content {
+      {%- if settings.enable_rtl -%}
+      right: 12px;
+      {%- else -%}
+      left: 12px;
+      {%- endif -%}
+    }
+  }
+  @media (max-width: 479px) {
+    .multiple-banner ul.grid-banner-ul li.small-banner .banner-block,
+    .multiple-banner ul.grid-banner-ul li.short-banner .banner-block,
+    .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img,
+    .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img,
+    .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img span.image,
+    .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img span.image,
+    .multiple-banner ul.grid-banner-ul li.small-banner .banner-block a.banner-img span.image img,
+    .multiple-banner ul.grid-banner-ul li.short-banner .banner-block a.banner-img span.image img {
+      height: unset;
+    }
+    .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img span.image img {
+      height: 200px;
+      object-fit: cover;
+    }
+    .multiple-banner ul.grid-banner-ul li.full-banner .banner-block a.banner-img .banner-content span.banner-btn {
+      margin-top: 13px;
+    } 
+  }
+</style>

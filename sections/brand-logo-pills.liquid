@@ -1,0 +1,167 @@
+{% comment %}
+  Brand logo pills
+  - Uploadable logos
+  - Optional links
+  - Rounded pill style
+{% endcomment %}
+
+<section class="brand-pills">
+  <div class="brand-pills__inner">
+
+    <p class="brand-pills__label">Trusted brands</p>
+
+    <div class="brand-pills__list">
+      {% for block in section.blocks %}
+        {% if block.type == 'brand' %}
+          {% if block.settings.url != blank %}
+            <a
+              href="{{ block.settings.url }}"
+              class="brand-pill"
+              {{ block.shopify_attributes }}
+            >
+          {% else %}
+            <div class="brand-pill" {{ block.shopify_attributes }}>
+          {% endif %}
+
+            {% if block.settings.logo %}
+              <img
+                src="{{ block.settings.logo | image_url: width: 300 }}"
+                alt="{{ block.settings.name | escape }}"
+                loading="lazy"
+              >
+            {% else %}
+              <span class="brand-pill__placeholder">
+                Upload logo
+              </span>
+            {% endif %}
+
+          {% if block.settings.url != blank %}
+            </a>
+          {% else %}
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% style %}
+.brand-pills {
+  padding: 3rem 2rem;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.brand-pills__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.brand-pills__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.brand-pills__list {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Pill */
+.brand-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  min-width: 140px;
+  padding: 0.75rem 1.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #fff;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Hover state */
+.brand-pill:hover {
+  border-color: #113071;
+  box-shadow: 0 4px 14px rgba(17,48,113,0.1);
+  transform: translateY(-2px);
+}
+
+.brand-pill img {
+  max-height: 26px;
+  max-width: 100%;
+  object-fit: contain;
+  opacity: 0.75;
+  filter: grayscale(30%);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.brand-pill:hover img {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .brand-pill {
+    min-width: 110px;
+    padding: 0.6rem 1.25rem;
+  }
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Brand logo pills",
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Brand logo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Brand name (alt text)"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Brand link (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand logo pills",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "brand" },
+        { "type": "brand" },
+        { "type": "brand" }
+      ]
+    }
+  ]
+}
+{% endschema %}

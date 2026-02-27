@@ -1,0 +1,122 @@
+{% if swatch == blank %}
+<div class="swatch error">
+  <p>You must include the snippet swatch.liquid with the name of a product option.</p> 
+  <p>Use: <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code></p>
+  <p>Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code></p>
+</div>
+{% else %}
+
+{%- liquid 
+  assign found_option = false
+  assign is_color = false
+  assign option_index = 0 
+-%}
+
+{% for option in product.options %}
+  {% if option == swatch %}
+    {% assign found_option = true %}
+    {% assign option_index = forloop.index0 %}
+    <style>
+      label[for="product-select-option-{{ option_index }}"] { display: none; }
+      #product-select-option-{{ option_index }} { display: none; }
+      #product-select-option-{{ option_index }} + .custom-style-select-box { display: none !important; }
+    </style>
+    <script type="text/javascript">
+      window.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function () {
+          
+          $('.selector-wrapper:eq({{ option_index }})').hide();
+          
+        },2000); 
+      });
+    </script>
+    {% assign downcased_option = swatch | downcase %}
+    {% if downcased_option contains 'color' or downcased_option contains 'colour' or downcased_option contains 'colours' %}
+      {% assign is_color = true %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% unless found_option %}
+<div class="swatch error">
+  <p>You included the snippet swatch.liquid with the name of a product option — <code>'{{ swatch }}'</code> — that does not belong to your product.</p>
+  <p>Use <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code></p>
+  <p>Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code></p>
+  <p><strong>This is case-sensitive!</strong> Do not put in <code>'color'</code> if your product option name is <code>'Color'</code>.</p>
+</div>
+{% else %}
+<div class="swatch clearfix {{ swatch }}" data-option-index="{{ option_index }}">
+  <div class="header">
+    <h6>
+      <span>{{ swatch }}:</span>
+      <span class="data-value" id="data-value"></span>
+    </h6>
+  </div>
+  <div class="variant-wrap">
+    <div class="variant-property">
+      {%- liquid assign values = '' -%}
+      {% for variant in product.variants %}
+      {%- liquid assign value = variant.options[option_index] -%}
+      {% unless values contains value %}
+      {%- liquid 
+        assign values = values | join: ','
+        assign values = values | append: ',' | append: value
+        assign values = values | split: ','
+      -%}
+      <div data-value="{{ value | escape }}" data-id="{{ variant.id }}" data-stocks="{{ variant.inventory_quantity }}" class="swatch-element{% if is_color %} color{% endif %} {{ value | handle }} {% if forloop.first %}first-variant{% endif %} {% if variant.available %}available{% else %}soldout{% endif %}">
+        <input id="swatch-{{ option_index }}-{{ value | handle }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}" {% if forloop.first %}checked{% endif %}>
+        {%- if is_color -%}
+        <label class="{{ swatch | downcase }} {{ value | handle }}" for="swatch-{{ option_index }}-{{ value | handle }}" style="{%- if block.settings.product_variant_color_image_enable -%}background-image: url({{ variant.image | image_url }});{% else %}background-color: {{ value | split: ' ' | last | handle }}{% endif %};" data-bs-toggle="tooltip" tabindex="0" data-bs-placement="top" title="{{ value }}" data-color-slug="{{ value | handle }}">
+        </label>
+        {%- else -%}
+        <label for="swatch-{{ option_index }}-{{ value | handle }}" title="{{ value | split: ' ' | last | handle }}">
+          {{ value }}
+        </label>
+        {%- endif -%}
+      </div>
+      {% endunless %}
+      {% if variant.available %}
+      <script type="text/javascript">
+        window.addEventListener("DOMContentLoaded", function() {
+          $('.swatch[data-option-index="{{ option_index }}"] .{{ value | handle }}').removeClass('soldout').addClass('available').find(':radio').removeAttr('disabled');
+        }); 
+      </script>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endunless %}
+{% endif %}
+
+{% if is_color %}
+<script>
+(function() {
+  var COLOUR_MAP = {
+    'black':'#1a1a1a','matte-black':'#111111','shiny-black':'#222222','gloss-black':'#1c1c1c',
+    'gunmetal':'#2d3436','dark-gunmetal':'#2a2a2f','charcoal':'#3d3d3d',
+    'dark-grey':'#444','dark-gray':'#444','grey':'#6b7280','gray':'#6b7280',
+    'light-grey':'#b0b0b0','light-gray':'#b0b0b0','silver':'#c0c0c0','chrome':'#d0d0d0',
+    'white':'#f9f9f9','crystal':'#d0e8f0','crystal-clear':'#dceef7','clear':'#e8e8e8',
+    'frost':'#e8f0f5','transparent':'#e0e0e0',
+    'tortoise':'#8b5e3c','tortoise-shell':'#7a4a28','havana':'#6b2d0a',
+    'brown':'#795548','amber':'#d97706','honey':'#d4a017','sand':'#c2a36e',
+    'beige':'#d4b896','tan':'#c8a87a','nude':'#d4a984','caramel':'#b57a4a',
+    'espresso':'#4b2c20','walnut':'#5c3317',
+    'gold':'#d4af37','rose-gold':'#b76e79','copper':'#b87333','bronze':'#cd7f32','champagne':'#f7e7ce',
+    'navy':'#113071','navy-blue':'#1a2d6b','blue':'#2563eb','dark-blue':'#1e3a8a',
+    'light-blue':'#60a5fa','sky-blue':'#38bdf8','denim':'#1560bd','cobalt':'#0047ab','teal':'#0d9488',
+    'green':'#16a34a','olive':'#6b7c1c','forest':'#166534','sage':'#87a96b','khaki':'#8b864e',
+    'red':'#dc2626','burgundy':'#6d1f2a','wine':'#722f37','maroon':'#800000',
+    'pink':'#f472b6','blush':'#f4a3b5','rose':'#f43f5e','coral':'#f87171',
+    'purple':'#7c3aed','violet':'#8b5cf6','lavender':'#a78bfa','plum':'#6b21a8'
+  };
+  document.querySelectorAll('.swatch.color label[data-color-slug], .swatch.colour label[data-color-slug]').forEach(function(el) {
+    var slug = el.dataset.colorSlug;
+    if (slug && COLOUR_MAP[slug]) {
+      el.style.backgroundColor = COLOUR_MAP[slug];
+    }
+  });
+})();
+</script>
+{% endif %}

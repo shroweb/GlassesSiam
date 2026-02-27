@@ -1,0 +1,270 @@
+<section class="newsletter-arae" {% if section.settings.section_bg_img_enable %}style="background-image: url({% if section.settings.section_bg_img %}{{ section.settings.section_bg_img | image_url }}{% else %}https://dummyimage.com/1605x155{% endif %});"{% endif %}>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div class="newsletter-block">
+          {% if section.settings.newsletter_title != '' %}
+          <div class="newsletter-title">
+            <div class="section-capture">
+              <div class="section-title">
+                <span class="subtitle">{{ section.settings.newsletter_subtitle }}</span>
+                <h2 class="title" style="color: {{ section.settings.newsletter_title_color }};">{{ section.settings.newsletter_title }}</h2>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          <div class="subscribe-content">
+            {% form 'customer' %}
+            {{ form.errors | default_errors }}
+            {% if form.posted_successfully? %}
+            <p class="text-success">
+              <span class="subscribe-text">{{ settings.news-bg_success_text }} <span class="subscribe-code bg-success">{{ settings.news-bg_coupan_code }}</span></span>
+            </p>
+            {% endif %}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="subscribe-block">
+              <input type="email" name="contact[email]" class="email mail" id="E-mail" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ settings.email_placeholder }}" autocapitalize="off" required>
+              <button type="submit" class="btn btn-style" name="commit" id="Subscribe">{{ 'general.newsletter_form.submit' | t }}</button>
+            </div>
+            {% endform %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop / Laptop / tablet"
+    },
+    {
+      "type": "range",
+      "id": "news_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "news_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "paragraph",
+      "content": "Ipad pro / Ipad"
+    },
+    {
+      "type": "range",
+      "id": "news_padding_top_ip",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "news_padding_bottom_ip",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "news_padding_top_xs",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "news_padding_bottom_xs",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Section Background Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_bg_img_enable",
+      "label": "Show Background Image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_img",
+      "label": "Image",
+      "info": "Recommended Size: 1920 x 400px"
+    },
+    {
+      "type": "header",
+      "content": "Section Background Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_bg_color_enable",
+      "label": "Show Background Color",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background Color",
+      "default": "#F7F7F7"
+    },
+    {
+      "type": "header",
+      "content": "Section Title"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_subtitle",
+      "label": "Subtitle",
+      "default": "Join newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Title",
+      "default": "Get instant discount for membership"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_title_color",
+      "label": "Title Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "category": "Newsletter"
+    }
+  ]
+}
+{% endschema %}
+<style>
+  .newsletter-arae {
+    position: relative;
+    padding-top: {{ section.settings.news_padding_top }}px;
+    padding-bottom: {{ section.settings.news_padding_bottom }}px;
+    {% if section.settings.section_bg_img_enable %}
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    {% endif %}
+    {% if section.settings.section_bg_color_enable %}
+    background-color: {{ section.settings.section_bg_color }};
+    {% endif %}
+  }
+  @media (max-width: 1199px) {
+    .newsletter-arae {
+      padding-top: {{ section.settings.news_padding_top_ip }}px;
+      padding-bottom: {{ section.settings.news_padding_bottom_ip }}px;
+    }
+  }
+  @media (max-width: 767px) {
+    .newsletter-arae {
+      padding-top: {{ section.settings.news_padding_top_xs }}px;
+      padding-bottom: {{ section.settings.news_padding_bottom_xs }}px;
+    }
+  }
+
+  /* main css */
+  .newsletter-arae .newsletter-block {
+    width: 33.33%;
+    margin: 0px auto;
+  }
+  @media (max-width: 1399px) {
+    .newsletter-arae .newsletter-block {
+      width: 41.67%;  
+    }
+  }
+  @media (max-width: 991px) {
+    .newsletter-arae .newsletter-block {
+      width: 58.33%;  
+    }
+  }
+  @media (max-width: 600px) {
+    .newsletter-arae .newsletter-block {
+      width: 75%;  
+    }
+  }
+  @media (max-width: 479px) {
+    .newsletter-arae .newsletter-block {
+      width: 100%;  
+    }
+  }
+
+  /* newsletter css */
+  .newsletter-arae .newsletter-block .subscribe-content form .subscribe-block {
+    position: relative;
+    overflow: hidden;
+  }
+  .newsletter-arae .newsletter-block .subscribe-content form input,
+  .newsletter-arae .newsletter-block .subscribe-content form input .subscribe-block input {
+    width: 100%;
+    border: none;
+  }
+  .newsletter-arae .newsletter-block .subscribe-content .subscribe-block button {
+    position: absolute;
+    bottom: 0px;
+    {%- if settings.enable_rtl -%}
+    left: 0px;
+    {%- else -%}
+    right: 0px;
+    {%- endif -%}
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 479px) {
+    .newsletter-arae .newsletter-block .subscribe-content form .subscribe-block {
+      overflow: unset;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .newsletter-arae .newsletter-block .subscribe-content .subscribe-block button {
+      position: unset;
+      transform: unset;
+      margin-top: 20px;
+      border-radius: var(--sti-border-radius);
+    }
+  }
+</style>

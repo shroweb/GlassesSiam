@@ -1,0 +1,210 @@
+{% comment %}
+==============================================
+SECTION 1: Hero with Dual CTA Buttons
+==============================================
+{% endcomment %}
+
+{% comment %} File: sections/hero-dual-cta.liquid {% endcomment %}
+<section class="hero-dual-cta" style="
+  background-color: {{ section.settings.background_color }};
+  padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  text-align: center;
+">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    {% if section.settings.heading != blank %}
+      <h1 style="
+        font-size: {{ section.settings.heading_size }}px;
+        color: {{ section.settings.heading_color }};
+        margin-bottom: 20px;
+        font-weight: bold;
+        line-height: 1.2;
+      ">
+        {{ section.settings.heading }}
+      </h1>
+    {% endif %}
+    
+    {% if section.settings.subheading != blank %}
+      <p style="
+        font-size: {{ section.settings.subheading_size }}px;
+        color: {{ section.settings.text_color }};
+        margin-bottom: 40px;
+        line-height: 1.5;
+      ">
+        {{ section.settings.subheading }}
+      </p>
+    {% endif %}
+    
+    <div class="button-group" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+      {% if section.settings.button1_text != blank %}
+        <a href="{{ section.settings.button1_link }}" style="
+          display: inline-block;
+          padding: 18px 50px;
+          background-color: {{ section.settings.button1_bg }};
+          color: {{ section.settings.button1_color }};
+          border: 2px solid {{ section.settings.button1_border }};
+          border-radius: 50px;
+          text-decoration: none;
+          font-size: 18px;
+          font-weight: 600;
+          transition: all 0.3s;
+        ">
+          {{ section.settings.button1_text }}
+        </a>
+      {% endif %}
+      
+      {% if section.settings.button2_text != blank %}
+        <a href="{{ section.settings.button2_link }}" style="
+          display: inline-block;
+          padding: 18px 50px;
+          background-color: {{ section.settings.button2_bg }};
+          color: {{ section.settings.button2_color }};
+          border: 2px solid {{ section.settings.button2_border }};
+          border-radius: 50px;
+          text-decoration: none;
+          font-size: 18px;
+          font-weight: 600;
+          transition: all 0.3s;
+        ">
+          {{ section.settings.button2_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero - Dual CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "We're all about finding you that perfect pair."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 28,
+      "max": 72,
+      "step": 2,
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Stylish, affordable eyewear designed for comfort and confidence."
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading Size",
+      "min": 16,
+      "max": 36,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#666666"
+    },
+    {
+      "type": "text",
+      "id": "button1_text",
+      "label": "Button 1 Text",
+      "default": "Shop Eyeglasses"
+    },
+    {
+      "type": "url",
+      "id": "button1_link",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "color",
+      "id": "button1_bg",
+      "label": "Button 1 Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button1_color",
+      "label": "Button 1 Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button1_border",
+      "label": "Button 1 Border",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "button2_text",
+      "label": "Button 2 Text",
+      "default": "Shop Sunglasses"
+    },
+    {
+      "type": "url",
+      "id": "button2_link",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "color",
+      "id": "button2_bg",
+      "label": "Button 2 Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button2_color",
+      "label": "Button 2 Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button2_border",
+      "label": "Button 2 Border",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Dual CTA"
+    }
+  ]
+}
+{% endschema %}

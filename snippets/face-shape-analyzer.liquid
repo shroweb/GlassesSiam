@@ -1,0 +1,914 @@
+{% comment %}
+  Face Shape Analyzer
+  Fullscreen modal triggered by #fsaOpenBtn in the header.
+  Uses MediaPipe Face Mesh (loaded lazily from CDN) to classify face shape,
+  then shows matching product recommendations from the
+  custom.face_shape_recommendation metafield.
+{% endcomment %}
+
+{% comment %} ── Product data (pre-rendered by Liquid, read by JS) ── {% endcomment %}
+{%- assign fsa_shapes = 'oval,round,square,heart,oblong' | split: ',' -%}
+<script id="fsa-product-data" type="application/json">
+{
+  {%- for fsa_shape in fsa_shapes -%}
+  "{{ fsa_shape }}": [
+    {%- assign fsa_count = 0 -%}
+    {%- for fsa_p in collections.all.products -%}
+      {%- assign fsa_p_shape = fsa_p.metafields.custom.face_shape_recommendation | downcase | strip -%}
+      {%- if fsa_p_shape == fsa_shape and fsa_count < 4 -%}
+        {%- if fsa_count > 0 -%},{%- endif -%}
+        {
+          "title": {{ fsa_p.title | json }},
+          "url":   {{ fsa_p.url | json }},
+          "price": {{ fsa_p.price | money | json }},
+          "image": {% if fsa_p.featured_image != blank %}{{ fsa_p.featured_image | image_url: width: 400 | json }}{% else %}""{% endif %}
+        }
+        {%- assign fsa_count = fsa_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ]{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
+}
+</script>
+
+{% comment %} ── Modal HTML ── {% endcomment %}
+<div id="fsa-overlay"
+     class="fsa-overlay"
+     aria-modal="true"
+     role="dialog"
+     aria-label="Face Shape Analyzer"
+     aria-hidden="true">
+
+  <button class="fsa-close-btn" id="fsaClose" aria-label="Close">
+    <i class="ri-close-line"></i>
+  </button>
+
+  {% comment %} Screen 1 – Intro / permission {% endcomment %}
+  <div class="fsa-screen fsa-screen--intro" data-screen="intro">
+    <div class="fsa-screen-inner">
+      <div class="fsa-intro-icon" aria-hidden="true">
+        <i class="ri-scan-2-line"></i>
+      </div>
+      <h2 class="fsa-heading">Find Your Perfect Frames</h2>
+      <p class="fsa-body-text">
+        We'll analyse your face shape in seconds and recommend frames that suit you best.
+      </p>
+      <p class="fsa-privacy-note">
+        <i class="ri-lock-line"></i> Processed entirely on your device — nothing is uploaded
+      </p>
+      <button class="fsa-btn fsa-btn--primary" id="fsaStart" type="button">
+        <i class="ri-camera-line fsa-btn-icon"></i>
+        <span class="fsa-btn-text">Start Analysis</span>
+        <span class="fsa-btn-spinner" aria-hidden="true"></span>
+      </button>
+      <p class="fsa-error" id="fsaError" role="alert" aria-live="polite"></p>
+    </div>
+  </div>
+
+  {% comment %} Screen 2 – Live camera {% endcomment %}
+  <div class="fsa-screen fsa-screen--camera" data-screen="camera">
+    <video id="fsaVideo" playsinline muted autoplay></video>
+    <canvas id="fsaCanvas" aria-hidden="true"></canvas>
+    <div class="fsa-oval-guide" aria-hidden="true"></div>
+    <div class="fsa-status-chip">
+      <span class="fsa-status-dot" aria-hidden="true"></span>
+      <span id="fsaStatusText">Position your face in the oval</span>
+    </div>
+    <div class="fsa-progress-wrap" aria-hidden="true">
+      <div class="fsa-progress-fill" id="fsaProgressFill"></div>
+    </div>
+    <button class="fsa-btn fsa-btn--ghost fsa-btn--cancel" id="fsaCancel" type="button">
+      Cancel
+    </button>
+  </div>
+
+  {% comment %} Screen 3 – Result {% endcomment %}
+  <div class="fsa-screen fsa-screen--result" data-screen="result">
+    <div class="fsa-result-scroll">
+      <div class="fsa-result-inner">
+        <div class="fsa-result-badge">
+          <div class="fsa-shape-label">
+            <p class="fsa-result-eyebrow">Scan Complete</p>
+            <h2 class="fsa-result-name" id="fsaShapeName">Here Are Your Frames</h2>
+          </div>
+        </div>
+        <p class="fsa-result-desc" id="fsaShapeDesc"></p>
+        <h3 class="fsa-recs-heading">Recommended for you</h3>
+        <div class="fsa-products-grid" id="fsaProductsGrid"></div>
+        <a class="fsa-see-all" id="fsaSeeAll" href="#">
+          See all recommended frames
+          <i class="ri-arrow-right-line"></i>
+        </a>
+        <button class="fsa-btn fsa-btn--ghost fsa-btn--retry" id="fsaRetry" type="button">
+          <i class="ri-refresh-line"></i> Try again
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ─────────────────────────────────────────────
+   Face Shape Analyzer  (.fsa- namespace)
+───────────────────────────────────────────── */
+.fsa-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(10, 18, 40, 0.97);
+  color: #ffffff;
+  font-family: var(--font-stack-body, sans-serif);
+}
+.fsa-overlay.is-open {
+  display: block;
+}
+
+/* Close */
+.fsa-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  line-height: 1;
+}
+.fsa-close-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ── Screens ── */
+.fsa-screen {
+  display: none;
+  position: absolute;
+  inset: 0;
+}
+.fsa-overlay[data-screen="intro"]  .fsa-screen--intro  {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fsa-overlay[data-screen="camera"] .fsa-screen--camera { display: block; }
+.fsa-overlay[data-screen="result"] .fsa-screen--result {
+  display: flex;
+  align-items: stretch;
+}
+
+/* ── Screen 1: Intro ── */
+.fsa-screen-inner {
+  text-align: center;
+  max-width: 480px;
+  padding: 40px 28px;
+  width: 100%;
+}
+.fsa-intro-icon {
+  font-size: 62px;
+  color: #31AF68;
+  margin-bottom: 22px;
+  line-height: 1;
+}
+.fsa-heading {
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #fff;
+  line-height: 1.2;
+}
+.fsa-body-text {
+  font-size: 15px;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.fsa-privacy-note {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 32px;
+}
+.fsa-error {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #ff7070;
+  line-height: 1.5;
+  min-height: 20px;
+}
+
+/* ── Buttons ── */
+.fsa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 34px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, transform 0.2s, opacity 0.2s;
+  min-width: 190px;
+  line-height: 1;
+}
+.fsa-btn--primary {
+  background: #113071;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.fsa-btn--primary:hover:not(:disabled) {
+  background: #0d2458;
+  transform: translateY(-1px);
+}
+.fsa-btn--primary:disabled { opacity: 0.55; cursor: default; }
+
+.fsa-btn--ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.65);
+  border: 1px solid rgba(255,255,255,0.22);
+}
+.fsa-btn--ghost:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+/* Button loading state */
+.fsa-btn-spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: fsa-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+.fsa-overlay[data-state="loading_sdk"] .fsa-btn-text,
+.fsa-overlay[data-state="loading_sdk"] .fsa-btn-icon,
+.fsa-overlay[data-state="camera_init"] .fsa-btn-text,
+.fsa-overlay[data-state="camera_init"] .fsa-btn-icon { display: none; }
+.fsa-overlay[data-state="loading_sdk"] .fsa-btn-spinner,
+.fsa-overlay[data-state="camera_init"] .fsa-btn-spinner { display: inline-block; }
+@keyframes fsa-spin { to { transform: rotate(360deg); } }
+
+/* ── Screen 2: Camera ── */
+#fsaVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+#fsaCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scaleX(-1);
+}
+.fsa-oval-guide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  width: min(260px, 52vw);
+  height: min(360px, 68vh);
+  border-radius: 50%;
+  border: 3px dashed rgba(255,255,255,0.65);
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.42);
+}
+.fsa-status-chip {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 8px 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+  max-width: calc(100% - 40px);
+}
+.fsa-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #31AF68;
+  flex-shrink: 0;
+  animation: fsa-pulse 1.6s ease-in-out infinite;
+}
+@keyframes fsa-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.75); }
+}
+.fsa-progress-wrap {
+  position: absolute;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(260px, 52vw);
+  height: 4px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.fsa-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #31AF68;
+  border-radius: 2px;
+  transition: width 0.05s linear;
+}
+.fsa-btn--cancel {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  padding: 10px 28px;
+  min-width: 0;
+}
+
+/* ── Screen 3: Result ── */
+.fsa-screen--result { align-items: stretch; }
+.fsa-result-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 64px 24px 48px;
+  width: 100%;
+}
+.fsa-result-inner {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+}
+.fsa-result-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-bottom: 14px;
+}
+.fsa-shape-icon {
+  width: 60px;
+  height: 60px;
+  color: #31AF68;
+  flex-shrink: 0;
+}
+.fsa-shape-icon svg { width: 100%; height: 100%; }
+.fsa-shape-label { text-align: center; }
+.fsa-result-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.45);
+  margin: 0 0 4px;
+}
+.fsa-result-name {
+  font-size: clamp(28px, 6vw, 42px);
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+  line-height: 1;
+}
+.fsa-result-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+.fsa-recs-heading {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+.fsa-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.fsa-product-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  display: block;
+  transition: background 0.2s, transform 0.2s;
+  text-align: left;
+}
+.fsa-product-card:hover {
+  background: rgba(255,255,255,0.11);
+  transform: translateY(-2px);
+  color: #fff;
+}
+.fsa-product-card__img {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+}
+.fsa-product-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.fsa-product-card__body { padding: 10px 12px 12px; }
+.fsa-product-card__title {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.fsa-product-card__price {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  margin: 0;
+}
+.fsa-no-products {
+  grid-column: 1 / -1;
+  color: rgba(255,255,255,0.45);
+  font-size: 14px;
+  padding: 24px 0;
+  text-align: center;
+}
+.fsa-see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #31AF68;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+.fsa-see-all:hover { color: #28a060; text-decoration: underline; }
+.fsa-btn--retry {
+  display: flex;
+  margin: 0 auto;
+  font-size: 13px;
+  padding: 10px 24px;
+  min-width: 0;
+}
+
+/* ── Trigger button in header (matches a.header-icon style) ── */
+.fsa-trigger-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+}
+.fsa-trigger-btn:hover { color: var(--font-color-primary); }
+.fsa-trigger-btn .icon {
+  font-size: var(--font-size-body);
+  display: flex;
+  line-height: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 576px) {
+  .fsa-screen-inner       { padding: 32px 20px; }
+  .fsa-result-scroll      { padding: 60px 16px 36px; }
+  .fsa-result-badge       { flex-direction: column; gap: 10px; }
+  .fsa-shape-label        { text-align: center; }
+  .fsa-products-grid      { gap: 8px; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ─── Shape metadata + classification ─── */
+  var SHAPES = {
+    oval: {
+      label: 'Oval',
+      desc: 'Your balanced proportions suit almost every frame style. Bold rectangulars, classics, and cat-eyes all look great on you.',
+      svg: '<svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="40" cy="50" rx="30" ry="44" stroke="currentColor" stroke-width="4.5"/></svg>'
+    },
+    round: {
+      label: 'Round',
+      desc: 'Angular and rectangular frames add definition and beautifully lengthen your face.',
+      svg: '<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="4.5"/></svg>'
+    },
+    square: {
+      label: 'Square',
+      desc: 'Round and oval frames soften your strong jawline for a striking, balanced look.',
+      svg: '<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="8" width="76" height="84" rx="10" stroke="currentColor" stroke-width="4.5"/></svg>'
+    },
+    heart: {
+      label: 'Heart',
+      desc: 'Bottom-heavy frames and rimless styles beautifully balance your wider forehead with your refined chin.',
+      svg: '<svg viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 102C22 74 7 50 7 32 7 14 20 8 30 8 39 8 47 13 50 20 53 13 61 8 70 8 80 8 93 14 93 32 93 50 78 74 50 102Z" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"/></svg>'
+    },
+    oblong: {
+      label: 'Oblong',
+      desc: 'Wide frames with bold temples add width and create a perfectly balanced, proportionate appearance.',
+      svg: '<svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="50" rx="22" ry="44" stroke="currentColor" stroke-width="4.5"/></svg>'
+    }
+  };
+
+  function dist(a, b) {
+    var dx = a.x - b.x, dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function classifyShape(lm) {
+    var cheekW    = dist(lm[234], lm[454]);
+    var foreheadW = dist(lm[103], lm[332]);
+    var jawW      = dist(lm[172], lm[397]);
+    var faceH     = dist(lm[10],  lm[152]);
+    if (!cheekW || !faceH) return 'oval';
+
+    var wh  = cheekW / faceH;
+    var ftj = foreheadW / jawW;
+    var jtf = jawW / cheekW;
+
+    if (wh < 0.57)                  return 'oblong';
+    if (wh > 0.82 && jtf > 0.72)   return 'round';
+    if (wh > 0.72 && jtf > 0.80)   return 'square';
+    if (ftj > 1.15)                 return 'heart';
+    return 'oval';
+  }
+
+  /* ─── State ─── */
+  var S = {
+    IDLE: 'idle', LOADING_SDK: 'loading_sdk', PERMISSION: 'permission',
+    CAMERA_INIT: 'camera_init', SCANNING: 'scanning', HOLDING: 'holding',
+    RESULT: 'result', ERROR: 'error'
+  };
+  var state     = S.IDLE;
+  var faceMesh  = null;
+  var vidStream = null;
+  var rafId     = null;
+  var holdTimer = null;
+  var noFaceTimer = null;
+  var holdStart = null;
+  var buf       = [];
+  var BUF_SIZE  = 15;
+  var HOLD_MS   = 2000;
+  var products  = {};
+
+  /* ─── DOM ─── */
+  var overlay, video, canvas, ctx;
+  var openBtn, closeBtn, startBtn, cancelBtn, retryBtn;
+  var statusTxt, progFill, errorEl;
+  var shapeName, shapeDesc, prodsGrid, seeAllA;
+
+  /* ─── Init ─── */
+  function init() {
+    var dataEl = document.getElementById('fsa-product-data');
+    if (dataEl) { try { products = JSON.parse(dataEl.textContent); } catch(e) {} }
+
+    overlay   = document.getElementById('fsa-overlay');
+    video     = document.getElementById('fsaVideo');
+    canvas    = document.getElementById('fsaCanvas');
+    openBtn   = document.getElementById('fsaOpenBtn');
+    closeBtn  = document.getElementById('fsaClose');
+    startBtn  = document.getElementById('fsaStart');
+    cancelBtn = document.getElementById('fsaCancel');
+    retryBtn  = document.getElementById('fsaRetry');
+    statusTxt = document.getElementById('fsaStatusText');
+    progFill  = document.getElementById('fsaProgressFill');
+    errorEl   = document.getElementById('fsaError');
+    shapeName = document.getElementById('fsaShapeName');
+    shapeDesc = document.getElementById('fsaShapeDesc');
+    prodsGrid = document.getElementById('fsaProductsGrid');
+    seeAllA   = document.getElementById('fsaSeeAll');
+
+    if (!overlay) return;
+    ctx = canvas ? canvas.getContext('2d') : null;
+
+    if (openBtn)   openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    startBtn.addEventListener('click', onStart);
+    cancelBtn.addEventListener('click', closeModal);
+    retryBtn.addEventListener('click', doRetry);
+
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && state !== S.IDLE) closeModal(); });
+  }
+
+  function setState(s) { state = s; overlay && overlay.setAttribute('data-state', s); }
+  function setScreen(s) { overlay && overlay.setAttribute('data-screen', s); }
+
+  /* ─── Open / close ─── */
+  function openModal() {
+    if (state !== S.IDLE) return;
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.classList.add('is-open');
+    setScreen('intro');
+    setState(S.LOADING_SDK);
+    document.body.style.overflow = 'hidden';
+    clearErr();
+    loadSdk()
+      .then(function () { if (state === S.LOADING_SDK) setState(S.PERMISSION); })
+      .catch(function () { setState(S.ERROR); showErr('Could not load the analyzer. Please check your connection.'); });
+  }
+
+  function closeModal() {
+    stopCamera();
+    stopHold();
+    clearNoFace();
+    buf = [];
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.removeAttribute('data-screen');
+    document.body.style.overflow = '';
+    if (progFill) progFill.style.width = '0%';
+    if (startBtn) startBtn.disabled = false;
+    clearErr();
+    setState(S.IDLE);
+  }
+
+  function doRetry() {
+    stopCamera();
+    stopHold();
+    clearNoFace();
+    buf = [];
+    if (progFill) progFill.style.width = '0%';
+    if (startBtn) startBtn.disabled = false;
+    clearErr();
+    setState(S.PERMISSION);
+    setScreen('intro');
+  }
+
+  /* ─── Start button ─── */
+  function onStart() {
+    if (state === S.LOADING_SDK) {
+      startBtn.disabled = true;
+      loadSdk().then(function () {
+        setState(S.PERMISSION);
+        startCamera();
+      }).catch(function () {
+        startBtn.disabled = false;
+        showErr('Could not load analyzer. Please check your connection.');
+      });
+      return;
+    }
+    if (state === S.PERMISSION) startCamera();
+  }
+
+  /* ─── SDK lazy load ─── */
+  function loadSdk() {
+    return new Promise(function (resolve, reject) {
+      if (window._fsaSdkState === 'ready') { resolve(); return; }
+      if (window._fsaSdkState === 'loading') {
+        var t = setInterval(function () {
+          if (window._fsaSdkState === 'ready') { clearInterval(t); resolve(); }
+          if (window._fsaSdkState === 'error')  { clearInterval(t); reject();  }
+        }, 150);
+        return;
+      }
+      window._fsaSdkState = 'loading';
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js';
+      s.crossOrigin = 'anonymous';
+      s.onload  = function () { window._fsaSdkState = 'ready'; resolve(); };
+      s.onerror = function () { window._fsaSdkState = 'error';  reject();  };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ─── FaceMesh init ─── */
+  function initFaceMesh() {
+    return new Promise(function (resolve, reject) {
+      if (faceMesh) { resolve(); return; }
+      var FM = window.FaceMesh;
+      if (!FM) { reject(new Error('FaceMesh not available')); return; }
+      try {
+        faceMesh = new FM({
+          locateFile: function (f) {
+            return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/' + f;
+          }
+        });
+        faceMesh.setOptions({
+          maxNumFaces: 1,
+          refineLandmarks: false,
+          minDetectionConfidence: 0.6,
+          minTrackingConfidence: 0.5
+        });
+        faceMesh.onResults(onResults);
+        faceMesh.initialize().then(resolve).catch(reject);
+      } catch (e) { reject(e); }
+    });
+  }
+
+  /* ─── Camera ─── */
+  function startCamera() {
+    if (startBtn) startBtn.disabled = true;
+    clearErr();
+    setState(S.CAMERA_INIT);
+
+    initFaceMesh()
+      .then(function () {
+        return navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false
+        });
+      })
+      .then(function (stream) {
+        vidStream = stream;
+        video.srcObject = stream;
+        return video.play();
+      })
+      .then(function () {
+        canvas.width  = video.videoWidth  || 640;
+        canvas.height = video.videoHeight || 480;
+        setScreen('camera');
+        setState(S.SCANNING);
+        setStatus('Position your face in the oval');
+        startDetection();
+        startNoFace();
+      })
+      .catch(function (err) {
+        setState(S.ERROR);
+        if (startBtn) startBtn.disabled = false;
+        setScreen('intro');
+        if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
+          showErr('Camera access was denied. Please allow camera permission in your browser settings.');
+        } else {
+          showErr('Could not start your camera. Please ensure it is not in use by another app.');
+        }
+      });
+  }
+
+  function stopCamera() {
+    if (rafId)     { cancelAnimationFrame(rafId); rafId = null; }
+    if (vidStream) { vidStream.getTracks().forEach(function (t) { t.stop(); }); vidStream = null; }
+    if (video)     { video.srcObject = null; }
+    if (ctx && canvas) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+
+  /* ─── Detection loop ─── */
+  function startDetection() {
+    function loop() {
+      if (state !== S.SCANNING && state !== S.HOLDING) return;
+      if (video.readyState >= 2 && faceMesh) {
+        faceMesh.send({ image: video }).catch(function () {});
+      }
+      rafId = requestAnimationFrame(loop);
+    }
+    rafId = requestAnimationFrame(loop);
+  }
+
+  /* ─── Results handler ─── */
+  function onResults(res) {
+    if (!ctx || !canvas) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    var lms = res.multiFaceLandmarks && res.multiFaceLandmarks[0];
+    if (!lms) {
+      buf = [];
+      stopHold();
+      if (state === S.HOLDING) setState(S.SCANNING);
+      return;
+    }
+
+    clearNoFace();
+    startNoFace();
+    drawDots(lms);
+
+    var shape = classifyShape(lms);
+    buf.push(shape);
+    if (buf.length > BUF_SIZE) buf.shift();
+
+    var stable = buf.length === BUF_SIZE && buf.every(function (s) { return s === buf[0]; });
+
+    if (stable) {
+      setStatus('Hold still\u2026');
+      if (state === S.SCANNING) {
+        setState(S.HOLDING);
+        startHold(shape);
+      }
+    } else {
+      if (state === S.HOLDING) { setState(S.SCANNING); stopHold(); }
+      setStatus(buf.length > 7 ? 'Almost there\u2026' : 'Position your face in the oval');
+    }
+  }
+
+  function drawDots(lms) {
+    var w = canvas.width, h = canvas.height;
+    var pts = [10,152,234,454,103,332,172,397,33,263,4,61,291,127,356,70,300,132,361];
+    ctx.fillStyle = 'rgba(80,200,120,0.65)';
+    for (var i = 0; i < pts.length; i++) {
+      var p = lms[pts[i]];
+      ctx.beginPath();
+      ctx.arc(p.x * w, p.y * h, 3, 0, 6.283);
+      ctx.fill();
+    }
+  }
+
+  /* ─── Hold timer ─── */
+  function startHold(shape) {
+    holdStart = Date.now();
+    holdTimer = setInterval(function () {
+      var pct = Math.min(((Date.now() - holdStart) / HOLD_MS) * 100, 100);
+      if (progFill) progFill.style.width = pct + '%';
+      if (pct >= 100) {
+        stopHold();
+        clearNoFace();
+        stopCamera();
+        renderResult(shape);
+        setState(S.RESULT);
+        setScreen('result');
+      }
+    }, 50);
+  }
+
+  function stopHold() {
+    if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+    if (progFill)  progFill.style.width = '0%';
+  }
+
+  /* ─── No-face nudge ─── */
+  function startNoFace() {
+    if (noFaceTimer) return;
+    noFaceTimer = setTimeout(function () {
+      noFaceTimer = null;
+      if (state === S.SCANNING) setStatus('Make sure your face is well-lit and centred in the oval');
+    }, 7000);
+  }
+  function clearNoFace() { if (noFaceTimer) { clearTimeout(noFaceTimer); noFaceTimer = null; } }
+
+  /* ─── Helpers ─── */
+  function setStatus(msg) { if (statusTxt) statusTxt.textContent = msg; }
+  function showErr(msg)   { if (errorEl) errorEl.textContent = msg; }
+  function clearErr()     { if (errorEl) errorEl.textContent = ''; }
+
+  /* ─── Result ─── */
+  function renderResult(shape) {
+    var meta = SHAPES[shape] || SHAPES.oval;
+
+    if (shapeDesc) shapeDesc.textContent = meta.desc;
+
+    var prods = products[shape] || [];
+    if (prodsGrid) {
+      if (prods.length > 0) {
+        prodsGrid.innerHTML = prods.map(function (p) {
+          var img = p.image
+            ? '<img src="' + p.image + '" alt="' + (p.title || '').replace(/[<>&"]/g, '') + '" loading="lazy">'
+            : '';
+          return '<a class="fsa-product-card" href="' + (p.url || '#') + '">'
+            + '<div class="fsa-product-card__img">' + img + '</div>'
+            + '<div class="fsa-product-card__body">'
+            + '<p class="fsa-product-card__title">' + (p.title || '') + '</p>'
+            + '<p class="fsa-product-card__price">' + (p.price || '') + '</p>'
+            + '</div></a>';
+        }).join('');
+      } else {
+        prodsGrid.innerHTML = '<p class="fsa-no-products">No products tagged for this shape yet — check back soon.</p>';
+      }
+    }
+
+    var url = '/collections/all?filter.p.m.custom.face_shape_recommendation=' + shape;
+    if (seeAllA)   seeAllA.href = url;
+  }
+
+  /* ─── Boot ─── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+}());
+</script>
