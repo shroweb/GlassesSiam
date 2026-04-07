@@ -1,0 +1,187 @@
+<section class="home-face-analyzer">
+  <div class="container">
+    <div class="home-face-analyzer__card">
+      <div class="home-face-analyzer__content">
+        <p class="home-face-analyzer__eyebrow">Let's Find Your Pairfect Match</p>
+        <h2 class="home-face-analyzer__title">What type of glasses are you looking for?</h2>
+        <div class="home-face-analyzer__actions">
+          <button type="button" class="home-face-analyzer__chip" data-fsa-open>
+            <span class="home-face-analyzer__chip-icon"><i class="ri-glasses-line"></i></span>
+            Eyeglasses
+          </button>
+          <button type="button" class="home-face-analyzer__chip" data-fsa-open>
+            <span class="home-face-analyzer__chip-icon"><i class="ri-sunglasses-line"></i></span>
+            Sunglasses
+          </button>
+          <button type="button" class="home-face-analyzer__chip" data-fsa-open>
+            <span class="home-face-analyzer__chip-icon"><i class="ri-equalizer-line"></i></span>
+            Both
+          </button>
+        </div>
+        <p class="home-face-analyzer__note">Use the camera-based face shape analyzer to get a fast recommendation before you shop.</p>
+      </div>
+
+      <div class="home-face-analyzer__visual" aria-hidden="true">
+        <div class="home-face-analyzer__shape"></div>
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 900 | image_tag:
+            loading: 'lazy',
+            widths: '360,540,720,900',
+            class: 'home-face-analyzer__image',
+            alt: section.settings.image.alt | escape }}
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'home-face-analyzer__placeholder' }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home Face Analyzer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Feature image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Face Analyzer"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.home-face-analyzer {
+  padding: 32px 0 12px;
+}
+.home-face-analyzer__card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: 28px;
+  align-items: center;
+  padding: 34px 40px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(17, 48, 113, 0.08);
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+}
+.home-face-analyzer__content {
+  position: relative;
+  z-index: 1;
+}
+.home-face-analyzer__eyebrow {
+  margin: 0 0 10px;
+  color: #6b9ec8;
+  font-size: 13px;
+  font-weight: 600;
+}
+.home-face-analyzer__title {
+  margin: 0;
+  max-width: 560px;
+  color: #111827;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+.home-face-analyzer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 24px;
+}
+.home-face-analyzer__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dbe5f1;
+  background: #f8fbff;
+  color: #113071;
+  border-radius: 999px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.home-face-analyzer__chip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(17, 48, 113, 0.22);
+  box-shadow: 0 12px 24px rgba(17, 48, 113, 0.1);
+}
+.home-face-analyzer__chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #113071;
+  font-size: 18px;
+}
+.home-face-analyzer__note {
+  margin: 18px 0 0;
+  max-width: 460px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.home-face-analyzer__visual {
+  position: relative;
+  min-height: 290px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.home-face-analyzer__shape {
+  position: absolute;
+  inset: 12px 0 12px 10%;
+  border-radius: 999px 28px 28px 999px;
+  background: linear-gradient(135deg, #0d78ad 0%, #113071 100%);
+}
+.home-face-analyzer__image,
+.home-face-analyzer__placeholder {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(100%, 480px);
+  max-height: 320px;
+  object-fit: contain;
+}
+@media (max-width: 991px) {
+  .home-face-analyzer__card {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+  }
+  .home-face-analyzer__visual {
+    min-height: 240px;
+  }
+  .home-face-analyzer__shape {
+    inset: 0;
+    border-radius: 28px;
+  }
+}
+@media (max-width: 640px) {
+  .home-face-analyzer {
+    padding-top: 18px;
+  }
+  .home-face-analyzer__card {
+    padding: 24px 18px;
+    border-radius: 24px;
+  }
+  .home-face-analyzer__actions {
+    gap: 10px;
+  }
+  .home-face-analyzer__chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+</style>

@@ -24,6 +24,11 @@
                     <i class="ri-wheelchair-fill" style="font-size:18px;line-height:1;" aria-hidden="true"></i>
                   </button>
                 </li>
+                {% if localization.available_languages.size > 1 %}
+                <li class="custom-link-li topbar-locale-wrap">
+                  {% render 'localization-switcher', form_id: 'TopBarLocalizationForm' %}
+                </li>
+                {% endif %}
                 {% if section.settings.custom_link_1 != '' %}
                 <li class="custom-link-li">
                   <div class="link">{{ section.settings.custom_link_1 }}</div>
@@ -273,6 +278,9 @@
 .custom-link ul.custom-link-ul li.custom-link-li:first-child {
   margin-left: 0px;
 }
+.custom-link ul.custom-link-ul li.custom-link-li.topbar-locale-wrap {
+  margin-left: 18px;
+}
 .custom-link ul.custom-link-ul li.custom-link-li .link {
 
 }
@@ -319,6 +327,44 @@
     display: none;
   }
 }
+.topbar-locale-wrap .localization-form {
+  margin: 0;
+}
+.topbar-locale-wrap .localization-switcher {
+  position: relative;
+}
+.topbar-locale-wrap .localization-switcher::after {
+  content: "\ea4e";
+  font-family: remixicon;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 14px;
+  color: {{ section.settings.topbar_notification_txt_color }};
+}
+.topbar-locale-wrap .localization-switcher__select {
+  min-width: 118px;
+  height: 34px;
+  padding: 0 34px 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.32);
+  background: transparent;
+  color: {{ section.settings.topbar_notification_txt_color }};
+  font-size: 13px;
+  font-weight: var(--font-custom-weight-header);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.topbar-locale-wrap .localization-switcher__select:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.75);
+}
+.topbar-locale-wrap .localization-switcher__select option {
+  color: #111827;
+}
 /* Accessibility button in top bar */
 .topbar-a11y-wrap {
   display: flex !important;
@@ -341,5 +387,10 @@
 .topbar-a11y-btn:hover {
   background-color: #0d245a;
   transform: scale(1.08);
+}
+@media (max-width: 1199px) {
+  .custom-link ul.custom-link-ul li.custom-link-li.topbar-locale-wrap {
+    display: none;
+  }
 }
 </style>

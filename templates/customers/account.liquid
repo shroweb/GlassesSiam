@@ -1,22 +1,32 @@
+{% assign first_order = customer.orders.first %}
+
 <div class="acc-page">
   <div class="acc-page__inner">
-
-    <!-- Sidebar -->
     <aside class="acc-sidebar">
       <div class="acc-sidebar__avatar">
         <div class="acc-avatar-circle">
-          {{ customer.first_name | slice: 0 | upcase }}
+          {% if customer.first_name != blank %}
+            {{ customer.first_name | slice: 0 | upcase }}
+          {% else %}
+            {{ customer.email | slice: 0 | upcase }}
+          {% endif %}
         </div>
         <div>
-          <p class="acc-sidebar__name">{{ customer.name }}</p>
+          <p class="acc-sidebar__eyebrow">Account</p>
+          <p class="acc-sidebar__name">{{ customer.name | default: customer.email }}</p>
           <p class="acc-sidebar__email">{{ customer.email }}</p>
         </div>
       </div>
 
-      <nav class="acc-nav">
+      <nav class="acc-nav" aria-label="Account navigation">
         <a href="/account" class="acc-nav__item is-active">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Dashboard
+        </a>
+        <a href="#orders" class="acc-nav__item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Orders
+          <span class="acc-nav__badge">{{ customer.orders_count }}</span>
         </a>
         <a href="/account/addresses" class="acc-nav__item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -28,44 +38,60 @@
           Wishlist
           <span class="acc-nav__badge wishlist-counter"></span>
         </a>
-        <a href="/account/logout" class="acc-nav__item acc-nav__item--logout">
+        <a href="{{ routes.all_products_collection_url }}" class="acc-nav__item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          Shop eyewear
+        </a>
+        <a href="/pages/contact" class="acc-nav__item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Help & support
+        </a>
+        <a href="{{ routes.account_logout_url }}" class="acc-nav__item acc-nav__item--logout">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Log out
         </a>
       </nav>
 
-      <!-- Default address card -->
-      {% if customer.default_address %}
-      <div class="acc-address-card">
-        <p class="acc-address-card__label">Default address</p>
-        <p class="acc-address-card__name">{{ customer.default_address.name }}</p>
-        {% if customer.default_address.address1 != blank %}
-          <p>{{ customer.default_address.address1 }}</p>
+      <div class="acc-sidebar__details">
+        <div class="acc-address-card">
+          <p class="acc-address-card__label">Primary contact</p>
+          <p class="acc-address-card__name">{{ customer.name | default: 'Customer' }}</p>
+          <p>{{ customer.email }}</p>
+          {% if customer.phone != blank %}
+            <p>{{ customer.phone }}</p>
+          {% endif %}
+        </div>
+
+        {% if customer.default_address %}
+          <div class="acc-address-card">
+            <p class="acc-address-card__label">Default address</p>
+            <p class="acc-address-card__name">{{ customer.default_address.name }}</p>
+            {% if customer.default_address.address1 != blank %}
+              <p>{{ customer.default_address.address1 }}</p>
+            {% endif %}
+            {% if customer.default_address.address2 != blank %}
+              <p>{{ customer.default_address.address2 }}</p>
+            {% endif %}
+            <p>
+              {% if customer.default_address.city != blank %}{{ customer.default_address.city }}{% endif %}
+              {% if customer.default_address.province_code != blank %}{% if customer.default_address.city != blank %}, {% endif %}{{ customer.default_address.province_code | upcase }}{% endif %}
+              {% if customer.default_address.zip != blank %} {{ customer.default_address.zip }}{% endif %}
+            </p>
+            {% if customer.default_address.country != blank %}
+              <p>{{ customer.default_address.country }}</p>
+            {% endif %}
+            <a href="/account/addresses" class="acc-address-card__edit">Manage addresses</a>
+          </div>
         {% endif %}
-        {% if customer.default_address.address2 != blank %}
-          <p>{{ customer.default_address.address2 }}</p>
-        {% endif %}
-        <p>
-          {% if customer.default_address.city != blank %}{{ customer.default_address.city }}, {% endif %}
-          {% if customer.default_address.province_code != blank %}{{ customer.default_address.province_code | upcase }} {% endif %}
-          {% if customer.default_address.zip != blank %}{{ customer.default_address.zip }}{% endif %}
-        </p>
-        {% if customer.default_address.country != blank %}
-          <p>{{ customer.default_address.country }}</p>
-        {% endif %}
-        <a href="/account/addresses" class="acc-address-card__edit">Edit address →</a>
       </div>
-      {% endif %}
     </aside>
 
-    <!-- Main -->
     <main class="acc-main">
-
-      <!-- Welcome -->
       <div class="acc-main__header">
         <div>
           <p class="acc-main__greeting">Welcome back,</p>
-          <h1 class="acc-main__name">{{ customer.first_name }}</h1>
+          <h1 class="acc-main__name">{{ customer.first_name | default: customer.name }}</h1>
+          <p class="acc-main__subtext">Manage your orders, saved addresses, wishlist, and language preferences from one place.</p>
         </div>
         <div class="acc-stats">
           <div class="acc-stat">
@@ -76,128 +102,219 @@
             <span class="acc-stat__val">{{ customer.total_spent | money_without_trailing_zeros }}</span>
             <span class="acc-stat__label">Total spent</span>
           </div>
+          <div class="acc-stat">
+            <span class="acc-stat__val">{{ customer.addresses_count }}</span>
+            <span class="acc-stat__label">Addresses</span>
+          </div>
         </div>
       </div>
 
-      <!-- Order history -->
-      <div class="acc-orders">
-        <h2 class="acc-orders__title">Order history</h2>
+      <div class="acc-overview">
+        <article class="acc-panel acc-panel--quick">
+          <div class="acc-panel__head">
+            <div>
+              <p class="acc-panel__eyebrow">Quick actions</p>
+              <h2 class="acc-panel__title">Jump back in</h2>
+            </div>
+          </div>
+          <div class="acc-action-grid">
+            <a href="{{ routes.all_products_collection_url }}" class="acc-action-card">
+              <span class="acc-action-card__title">Shop all eyewear</span>
+              <span class="acc-action-card__meta">Browse frames, sunglasses, and lenses</span>
+            </a>
+            <a href="/account/addresses" class="acc-action-card">
+              <span class="acc-action-card__title">Update addresses</span>
+              <span class="acc-action-card__meta">{{ customer.addresses_count }} saved address{% if customer.addresses_count != 1 %}es{% endif %}</span>
+            </a>
+            <a href="/pages/wishlist" class="acc-action-card">
+              <span class="acc-action-card__title">Open wishlist</span>
+              <span class="acc-action-card__meta">Review your saved frames</span>
+            </a>
+            <a href="/pages/contact" class="acc-action-card">
+              <span class="acc-action-card__title">Need help?</span>
+              <span class="acc-action-card__meta">Contact the support team</span>
+            </a>
+          </div>
+        </article>
+
+        <div class="acc-overview__aside">
+          <article class="acc-panel">
+            <p class="acc-panel__eyebrow">Profile</p>
+            <h2 class="acc-panel__title">Account details</h2>
+            <dl class="acc-detail-list">
+              <div class="acc-detail-list__row">
+                <dt>Name</dt>
+                <dd>{{ customer.name | default: 'Not provided' }}</dd>
+              </div>
+              <div class="acc-detail-list__row">
+                <dt>Email</dt>
+                <dd>{{ customer.email }}</dd>
+              </div>
+              <div class="acc-detail-list__row">
+                <dt>Phone</dt>
+                <dd>{{ customer.phone | default: 'Add a phone number in your address book' }}</dd>
+              </div>
+              <div class="acc-detail-list__row">
+                <dt>Language</dt>
+                <dd>{{ localization.language.endonym_name | default: localization.language.name }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="acc-panel">
+            <p class="acc-panel__eyebrow">Latest order</p>
+            <h2 class="acc-panel__title">Recent activity</h2>
+            {% if first_order %}
+              <div class="acc-latest-order">
+                <p class="acc-latest-order__name">{{ first_order.name }}</p>
+                <p class="acc-latest-order__meta">{{ first_order.created_at | date: '%d %b %Y' }}</p>
+                <div class="acc-order-card__badges">
+                  <span class="acc-badge acc-badge--{% if first_order.financial_status == 'paid' %}success{% elsif first_order.financial_status == 'pending' %}warning{% else %}danger{% endif %}">
+                    {{ first_order.financial_status_label }}
+                  </span>
+                  <span class="acc-badge acc-badge--{% if first_order.fulfillment_status == 'fulfilled' %}success{% else %}neutral{% endif %}">
+                    {{ first_order.fulfillment_status_label }}
+                  </span>
+                </div>
+                <p class="acc-latest-order__meta">{{ first_order.total_price | money }}</p>
+                <a href="{{ first_order.customer_url }}" class="acc-address-card__edit">View latest order</a>
+              </div>
+            {% else %}
+              <p class="acc-panel__empty">No orders yet. Start shopping to see your latest activity here.</p>
+            {% endif %}
+          </article>
+        </div>
+      </div>
+
+      <div class="acc-orders" id="orders">
+        <div class="acc-panel__head">
+          <div>
+            <p class="acc-panel__eyebrow">Orders</p>
+            <h2 class="acc-orders__title">Order history</h2>
+          </div>
+        <a href="{{ routes.all_products_collection_url }}" class="acc-orders__browse-link">Continue shopping</a>
+        </div>
 
         {% paginate customer.orders by 10 %}
-        {% if customer.orders.size > 0 %}
-          <div class="acc-orders__list">
-            {% for order in customer.orders %}
-              <div class="acc-order-card{% if order.cancelled %} acc-order-card--cancelled{% endif %}">
-                <div class="acc-order-card__head">
-                  <div>
-                    <a href="{{ order.customer_url }}" class="acc-order-card__num">{{ order.name }}</a>
-                    <p class="acc-order-card__date">{{ order.created_at | date: '%d %b %Y' }}</p>
-                  </div>
-                  <div class="acc-order-card__badges">
-                    <span class="acc-badge acc-badge--{% if order.financial_status == 'paid' %}success{% elsif order.financial_status == 'pending' %}warning{% else %}danger{% endif %}">
-                      {{ order.financial_status_label }}
-                    </span>
-                    <span class="acc-badge acc-badge--{% if order.fulfillment_status == 'fulfilled' %}success{% else %}neutral{% endif %}">
-                      {{ order.fulfillment_status_label }}
-                    </span>
-                  </div>
-                </div>
-
-                {% if order.cancelled %}
-                  <p class="acc-order-card__cancelled-msg">
-                    Cancelled on {{ order.cancelled_at | date: '%d %b %Y' }}
-                  </p>
-                {% endif %}
-
-                <!-- Line items preview -->
-                <div class="acc-order-card__items">
-                  {% for line_item in order.line_items limit: 3 %}
-                    <div class="acc-order-item">
-                      {% if line_item.image %}
-                        <img src="{{ line_item.image | image_url: width: 120 }}" alt="{{ line_item.title | escape }}" width="60" height="44">
-                      {% else %}
-                        <div class="acc-order-item__no-img">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                        </div>
-                      {% endif %}
-                      <div class="acc-order-item__info">
-                        <p class="acc-order-item__name">{{ line_item.title }}</p>
-                        {% if line_item.variant_title and line_item.variant_title != 'Default Title' %}
-                          <p class="acc-order-item__variant">{{ line_item.variant_title }}</p>
-                        {% endif %}
-                        <p class="acc-order-item__qty">Qty: {{ line_item.quantity }}</p>
-                      </div>
+          {% if customer.orders.size > 0 %}
+            <div class="acc-orders__list">
+              {% for order in customer.orders %}
+                <div class="acc-order-card{% if order.cancelled %} acc-order-card--cancelled{% endif %}">
+                  <div class="acc-order-card__head">
+                    <div>
+                      <a href="{{ order.customer_url }}" class="acc-order-card__num">{{ order.name }}</a>
+                      <p class="acc-order-card__date">{{ order.created_at | date: '%d %b %Y' }}</p>
                     </div>
-                  {% endfor %}
-                  {% if order.line_items.size > 3 %}
-                    <p class="acc-order-card__more">+{{ order.line_items.size | minus: 3 }} more item(s)</p>
+                    <div class="acc-order-card__badges">
+                      <span class="acc-badge acc-badge--{% if order.financial_status == 'paid' %}success{% elsif order.financial_status == 'pending' %}warning{% else %}danger{% endif %}">
+                        {{ order.financial_status_label }}
+                      </span>
+                      <span class="acc-badge acc-badge--{% if order.fulfillment_status == 'fulfilled' %}success{% else %}neutral{% endif %}">
+                        {{ order.fulfillment_status_label }}
+                      </span>
+                    </div>
+                  </div>
+
+                  {% if order.cancelled %}
+                    <p class="acc-order-card__cancelled-msg">
+                      Cancelled on {{ order.cancelled_at | date: '%d %b %Y' }}
+                    </p>
                   {% endif %}
-                </div>
 
-                <div class="acc-order-card__foot">
-                  <span class="acc-order-card__total">{{ order.total_price | money }}</span>
-                  <a href="{{ order.customer_url }}" class="acc-order-card__view">View order →</a>
+                  <div class="acc-order-card__items">
+                    {% for line_item in order.line_items limit: 3 %}
+                      <div class="acc-order-item">
+                        {% if line_item.image %}
+                          <img src="{{ line_item.image | image_url: width: 120 }}" alt="{{ line_item.title | escape }}" width="60" height="44">
+                        {% else %}
+                          <div class="acc-order-item__no-img">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                          </div>
+                        {% endif %}
+                        <div class="acc-order-item__info">
+                          <p class="acc-order-item__name">{{ line_item.title }}</p>
+                          {% if line_item.variant_title and line_item.variant_title != 'Default Title' %}
+                            <p class="acc-order-item__variant">{{ line_item.variant_title }}</p>
+                          {% endif %}
+                          <p class="acc-order-item__qty">Qty: {{ line_item.quantity }}</p>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    {% if order.line_items.size > 3 %}
+                      <p class="acc-order-card__more">+{{ order.line_items.size | minus: 3 }} more item(s)</p>
+                    {% endif %}
+                  </div>
+
+                  <div class="acc-order-card__foot">
+                    <span class="acc-order-card__total">{{ order.total_price | money }}</span>
+                    <a href="{{ order.customer_url }}" class="acc-order-card__view">View order</a>
+                  </div>
                 </div>
+              {% endfor %}
+            </div>
+
+            {% if paginate.pages > 1 %}
+              <div class="acc-pagination">
+                {%- render 'pagination', paginate: paginate -%}
               </div>
-            {% endfor %}
-          </div>
-
-          {% if paginate.pages > 1 %}
-            <div class="acc-pagination">
-              {%- render 'pagination', paginate: paginate -%}
+            {% endif %}
+          {% else %}
+            <div class="acc-orders__empty">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <p>You haven't placed any orders yet.</p>
+              <a href="{{ routes.all_products_collection_url }}" class="acc-orders__shop-btn">Start shopping</a>
             </div>
           {% endif %}
-
-        {% else %}
-          <div class="acc-orders__empty">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            <p>You haven't placed any orders yet.</p>
-            <a href="/collections/all" class="acc-orders__shop-btn">Start shopping →</a>
-          </div>
-        {% endif %}
         {% endpaginate %}
       </div>
     </main>
-
   </div>
 </div>
 
 <style>
-/* ── Account Page Layout ── */
 .acc-page {
   background: #f8f9fb;
   min-height: 60vh;
   padding: 3rem 1.5rem 4rem;
 }
 .acc-page__inner {
-  max-width: 1100px;
+  max-width: 1240px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 320px minmax(0, 1fr);
   gap: 2rem;
   align-items: start;
 }
 
-/* ── Sidebar ── */
 .acc-sidebar {
   background: #fff;
-  border-radius: 1.25rem;
+  border-radius: 24px;
   border: 1px solid #e8ecf0;
   padding: 1.75rem;
   position: sticky;
   top: 2rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
 }
 .acc-sidebar__avatar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid #f0f4f8;
+  border-bottom: 1px solid #edf2f7;
   margin-bottom: 1.25rem;
 }
+.acc-sidebar__eyebrow,
+.acc-panel__eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
 .acc-avatar-circle {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: #113071;
   color: #fff;
@@ -209,51 +326,52 @@
   flex-shrink: 0;
 }
 .acc-sidebar__name {
-  font-size: 14px;
+  margin: 0;
+  font-size: 15px;
   font-weight: 700;
   color: #111827;
   line-height: 1.3;
 }
 .acc-sidebar__email {
+  margin: 4px 0 0;
   font-size: 12px;
-  color: #9ca3af;
-  word-break: break-all;
+  color: #64748b;
+  word-break: break-word;
 }
 
-/* Nav */
 .acc-nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   margin-bottom: 1.5rem;
 }
 .acc-nav__item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: 500;
-  color: #374151;
+  font-weight: 600;
+  color: #334155;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
 .acc-nav__item:hover {
-  background: #f0f4f8;
+  background: #f8fafc;
   color: #111827;
   text-decoration: none;
+  transform: translateX(2px);
 }
 .acc-nav__item.is-active {
-  background: #eef2fa;
+  background: #eef2ff;
   color: #113071;
-  font-weight: 700;
 }
 .acc-nav__item--logout {
   margin-top: 8px;
   color: #ef4444;
-  border-top: 1px solid #f0f4f8;
-  padding-top: 14px;
+  border-top: 1px solid #edf2f7;
+  padding-top: 16px;
 }
 .acc-nav__item--logout:hover {
   background: #fef2f2;
@@ -261,43 +379,47 @@
 }
 .acc-nav__badge {
   margin-left: auto;
-  background: #e8ecf0;
-  color: #374151;
+  background: #e2e8f0;
+  color: #334155;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
-  padding: 1px 7px;
-  min-width: 20px;
+  padding: 2px 8px;
+  min-width: 22px;
   text-align: center;
 }
-
-/* Address card */
+.acc-sidebar__details {
+  display: grid;
+  gap: 14px;
+}
 .acc-address-card {
-  background: #f8f9fb;
-  border: 1px solid #e8ecf0;
-  border-radius: 10px;
-  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
   font-size: 13px;
-  color: #4b5563;
   line-height: 1.6;
+  color: #475569;
 }
 .acc-address-card__label {
+  margin: 0 0 6px;
   font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #9ca3af;
-  margin-bottom: 6px;
+  color: #94a3b8;
 }
 .acc-address-card__name {
+  margin: 0 0 2px;
   font-weight: 700;
-  color: #111827;
+  color: #0f172a;
 }
 .acc-address-card__edit {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 10px;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 700;
   color: #113071;
   text-decoration: none;
 }
@@ -305,199 +427,310 @@
   text-decoration: underline;
 }
 
-/* ── Main ── */
 .acc-main {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 .acc-main__header {
-  background: #113071;
-  border-radius: 1.25rem;
-  padding: 1.75rem 2rem;
+  background: linear-gradient(135deg, #113071 0%, #173f91 100%);
+  border-radius: 24px;
+  padding: 1.9rem 2rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 1.5rem;
   color: #fff;
+  box-shadow: 0 22px 48px rgba(17, 48, 113, 0.18);
 }
 .acc-main__greeting {
+  margin: 0 0 4px;
   font-size: 13px;
-  opacity: 0.7;
-  margin-bottom: 2px;
+  opacity: 0.78;
 }
 .acc-main__name {
-  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #fff;
   margin: 0;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.acc-main__subtext {
+  max-width: 560px;
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.8);
 }
 .acc-stats {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 .acc-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  min-width: 112px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(6px);
 }
 .acc-stat__val {
+  display: block;
   font-size: 1.4rem;
   font-weight: 700;
   line-height: 1;
 }
 .acc-stat__label {
+  display: block;
   font-size: 11.5px;
-  opacity: 0.65;
-  margin-top: 2px;
+  margin-top: 6px;
+  color: rgba(255,255,255,0.72);
 }
 
-/* ── Orders ── */
+.acc-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.9fr);
+  gap: 1.5rem;
+}
+.acc-overview__aside {
+  display: grid;
+  gap: 1.5rem;
+}
+.acc-panel,
 .acc-orders {
   background: #fff;
-  border-radius: 1.25rem;
+  border-radius: 24px;
   border: 1px solid #e8ecf0;
-  padding: 1.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
 }
-.acc-orders__title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: #111827;
+.acc-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.25rem;
+}
+.acc-panel__title,
+.acc-orders__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+.acc-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.acc-action-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 132px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.acc-action-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+  text-decoration: none;
+}
+.acc-action-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.acc-action-card__meta {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748b;
+}
+.acc-detail-list {
+  margin: 0;
+}
+.acc-detail-list__row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid #edf2f7;
+}
+.acc-detail-list__row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.acc-detail-list dt {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+.acc-detail-list dd {
+  margin: 0;
+  font-size: 14px;
+  color: #1e293b;
+  word-break: break-word;
+}
+.acc-latest-order {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.acc-latest-order__name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.acc-latest-order__meta,
+.acc-panel__empty {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+.acc-orders__browse-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #113071;
+  text-decoration: none;
+}
+.acc-orders__browse-link:hover,
+.acc-order-card__view:hover {
+  text-decoration: underline;
 }
 .acc-orders__list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
-/* Order card */
 .acc-order-card {
   border: 1px solid #e8ecf0;
-  border-radius: 12px;
+  border-radius: 18px;
   overflow: hidden;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .acc-order-card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
 }
 .acc-order-card--cancelled {
   border-color: #fecaca;
   background: #fff9f9;
 }
-
 .acc-order-card__head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid #f0f4f8;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #f1f5f9;
   gap: 12px;
   flex-wrap: wrap;
 }
 .acc-order-card__num {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 700;
   color: #113071;
   text-decoration: none;
 }
-.acc-order-card__num:hover { text-decoration: underline; }
 .acc-order-card__date {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-top: 2px;
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: #94a3b8;
 }
 .acc-order-card__badges {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
-
 .acc-badge {
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 999px;
   letter-spacing: 0.04em;
 }
 .acc-badge--success { background: #d1fae5; color: #065f46; }
 .acc-badge--warning { background: #fef3c7; color: #92400e; }
 .acc-badge--danger  { background: #fee2e2; color: #991b1b; }
-.acc-badge--neutral { background: #e8ecf0; color: #374151; }
-
+.acc-badge--neutral { background: #e2e8f0; color: #334155; }
 .acc-order-card__cancelled-msg {
+  margin: 0;
   font-size: 13px;
   color: #ef4444;
-  padding: 8px 16px 0;
+  padding: 10px 18px 0;
   font-weight: 600;
 }
-
-/* Items */
 .acc-order-card__items {
-  padding: 12px 16px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .acc-order-item {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
-.acc-order-item img {
-  width: 60px;
-  height: 44px;
-  object-fit: contain;
-  border-radius: 6px;
-  background: #f8f9fb;
-  border: 1px solid #e8ecf0;
-  flex-shrink: 0;
-}
+.acc-order-item img,
 .acc-order-item__no-img {
   width: 60px;
   height: 44px;
-  background: #f8f9fb;
-  border: 1px solid #e8ecf0;
-  border-radius: 6px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+.acc-order-item__no-img {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 .acc-order-item__name {
+  margin: 0;
   font-size: 13.5px;
   font-weight: 600;
-  color: #111827;
-  line-height: 1.3;
+  color: #0f172a;
+  line-height: 1.4;
 }
-.acc-order-item__variant {
-  font-size: 12px;
-  color: #9ca3af;
-}
+.acc-order-item__variant,
 .acc-order-item__qty {
+  margin: 2px 0 0;
   font-size: 12px;
-  color: #6b7280;
+  color: #64748b;
 }
 .acc-order-card__more {
+  margin: 0;
   font-size: 12.5px;
-  color: #9ca3af;
-  padding-left: 70px;
+  color: #94a3b8;
+  padding-left: 72px;
 }
-
-/* Footer */
 .acc-order-card__foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px 14px;
-  border-top: 1px solid #f0f4f8;
+  gap: 12px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid #f1f5f9;
 }
 .acc-order-card__total {
   font-size: 15px;
   font-weight: 700;
-  color: #111827;
+  color: #0f172a;
 }
 .acc-order-card__view {
   font-size: 13px;
@@ -505,69 +738,87 @@
   color: #113071;
   text-decoration: none;
 }
-.acc-order-card__view:hover { text-decoration: underline; }
-
-/* Empty */
 .acc-orders__empty {
   text-align: center;
   padding: 3rem 1rem;
-  color: #9ca3af;
+  color: #94a3b8;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
 }
 .acc-orders__empty p {
+  margin: 0;
   font-size: 15px;
-  color: #6b7280;
+  color: #64748b;
 }
 .acc-orders__shop-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  min-width: 180px;
   background: #113071;
   color: #fff;
   text-decoration: none;
   font-size: 14px;
   font-weight: 700;
   padding: 12px 24px;
-  border-radius: 8px;
-  letter-spacing: 0.04em;
-  transition: background 0.2s ease;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 .acc-orders__shop-btn:hover {
   background: #0d2458;
   color: #fff;
   text-decoration: none;
+  transform: translateY(-1px);
+}
+.acc-pagination {
+  margin-top: 1.5rem;
 }
 
-.acc-pagination { margin-top: 1.5rem; }
-
-/* ── Responsive ── */
-@media (max-width: 860px) {
-  .acc-page__inner {
+@media (max-width: 1100px) {
+  .acc-page__inner,
+  .acc-overview {
     grid-template-columns: 1fr;
   }
   .acc-sidebar {
     position: static;
   }
+}
+@media (max-width: 860px) {
   .acc-main__header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
   }
   .acc-stats {
-    gap: 1.5rem;
+    width: 100%;
   }
   .acc-stat {
-    align-items: flex-start;
+    flex: 1 1 140px;
+  }
+  .acc-action-grid {
+    grid-template-columns: 1fr;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .acc-page {
     padding: 1.5rem 1rem 3rem;
   }
-  .acc-order-card__head {
+  .acc-main__header,
+  .acc-panel,
+  .acc-orders,
+  .acc-sidebar {
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+  .acc-detail-list__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .acc-order-card__head,
+  .acc-order-card__foot {
     flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

@@ -1,287 +1,679 @@
 {% comment %}
-  Global Try-On Panel — renders on non-product pages (collection, etc.)
-  Populates itself via JS by reading product data from GlassOn's context
-  or from the nearest product card in the DOM.
+  Global Try-On Panel for collection/search/home pages.
+  Opens alongside the GlassOn modal and populates itself from the last product card
+  the shopper interacted with, then falls back to visible product handles in the DOM.
 {% endcomment %}
 
 <div id="tryon-panel" class="tryon-panel" aria-hidden="true">
   <div class="tryon-panel__inner">
-
     <button class="tryon-panel__close" id="tryonPanelClose" aria-label="Close panel">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
 
     <div class="tryon-panel__thumb">
-      <img id="tryonPanelImage" src="" alt="" width="140" height="100">
+      <img id="tryonPanelImage" src="" alt="" width="240" height="180">
     </div>
 
     <div class="tryon-panel__info">
+      <p class="tryon-panel__eyebrow">Live Try-On</p>
       <p class="tryon-panel__vendor" id="tryonPanelVendor"></p>
-      <h3 class="tryon-panel__title" id="tryonPanelTitle">Loading...</h3>
+      <h3 class="tryon-panel__title" id="tryonPanelTitle">Loading frame…</h3>
       <div class="tryon-panel__price">
         <span class="tryon-panel__price-new" id="tryonPanelPrice"></span>
+        <span class="tryon-panel__price-old" id="tryonPanelOldPrice" hidden></span>
+      </div>
+      <div class="tryon-panel__meta">
+        <span class="tryon-panel__meta-item">Ready for prescription lenses</span>
+        <span class="tryon-panel__meta-item">See fit in real time</span>
+      </div>
+      <div class="tryon-panel__swatches" id="tryonPanelSwatchesWrap" hidden>
+        <p class="tryon-panel__swatch-label">
+          Colour: <strong id="tryonSelectedColor"></strong>
+        </p>
+        <div class="tryon-panel__swatch-list" id="tryonPanelSwatches"></div>
       </div>
       <div class="tryon-panel__actions">
-        <button class="tryon-panel__atc" id="tryonAddToCart">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-          Add to Cart
-        </button>
-        <a class="tryon-panel__see-frame" id="tryonSeeFrame" href="#">
-          See Frame
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
+        <button class="tryon-panel__atc" id="tryonAddToCart" type="button">Add to Cart</button>
+        <a class="tryon-panel__see-frame" id="tryonSeeFrame" href="#">See Frame</a>
+        <a class="tryon-panel__secondary" id="tryonChooseLenses" href="#">Choose Lenses</a>
+        <a class="tryon-panel__text-link" id="tryonViewMore" href="{{ routes.all_products_collection_url }}">View Similar Frames</a>
       </div>
       <p class="tryon-panel__feedback" id="tryonFeedback" aria-live="polite"></p>
     </div>
-
   </div>
 </div>
 
 <style>
 .tryon-panel {
   position: fixed;
-  bottom: 16px;
-  left: 0;
+  top: 0;
   right: 0;
+  bottom: 0;
+  width: 320px;
   z-index: 1000001;
-  transform: translateY(calc(100% + 16px));
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  padding: 0 12px;
 }
 .tryon-panel.is-visible {
-  transform: translateY(0);
+  transform: translateX(0);
   pointer-events: auto;
 }
 .tryon-panel__inner {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 8px 48px rgba(0,0,0,0.22);
-  padding: 22px 22px 26px;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 14px 44px rgba(15, 23, 42, 0.18);
   display: flex;
-  gap: 18px;
-  align-items: flex-start;
-  max-width: 560px;
-  margin: 0 auto;
+  flex-direction: column;
   position: relative;
+  border: 1px solid #e2e8f0;
 }
 .tryon-panel__close {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  background: #f3f4f6;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.92);
+  color: #64748b;
   cursor: pointer;
-  color: #6b7280;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 0;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.12);
 }
-.tryon-panel__close:hover { background: #e5e7eb; color: #111827; }
 .tryon-panel__thumb {
-  flex-shrink: 0;
-  width: 130px;
-  height: 96px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #f8f9fb;
-  border: 1px solid #e8ecf0;
+  height: 208px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4fb 100%);
+  border-bottom: 1px solid #e2e8f0;
+  padding: 24px;
 }
 .tryon-panel__thumb img {
-  width: 100%; height: 100%; object-fit: contain; display: block;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
 }
-.tryon-panel__info { flex: 1; min-width: 0; }
+.tryon-panel__info {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 18px 20px;
+}
+.tryon-panel__eyebrow {
+  margin: 0 0 6px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 .tryon-panel__vendor {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #9ca3af; margin-bottom: 3px;
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .tryon-panel__title {
-  font-size: 16px; font-weight: 700; color: #111827;
-  letter-spacing: -0.01em; line-height: 1.3; margin-bottom: 7px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin: 0;
+  color: #0f172a;
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
 }
-.tryon-panel__price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
-.tryon-panel__price-new { font-size: 19px; font-weight: 700; color: #111827; }
-.tryon-panel__actions { display: flex; gap: 8px; align-items: center; }
+.tryon-panel__price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 10px;
+}
+.tryon-panel__price-new {
+  color: #111827;
+  font-size: 24px;
+  font-weight: 700;
+}
+.tryon-panel__price-old {
+  color: #94a3b8;
+  font-size: 14px;
+  text-decoration: line-through;
+}
+.tryon-panel__meta {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+.tryon-panel__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  font-size: 13px;
+}
+.tryon-panel__meta-item::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #113071;
+}
+.tryon-panel__swatches {
+  margin-top: 16px;
+}
+.tryon-panel__swatch-label {
+  margin: 0 0 10px;
+  color: #64748b;
+  font-size: 12px;
+}
+.tryon-panel__swatch-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tryon-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.16);
+  cursor: pointer;
+}
+.tryon-swatch.is-active {
+  box-shadow: 0 0 0 2px #113071;
+}
+.tryon-panel__actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.tryon-panel__atc,
+.tryon-panel__see-frame,
+.tryon-panel__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
 .tryon-panel__atc {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: #113071; color: #fff; border: none; border-radius: 9px;
-  font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
-  padding: 12px 20px; cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-  flex: 1; justify-content: center;
+  border: none;
+  background: #113071;
+  color: #ffffff;
+  cursor: pointer;
 }
 .tryon-panel__atc:hover { background: #0d2458; transform: translateY(-1px); }
-.tryon-panel__atc:disabled { background: #c4c9d4; cursor: not-allowed; transform: none; }
 .tryon-panel__see-frame {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: transparent; color: #113071; border: 1.5px solid #113071;
-  border-radius: 9px; font-size: 14px; font-weight: 700;
-  letter-spacing: 0.04em; padding: 12px 16px; text-decoration: none;
-  transition: background 0.2s, color 0.2s; white-space: nowrap;
+  border: 1px solid #d7dfeb;
+  background: #f8fbff;
+  color: #113071;
 }
-.tryon-panel__see-frame:hover { background: #113071; color: #fff; text-decoration: none; }
-.tryon-panel__feedback { font-size: 12px; color: #16a34a; margin-top: 6px; min-height: 16px; font-weight: 600; }
-@media (max-width: 480px) {
-  .tryon-panel { bottom: 10px; padding: 0 8px; }
-  .tryon-panel__inner { padding: 18px 16px 22px; gap: 14px; }
-  .tryon-panel__thumb { width: 100px; height: 76px; }
+.tryon-panel__secondary {
+  border: 1px solid #d7dfeb;
+  background: #ffffff;
+  color: #334155;
+}
+.tryon-panel__see-frame:hover,
+.tryon-panel__secondary:hover {
+  border-color: #113071;
+  color: #113071;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.tryon-panel__text-link {
+  justify-self: center;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.tryon-panel__text-link:hover {
+  color: #113071;
+  text-decoration: underline;
+}
+.tryon-panel__feedback {
+  min-height: 18px;
+  margin: 10px 0 0;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .tryon-panel:not([style]) {
+    top: auto !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 72vh !important;
+    transform: translateY(100%) !important;
+  }
+  .tryon-panel:not([style]).is-visible {
+    transform: translateY(0) !important;
+  }
+  .tryon-panel__inner {
+    border-radius: 24px 24px 0 0;
+  }
+  .tryon-panel__thumb {
+    height: 170px;
+  }
 }
 </style>
 
 <script>
 (function() {
-  var panel     = document.getElementById('tryon-panel');
-  var closeBtn  = document.getElementById('tryonPanelClose');
-  var atcBtn    = document.getElementById('tryonAddToCart');
-  var feedback  = document.getElementById('tryonFeedback');
-  var imgEl     = document.getElementById('tryonPanelImage');
-  var titleEl   = document.getElementById('tryonPanelTitle');
-  var vendorEl  = document.getElementById('tryonPanelVendor');
-  var priceEl   = document.getElementById('tryonPanelPrice');
-  var seeFrame  = document.getElementById('tryonSeeFrame');
+  var COLOUR_MAP = {
+    black: '#1a1a1a',
+    grey: '#6b7280',
+    gray: '#6b7280',
+    silver: '#c0c0c0',
+    clear: '#e5e7eb',
+    crystal: '#dceef7',
+    tortoise: '#8b5e3c',
+    havana: '#6b2d0a',
+    brown: '#795548',
+    beige: '#d4b896',
+    gold: '#d4af37',
+    rose: '#f43f5e',
+    navy: '#113071',
+    blue: '#2563eb',
+    green: '#16a34a',
+    red: '#dc2626'
+  };
+
+  var panel = document.getElementById('tryon-panel');
+  var closeBtn = document.getElementById('tryonPanelClose');
+  var atcBtn = document.getElementById('tryonAddToCart');
+  var feedback = document.getElementById('tryonFeedback');
+  var imgEl = document.getElementById('tryonPanelImage');
+  var titleEl = document.getElementById('tryonPanelTitle');
+  var vendorEl = document.getElementById('tryonPanelVendor');
+  var priceEl = document.getElementById('tryonPanelPrice');
+  var oldPriceEl = document.getElementById('tryonPanelOldPrice');
+  var seeFrameEl = document.getElementById('tryonSeeFrame');
+  var chooseLensesEl = document.getElementById('tryonChooseLenses');
+  var viewMoreEl = document.getElementById('tryonViewMore');
+  var swatchesWrap = document.getElementById('tryonPanelSwatchesWrap');
+  var swatchesEl = document.getElementById('tryonPanelSwatches');
+  var selectedColorEl = document.getElementById('tryonSelectedColor');
 
   if (!panel) return;
 
-  var panelVisible  = false;
-  var userClosed    = false;
+  var panelVisible = false;
+  var userClosed = false;
   var currentVariantId = null;
-
-  function showPanel() { panel.classList.add('is-visible'); panel.setAttribute('aria-hidden','false'); panelVisible = true; }
-  function hidePanel() { panel.classList.remove('is-visible'); panel.setAttribute('aria-hidden','true'); panelVisible = false; }
+  var currentHandle = null;
+  var currentProduct = null;
+  var showAttempt = 0;
+  var DESKTOP_MIN = 270;
+  var DESKTOP_MAX = 360;
 
   function formatMoney(cents) {
-    return (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'THB', minimumFractionDigits: 2 });
+    return Shopify && Shopify.formatMoney
+      ? Shopify.formatMoney(cents, "{{ shop.money_format }}")
+      : (cents / 100).toFixed(2);
   }
 
-  // Populate panel from a Shopify product object (from /products/handle.js)
-  function populateFromProduct(product) {
-    var variant = product.variants[0];
-    currentVariantId = variant.id;
-    if (atcBtn) atcBtn.dataset.variantId = variant.id;
-    if (titleEl) titleEl.textContent = product.title;
-    if (vendorEl) vendorEl.textContent = product.vendor;
-    if (priceEl) priceEl.textContent = formatMoney(variant.price);
-    if (imgEl && product.featured_image) { imgEl.src = product.featured_image; imgEl.alt = product.title; }
-    if (seeFrame) seeFrame.href = '/products/' + product.handle;
+  function setFeedback(message, isError) {
+    if (!feedback) return;
+    feedback.textContent = message || '';
+    feedback.style.color = isError ? '#dc2626' : '#16a34a';
   }
 
-  // Try to find the product handle from the GlassOn button's nearest product card
-  function getHandleFromDOM() {
-    // GlassOn buttons are inside .glasson-wrap; walk up to find a product card link
-    var glassonBtns = document.querySelectorAll('.glasson-btn');
-    if (!glassonBtns.length) return null;
+  function getColorValue(name) {
+    var slug = (name || '').toLowerCase().replace(/\s+/g, '-');
+    return COLOUR_MAP[slug] || name || '#e5e7eb';
+  }
 
-    // Find which one is "active" — GlassOn doesn't mark it, so grab all nearby product links
-    var allProductLinks = document.querySelectorAll('a[href*="/products/"]');
-    var candidates = Array.from(allProductLinks).map(function(a) {
-      var m = a.href.match(/\/products\/([^/?#]+)/);
-      return m ? m[1] : null;
-    }).filter(Boolean);
+  function buildSwatches(product) {
+    if (!swatchesWrap || !swatchesEl || !product || !product.options || !product.options.length) return;
 
-    // Deduplicate
+    var colorIndex = -1;
+    product.options.forEach(function(option, index) {
+      var lowered = option.toLowerCase();
+      if (lowered === 'color' || lowered === 'colour' || lowered === 'frame color' || lowered === 'frame colour') {
+        colorIndex = index;
+      }
+    });
+
+    if (colorIndex === -1 || !product.variants || !product.variants.length) {
+      swatchesWrap.hidden = true;
+      swatchesEl.innerHTML = '';
+      return;
+    }
+
     var seen = {};
-    return candidates.filter(function(h) { return seen[h] ? false : (seen[h] = true); });
+    swatchesEl.innerHTML = '';
+    product.variants.forEach(function(variant, index) {
+      var colorName = variant.options && variant.options[colorIndex];
+      if (!colorName) return;
+      var key = colorName.toLowerCase();
+      if (seen[key]) return;
+      seen[key] = true;
+
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'tryon-swatch' + (index === 0 ? ' is-active' : '');
+      button.setAttribute('aria-label', colorName);
+      button.dataset.variantId = variant.id;
+      button.dataset.color = colorName;
+      button.dataset.price = variant.price;
+      button.dataset.compare = variant.compare_at_price || '';
+      button.dataset.image = variant.featured_image && variant.featured_image.src ? variant.featured_image.src : (product.featured_image || '');
+
+      var colorValue = getColorValue(colorName);
+      if (colorValue.indexOf('#') === 0 || colorValue.indexOf('rgb') === 0) {
+        button.style.backgroundColor = colorValue;
+      } else {
+        button.style.background = colorValue;
+      }
+
+      button.addEventListener('click', function() {
+        Array.prototype.forEach.call(swatchesEl.querySelectorAll('.tryon-swatch'), function(swatch) {
+          swatch.classList.remove('is-active');
+        });
+        button.classList.add('is-active');
+        currentVariantId = String(variant.id);
+        if (selectedColorEl) selectedColorEl.textContent = colorName;
+        if (priceEl) priceEl.innerHTML = formatMoney(variant.price);
+        if (oldPriceEl) {
+          if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+            oldPriceEl.hidden = false;
+            oldPriceEl.innerHTML = formatMoney(variant.compare_at_price);
+          } else {
+            oldPriceEl.hidden = true;
+            oldPriceEl.textContent = '';
+          }
+        }
+        if (imgEl && button.dataset.image) {
+          imgEl.src = button.dataset.image;
+        }
+      });
+
+      swatchesEl.appendChild(button);
+    });
+
+    swatchesWrap.hidden = swatchesEl.children.length === 0;
+    if (!swatchesWrap.hidden && selectedColorEl && swatchesEl.firstElementChild) {
+      selectedColorEl.textContent = swatchesEl.firstElementChild.dataset.color;
+    }
   }
 
-  // Watch GlassOn shadow DOM
+  function populate(product) {
+    if (!product) return;
+    currentProduct = product;
+    currentHandle = product.handle;
+
+    var variant = product.variants && product.variants.length ? product.variants[0] : null;
+    currentVariantId = variant ? String(variant.id) : null;
+
+    if (titleEl) titleEl.textContent = product.title || '';
+    if (vendorEl) vendorEl.textContent = product.vendor || '';
+    if (priceEl && variant) priceEl.innerHTML = formatMoney(variant.price);
+    if (oldPriceEl) {
+      if (variant && variant.compare_at_price && variant.compare_at_price > variant.price) {
+        oldPriceEl.hidden = false;
+        oldPriceEl.innerHTML = formatMoney(variant.compare_at_price);
+      } else {
+        oldPriceEl.hidden = true;
+        oldPriceEl.textContent = '';
+      }
+    }
+    if (imgEl && product.featured_image) {
+      imgEl.src = product.featured_image;
+      imgEl.alt = product.title || '';
+    }
+
+    var productUrl = '/products/' + product.handle;
+    if (seeFrameEl) seeFrameEl.href = productUrl;
+    if (chooseLensesEl) chooseLensesEl.href = productUrl;
+    if (viewMoreEl) viewMoreEl.href = '{{ routes.all_products_collection_url }}';
+
+    buildSwatches(product);
+  }
+
+  function collectCandidateHandles() {
+    var cards = document.querySelectorAll('[data-product-handle]');
+    return Array.prototype.map.call(cards, function(card) {
+      return card.getAttribute('data-product-handle');
+    }).filter(Boolean);
+  }
+
+  function rememberHandleFromNode(node) {
+    var card = node && node.closest ? node.closest('[data-product-handle]') : null;
+    if (card) {
+      currentHandle = card.getAttribute('data-product-handle');
+    }
+  }
+
+  document.addEventListener('click', function(event) {
+    rememberHandleFromNode(event.target);
+  }, true);
+
+  function getGlassonModalRect() {
+    var el = document.querySelector('glasson-try-on');
+    if (!el || !el.shadowRoot) return null;
+    if (!el.shadowRoot.querySelector('.g-dialog-overlay--active')) return null;
+
+    var rects = [];
+    function walk(node) {
+      if (!node || node.nodeType !== 1) return;
+      rects.push(node.getBoundingClientRect());
+      if (node.shadowRoot) {
+        Array.prototype.forEach.call(node.shadowRoot.children, walk);
+      }
+      Array.prototype.forEach.call(node.children, walk);
+    }
+    Array.prototype.forEach.call(el.shadowRoot.children, walk);
+
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var best = null;
+    var bestArea = 0;
+    rects.forEach(function(rect) {
+      if (rect.width > 220 && rect.height > 180 && rect.width < vw * 0.98 && rect.height < vh * 0.98) {
+        var area = rect.width * rect.height;
+        if (area > bestArea) {
+          bestArea = area;
+          best = rect;
+        }
+      }
+    });
+    return best;
+  }
+
+  function applyDesktopPosition(rect) {
+    var vw = window.innerWidth;
+    var outsideSpace = vw - rect.right - 16;
+    var placeOutside = outsideSpace >= DESKTOP_MIN;
+    var width = placeOutside ? Math.min(DESKTOP_MAX, outsideSpace) : Math.max(DESKTOP_MIN, Math.min(DESKTOP_MAX, rect.width * 0.3));
+    var left = placeOutside ? rect.right + 12 : rect.right - width - 10;
+
+    panel.style.cssText = [
+      'position:fixed',
+      'top:' + Math.round(rect.top) + 'px',
+      'left:' + Math.round(left) + 'px',
+      'right:auto',
+      'bottom:auto',
+      'width:' + Math.round(width) + 'px',
+      'height:' + Math.round(rect.height) + 'px',
+      'transform:translateX(100%)',
+      'transition:transform 0.38s cubic-bezier(0.4,0,0.2,1)',
+      'pointer-events:none',
+      'z-index:2000000'
+    ].join(';');
+  }
+
+  function slideIn() {
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        panel.classList.add('is-visible');
+        panel.setAttribute('aria-hidden', 'false');
+        panel.style.pointerEvents = 'auto';
+        panel.style.transform = 'translateX(0)';
+      });
+    });
+  }
+
+  function resetPosition() {
+    panel.style.cssText = '';
+  }
+
+  function showPanel() {
+    panelVisible = true;
+    showAttempt = 0;
+
+    if (window.innerWidth <= 768) {
+      resetPosition();
+      panel.classList.add('is-visible');
+      panel.setAttribute('aria-hidden', 'false');
+      return;
+    }
+
+    function positionAndShow() {
+      var rect = getGlassonModalRect();
+      if (rect) {
+        applyDesktopPosition(rect);
+        slideIn();
+      } else if (showAttempt < 10) {
+        showAttempt += 1;
+        setTimeout(positionAndShow, showAttempt * 90);
+      } else {
+        applyDesktopPosition({ top: 32, right: window.innerWidth - 16, width: Math.min(window.innerWidth - 32, 360), height: window.innerHeight - 64 });
+        slideIn();
+      }
+    }
+
+    positionAndShow();
+  }
+
+  function hidePanel() {
+    panelVisible = false;
+    panel.setAttribute('aria-hidden', 'true');
+    if (panel.style.cssText) {
+      panel.style.transform = 'translateX(100%)';
+    } else {
+      panel.classList.remove('is-visible');
+    }
+    setTimeout(function() {
+      panel.classList.remove('is-visible');
+      resetPosition();
+    }, 420);
+  }
+
+  function openAndPopulate() {
+    var handle = currentHandle;
+    if (!handle) {
+      var handles = collectCandidateHandles();
+      handle = handles.length ? handles[0] : null;
+    }
+
+    if (!handle) {
+      showPanel();
+      return;
+    }
+
+    fetch('/products/' + handle + '.js')
+      .then(function(response) { return response.json(); })
+      .then(function(product) {
+        populate(product);
+        showPanel();
+      })
+      .catch(function() {
+        showPanel();
+      });
+  }
+
   function isGlassOnOpen() {
     var el = document.querySelector('glasson-try-on');
-    if (!el || !el.shadowRoot) return false;
-    return !!el.shadowRoot.querySelector('.g-dialog-overlay--active');
+    return !!(el && el.shadowRoot && el.shadowRoot.querySelector('.g-dialog-overlay--active'));
   }
 
   function checkGlassOn() {
     var open = isGlassOnOpen();
     if (open && !panelVisible && !userClosed) {
-      // Try to figure out which product is being tried on
-      // GlassOn stores the current product handle as a data attribute on the glasson-wrap
-      var wrap = document.querySelector('.glasson-wrap');
-      var handle = wrap ? (wrap.closest('[data-product-handle]') || wrap.closest('[data-handle]')) : null;
-      var productHandle = handle ? (handle.dataset.productHandle || handle.dataset.handle) : null;
-
-      // Fallback: grab from page URL if on product page
-      if (!productHandle) {
-        var urlMatch = window.location.pathname.match(/\/products\/([^/?#]+)/);
-        productHandle = urlMatch ? urlMatch[1] : null;
-      }
-
-      // Last resort: grab first product handle visible on page
-      if (!productHandle) {
-        var handles = getHandleFromDOM();
-        productHandle = handles && handles[0];
-      }
-
-      if (productHandle) {
-        fetch('/products/' + productHandle + '.js')
-          .then(function(r) { return r.json(); })
-          .then(function(p) { populateFromProduct(p); showPanel(); })
-          .catch(function() { showPanel(); }); // show even if fetch fails
-      } else {
-        showPanel();
-      }
+      openAndPopulate();
     } else if (!open && panelVisible) {
       hidePanel();
       userClosed = false;
     }
   }
 
-  function attachShadowObserver(el) {
-    if (!el.shadowRoot || el._shadowObserved) return;
-    el._shadowObserved = true;
+  function attachObserver(el) {
+    if (!el || !el.shadowRoot || el._tryonObserved) return;
+    el._tryonObserved = true;
     new MutationObserver(checkGlassOn).observe(el.shadowRoot, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['class']
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
     });
   }
 
-  var glassonEl = document.querySelector('glasson-try-on');
-  if (glassonEl) attachShadowObserver(glassonEl);
-
+  attachObserver(document.querySelector('glasson-try-on'));
   new MutationObserver(function() {
-    var el = document.querySelector('glasson-try-on');
-    if (el) attachShadowObserver(el);
+    attachObserver(document.querySelector('glasson-try-on'));
   }).observe(document.body, { childList: true, subtree: false });
 
-  // Close button
   if (closeBtn) {
-    closeBtn.addEventListener('click', function() { userClosed = true; hidePanel(); });
+    closeBtn.addEventListener('click', function() {
+      userClosed = true;
+      hidePanel();
+    });
   }
 
-  // Add to Cart
   if (atcBtn) {
     atcBtn.addEventListener('click', function() {
-      var variantId = atcBtn.dataset.variantId || currentVariantId;
-      if (!variantId) return;
+      if (!currentVariantId) return;
       atcBtn.disabled = true;
       atcBtn.textContent = 'Adding…';
-      if (feedback) feedback.textContent = '';
+      setFeedback('');
 
       fetch('/cart/add.js', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ id: parseInt(variantId), quantity: 1 })
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: Number(currentVariantId), quantity: 1 })
       })
-      .then(function(r) { return r.json(); })
+      .then(function(response) { return response.json(); })
       .then(function(data) {
         if (data.status) throw new Error(data.description || data.message);
-        if (feedback) { feedback.textContent = '✓ Added to cart!'; setTimeout(function() { feedback.textContent = ''; }, 3000); }
-        var bubble = document.querySelector('.cart-count, .cart-item-count, [data-cart-count]');
-        if (bubble) fetch('/cart.js').then(function(r) { return r.json(); }).then(function(c) { bubble.textContent = c.item_count; });
+        setFeedback('Added to cart');
+        return fetch('/cart.js');
       })
-      .catch(function(err) {
-        if (feedback) { feedback.textContent = err.message || 'Error — try again'; feedback.style.color = '#dc2626'; setTimeout(function() { feedback.textContent = ''; feedback.style.color = ''; }, 4000); }
+      .then(function(response) { return response.json(); })
+      .then(function(cart) {
+        var bubble = document.getElementById('cart-total');
+        if (bubble && cart) bubble.textContent = cart.item_count;
+      })
+      .catch(function(error) {
+        setFeedback(error.message || 'Unable to add this frame right now.', true);
       })
       .finally(function() {
         atcBtn.disabled = false;
-        atcBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add to Cart';
+        atcBtn.textContent = 'Add to Cart';
       });
     });
   }
 
+  window.addEventListener('resize', function() {
+    if (!panelVisible || window.innerWidth <= 768) return;
+    var rect = getGlassonModalRect();
+    if (rect) {
+      applyDesktopPosition(rect);
+      panel.style.pointerEvents = 'auto';
+      panel.style.transform = 'translateX(0)';
+    }
+  });
 })();
 </script>

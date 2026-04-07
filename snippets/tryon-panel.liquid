@@ -88,6 +88,12 @@
         See Frame
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
+      <a class="tryon-panel__secondary" href="{{ product.url }}#lens-configurator">
+        Choose Lenses
+      </a>
+      <a class="tryon-panel__text-link" href="{{ routes.all_products_collection_url }}">
+        View Similar Frames
+      </a>
       <p class="tryon-panel__feedback" id="tryonFeedback" aria-live="polite"></p>
     </div>
 
@@ -101,7 +107,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 300px;
+  width: 320px;
   z-index: 1000001;
   transform: translateX(100%);
   transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
@@ -121,7 +127,8 @@
   box-shadow: -8px 0 32px rgba(0,0,0,0.22);
   position: relative;
   overflow: hidden;
-  border-radius: 0 16px 16px 0;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
 }
 
 /* Close button */
@@ -152,10 +159,11 @@
 .tryon-panel__thumb {
   width: 100%;
   flex-shrink: 0;
-  background: #f3f4f6;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4fb 100%);
   border-bottom: 1px solid #e8ecf0;
   overflow: hidden;
-  height: 200px;
+  height: 210px;
+  padding: 24px;
 }
 .tryon-panel__thumb img {
   width: 100%;
@@ -297,10 +305,45 @@
   width: 100%;
   box-sizing: border-box;
 }
+.tryon-panel__secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #334155;
+  border: 1.5px solid #d7dfeb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 12px 20px;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
 .tryon-panel__see-frame:hover {
   background: #113071;
   color: #fff;
   text-decoration: none;
+}
+.tryon-panel__secondary:hover {
+  color: #113071;
+  border-color: #113071;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.tryon-panel__text-link {
+  color: #64748b;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.tryon-panel__text-link:hover {
+  color: #113071;
+  text-decoration: underline;
 }
 
 .tryon-panel__feedback {
@@ -452,7 +495,8 @@
   var selectedVariantId = atcBtn ? atcBtn.dataset.variantId : null;
   var panelVisible = false;
   var userClosedPanel = false;
-  var PANEL_W = 300;
+  var PANEL_MIN_W = 270;
+  var PANEL_MAX_W = 360;
 
   // ── Find the GlassOn dialog bounding rect ──
   //
@@ -516,12 +560,17 @@
   // Uses cssText so we own the inline style, then we explicitly drive the
   // slide-in with panel.style.transform (CSS class can't override inline style).
   function applyPosition(rect) {
-    var pw = Math.round(Math.min(PANEL_W, rect.width * 0.38));
-    pw = Math.max(240, pw);
+    var vw = window.innerWidth;
+    var outsideSpace = vw - rect.right - 16;
+    var placeOutside = outsideSpace >= PANEL_MIN_W;
+    var pw = placeOutside
+      ? Math.min(PANEL_MAX_W, outsideSpace)
+      : Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, rect.width * 0.3));
+    var left = placeOutside ? rect.right + 12 : rect.right - pw - 10;
     panel.style.cssText = [
       'position:fixed',
       'top:' + Math.round(rect.top) + 'px',
-      'left:' + Math.round(rect.right - pw) + 'px',
+      'left:' + Math.round(left) + 'px',
       'right:auto',
       'bottom:auto',
       'width:' + pw + 'px',
@@ -565,7 +614,12 @@
         var rect2 = getGlassonModalRect();
         if (rect2) {
           panel.style.top    = Math.round(rect2.top) + 'px';
-          panel.style.left   = Math.round(rect2.right - panel.offsetWidth) + 'px';
+          var viewportWidth = window.innerWidth;
+          var availableOutside = viewportWidth - rect2.right - 16;
+          var desiredLeft = availableOutside >= PANEL_MIN_W
+            ? rect2.right + 12
+            : rect2.right - panel.offsetWidth - 10;
+          panel.style.left   = Math.round(desiredLeft) + 'px';
           panel.style.height = Math.round(rect2.height) + 'px';
         }
       }, 420);

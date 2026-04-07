@@ -1,0 +1,10 @@
+[environments.default]
+store = "9se3hg-ti.myshopify.com"
+
+[environments.live]
+store = "9se3hg-ti.myshopify.com"
+theme = "180680982857"
+
+[environments.horizon]
+store = "9se3hg-ti.myshopify.com"
+theme = "180657094985"

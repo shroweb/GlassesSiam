@@ -589,7 +589,7 @@
 
   /* ─── DOM ─── */
   var overlay, video, canvas, ctx;
-  var openBtn, closeBtn, startBtn, cancelBtn, retryBtn;
+  var openBtns, closeBtn, startBtn, cancelBtn, retryBtn;
   var statusTxt, progFill, errorEl;
   var shapeName, shapeDesc, prodsGrid, seeAllA;
 
@@ -601,7 +601,7 @@
     overlay   = document.getElementById('fsa-overlay');
     video     = document.getElementById('fsaVideo');
     canvas    = document.getElementById('fsaCanvas');
-    openBtn   = document.getElementById('fsaOpenBtn');
+    openBtns  = Array.prototype.slice.call(document.querySelectorAll('#fsaOpenBtn, [data-fsa-open]'));
     closeBtn  = document.getElementById('fsaClose');
     startBtn  = document.getElementById('fsaStart');
     cancelBtn = document.getElementById('fsaCancel');
@@ -617,7 +617,14 @@
     if (!overlay) return;
     ctx = canvas ? canvas.getContext('2d') : null;
 
-    if (openBtn)   openBtn.addEventListener('click', openModal);
+    if (openBtns && openBtns.length) {
+      openBtns.forEach(function(btn) {
+        btn.addEventListener('click', function(event) {
+          event.preventDefault();
+          openModal();
+        });
+      });
+    }
     closeBtn.addEventListener('click', closeModal);
     startBtn.addEventListener('click', onStart);
     cancelBtn.addEventListener('click', closeModal);
