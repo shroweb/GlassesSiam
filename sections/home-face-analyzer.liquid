@@ -2,23 +2,39 @@
   <div class="container">
     <div class="home-face-analyzer__card">
       <div class="home-face-analyzer__content">
-        <p class="home-face-analyzer__eyebrow">Let's Find Your Pairfect Match</p>
-        <h2 class="home-face-analyzer__title">What type of glasses are you looking for?</h2>
+        <p class="home-face-analyzer__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="home-face-analyzer__title">{{ section.settings.heading }}</h2>
         <div class="home-face-analyzer__actions">
-          <button type="button" class="home-face-analyzer__chip" data-fsa-open>
-            <span class="home-face-analyzer__chip-icon"><i class="ri-glasses-line"></i></span>
-            Eyeglasses
+          <button type="button" class="home-face-analyzer__chip" data-fsa-open data-fsa-category="eyeglasses">
+            <span class="home-face-analyzer__chip-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 11.5C3 8.46243 5.46243 6 8.5 6H21.5C24.5376 6 27 8.46243 27 11.5V14.5C27 17.5376 24.5376 20 21.5 20H8.5C5.46243 20 3 17.5376 3 14.5V11.5Z" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M37 11.5C37 8.46243 39.4624 6 42.5 6H55.5C58.5376 6 61 8.46243 61 11.5V14.5C61 17.5376 58.5376 20 55.5 20H42.5C39.4624 20 37 17.5376 37 14.5V11.5Z" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M27 12.5H37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M2 10L7 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M62 10L57 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            {{ section.settings.eyeglasses_label }}
           </button>
-          <button type="button" class="home-face-analyzer__chip" data-fsa-open>
-            <span class="home-face-analyzer__chip-icon"><i class="ri-sunglasses-line"></i></span>
-            Sunglasses
+          <button type="button" class="home-face-analyzer__chip" data-fsa-open data-fsa-category="sunglasses">
+            <span class="home-face-analyzer__chip-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 11.5C3 8.46243 5.46243 6 8.5 6H21.5C24.5376 6 27 8.46243 27 11.5V14.5C27 17.5376 24.5376 20 21.5 20H8.5C5.46243 20 3 17.5376 3 14.5V11.5Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M37 11.5C37 8.46243 39.4624 6 42.5 6H55.5C58.5376 6 61 8.46243 61 11.5V14.5C61 17.5376 58.5376 20 55.5 20H42.5C39.4624 20 37 17.5376 37 14.5V11.5Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M27 12.5H37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M2 10L7 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M62 10L57 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            {{ section.settings.sunglasses_label }}
           </button>
-          <button type="button" class="home-face-analyzer__chip" data-fsa-open>
+          <button type="button" class="home-face-analyzer__chip" data-fsa-open data-fsa-category="both">
             <span class="home-face-analyzer__chip-icon"><i class="ri-equalizer-line"></i></span>
-            Both
+            {{ section.settings.both_label }}
           </button>
         </div>
-        <p class="home-face-analyzer__note">Use the camera-based face shape analyzer to get a fast recommendation before you shop.</p>
+        <p class="home-face-analyzer__note">{{ section.settings.note }}</p>
       </div>
 
       <div class="home-face-analyzer__visual" aria-hidden="true">
@@ -42,6 +58,42 @@
   "name": "Home Face Analyzer",
   "settings": [
     {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Let's Find Your Pairfect Match"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What type of glasses are you looking for?"
+    },
+    {
+      "type": "text",
+      "id": "eyeglasses_label",
+      "label": "Eyeglasses label",
+      "default": "Eyeglasses"
+    },
+    {
+      "type": "text",
+      "id": "sunglasses_label",
+      "label": "Sunglasses label",
+      "default": "Sunglasses"
+    },
+    {
+      "type": "text",
+      "id": "both_label",
+      "label": "Both label",
+      "default": "Both"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note",
+      "default": "Start with a quick style quiz, then continue with camera or skip it and shop your matches right away."
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "Feature image"
@@ -57,111 +109,127 @@
 
 <style>
 .home-face-analyzer {
-  padding: 32px 0 12px;
+  padding: 24px 0 12px;
 }
 .home-face-analyzer__card {
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+  gap: 18px;
   align-items: center;
-  padding: 34px 40px;
-  border-radius: 32px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  padding: 42px 32px 42px 46px;
+  border-radius: 22px;
+  background: #ffffff;
   border: 1px solid rgba(17, 48, 113, 0.08);
-  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06);
 }
 .home-face-analyzer__content {
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 .home-face-analyzer__eyebrow {
   margin: 0 0 10px;
-  color: #6b9ec8;
-  font-size: 13px;
-  font-weight: 600;
+  color: #6f99c3;
+  font-size: 14px;
+  font-weight: 500;
 }
 .home-face-analyzer__title {
-  margin: 0;
-  max-width: 560px;
+  margin: 0 auto;
+  max-width: 620px;
   color: #111827;
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-size: clamp(28px, 3.1vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
 }
 .home-face-analyzer__actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: center;
   gap: 14px;
-  margin-top: 24px;
+  margin-top: 34px;
 }
 .home-face-analyzer__chip {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  border: 1px solid #dbe5f1;
-  background: #f8fbff;
-  color: #113071;
+  justify-content: center;
+  gap: 14px;
+  border: 1px solid #eef2f7;
+  background: #f4f6f8;
+  color: #111827;
   border-radius: 999px;
-  padding: 14px 18px;
-  font-size: 14px;
+  min-height: 82px;
+  padding: 14px 24px;
+  min-width: 190px;
+  font-size: 18px;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .home-face-analyzer__chip:hover {
   transform: translateY(-2px);
-  border-color: rgba(17, 48, 113, 0.22);
-  box-shadow: 0 12px 24px rgba(17, 48, 113, 0.1);
+  border-color: rgba(17, 48, 113, 0.14);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
 }
 .home-face-analyzer__chip-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #ffffff;
-  color: #113071;
-  font-size: 18px;
+  width: 44px;
+  height: 44px;
+  color: #67737f;
+}
+.home-face-analyzer__chip-icon svg {
+  display: block;
+  width: 40px;
+  height: 24px;
 }
 .home-face-analyzer__note {
-  margin: 18px 0 0;
-  max-width: 460px;
+  margin: 20px auto 0;
+  max-width: 520px;
   color: #64748b;
   font-size: 14px;
   line-height: 1.65;
 }
 .home-face-analyzer__visual {
   position: relative;
-  min-height: 290px;
+  min-height: 380px;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: flex-end;
 }
 .home-face-analyzer__shape {
   position: absolute;
-  inset: 12px 0 12px 10%;
-  border-radius: 999px 28px 28px 999px;
-  background: linear-gradient(135deg, #0d78ad 0%, #113071 100%);
+  inset: 0;
+  border-radius: 999px 18px 18px 999px;
+  background: linear-gradient(135deg, #4e79b1 0%, #113071 100%);
 }
 .home-face-analyzer__image,
 .home-face-analyzer__placeholder {
   position: relative;
   z-index: 1;
   display: block;
-  width: min(100%, 480px);
-  max-height: 320px;
-  object-fit: contain;
+  width: min(100%, 620px);
+  max-height: 380px;
+  object-fit: cover;
+  object-position: center;
 }
 @media (max-width: 991px) {
   .home-face-analyzer__card {
     grid-template-columns: 1fr;
     padding: 28px 24px;
   }
+  .home-face-analyzer__actions {
+    flex-wrap: wrap;
+  }
+  .home-face-analyzer__chip {
+    min-width: 0;
+    width: calc(50% - 7px);
+    font-size: 16px;
+  }
   .home-face-analyzer__visual {
-    min-height: 240px;
+    min-height: 260px;
   }
   .home-face-analyzer__shape {
     inset: 0;
@@ -181,6 +249,7 @@
   }
   .home-face-analyzer__chip {
     width: 100%;
+    min-height: 70px;
     justify-content: flex-start;
   }
 }

@@ -1,11 +1,12 @@
 {%- if localization.available_languages.size > 1 -%}
-  {%- form 'localization', id: form_id | default: 'LocalizationForm', class: 'localization-form' -%}
+  {%- assign localization_form_id = form_id | default: 'LocalizationForm' -%}
+  {%- form 'localization', id: localization_form_id, class: 'localization-form' -%}
     <div class="localization-switcher">
-      <label class="visually-hidden" for="{{ form_id | default: 'LocalizationForm' }}-locale">
+      <label class="visually-hidden" for="{{ localization_form_id }}-locale">
         Language
       </label>
       <select
-        id="{{ form_id | default: 'LocalizationForm' }}-locale"
+        id="{{ localization_form_id }}-locale"
         name="locale_code"
         class="localization-switcher__select"
         onchange="this.form.submit()"

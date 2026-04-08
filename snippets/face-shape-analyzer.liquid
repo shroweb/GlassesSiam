@@ -15,13 +15,21 @@
     {%- assign fsa_count = 0 -%}
     {%- for fsa_p in collections.all.products -%}
       {%- assign fsa_p_shape = fsa_p.metafields.custom.face_shape_recommendation | downcase | strip -%}
-      {%- if fsa_p_shape == fsa_shape and fsa_count < 4 -%}
+      {%- if fsa_p_shape == fsa_shape and fsa_count < 12 -%}
+        {%- assign fsa_type = fsa_p.type | downcase -%}
+        {%- assign fsa_category = 'both' -%}
+        {%- if fsa_type contains 'sun' -%}
+          {%- assign fsa_category = 'sunglasses' -%}
+        {%- elsif fsa_type contains 'eye' or fsa_type contains 'optical' or fsa_type contains 'frame' or fsa_type contains 'glass' -%}
+          {%- assign fsa_category = 'eyeglasses' -%}
+        {%- endif -%}
         {%- if fsa_count > 0 -%},{%- endif -%}
         {
           "title": {{ fsa_p.title | json }},
           "url":   {{ fsa_p.url | json }},
           "price": {{ fsa_p.price | money | json }},
-          "image": {% if fsa_p.featured_image != blank %}{{ fsa_p.featured_image | image_url: width: 400 | json }}{% else %}""{% endif %}
+          "image": {% if fsa_p.featured_image != blank %}{{ fsa_p.featured_image | image_url: width: 400 | json }}{% else %}""{% endif %},
+          "category": {{ fsa_category | json }}
         }
         {%- assign fsa_count = fsa_count | plus: 1 -%}
       {%- endif -%}
@@ -29,6 +37,50 @@
   ]{%- unless forloop.last -%},{%- endunless -%}
   {%- endfor -%}
 }
+</script>
+
+<script id="fsa-product-catalog" type="application/json">
+[
+  {%- assign fsa_catalog_count = 0 -%}
+  {%- for fsa_p in collections.all.products -%}
+    {%- assign fsa_type = fsa_p.type | downcase -%}
+    {%- assign fsa_category = 'both' -%}
+    {%- if fsa_type contains 'sun' -%}
+      {%- assign fsa_category = 'sunglasses' -%}
+    {%- elsif fsa_type contains 'eye' or fsa_type contains 'optical' or fsa_type contains 'frame' or fsa_type contains 'glass' -%}
+      {%- assign fsa_category = 'eyeglasses' -%}
+    {%- endif -%}
+    {%- assign fsa_search_text = fsa_p.title | append: ' ' | append: fsa_p.type | append: ' ' | append: fsa_p.tags | join: ' ' | downcase -%}
+    {%- if fsa_catalog_count > 0 -%},{%- endif -%}
+    {
+      "title": {{ fsa_p.title | json }},
+      "url": {{ fsa_p.url | json }},
+      "price": {{ fsa_p.price | money | json }},
+      "image": {% if fsa_p.featured_image != blank %}{{ fsa_p.featured_image | image_url: width: 500 | json }}{% else %}""{% endif %},
+      "category": {{ fsa_category | json }},
+      "search": {{ fsa_search_text | json }},
+      "tags": {{ fsa_p.tags | json }},
+      "material_meta": {{ fsa_p.metafields.custom.frame_material.value | default: fsa_p.metafields.custom.material.value | default: fsa_p.metafields.custom.materials.value | json }},
+      "style_meta": {{ fsa_p.metafields.custom.frame_style.value | default: fsa_p.metafields.custom.style.value | default: fsa_p.metafields.custom.frame_shape.value | json }},
+      "fit_meta": {{ fsa_p.metafields.custom.frame_fit.value | default: fsa_p.metafields.custom.fit.value | default: fsa_p.metafields.custom.width_fit.value | json }},
+      "width_meta": {{ fsa_p.metafields.custom.frame_width.value | default: fsa_p.metafields.custom.width.value | default: fsa_p.metafields.custom.size.value | json }},
+      "color_options": [
+        {%- assign fsa_color_values_count = 0 -%}
+        {%- for option in fsa_p.options_with_values -%}
+          {%- assign fsa_option_name = option.name | downcase | strip -%}
+          {%- if fsa_option_name == 'color' or fsa_option_name == 'colour' or fsa_option_name == 'frame color' or fsa_option_name == 'frame colour' -%}
+            {%- for value in option.values -%}
+              {%- if fsa_color_values_count > 0 -%},{%- endif -%}
+              {{ value | json }}
+              {%- assign fsa_color_values_count = fsa_color_values_count | plus: 1 -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+    {%- assign fsa_catalog_count = fsa_catalog_count | plus: 1 -%}
+  {%- endfor -%}
+]
 </script>
 
 {% comment %} ── Modal HTML ── {% endcomment %}
@@ -43,25 +95,62 @@
     <i class="ri-close-line"></i>
   </button>
 
-  {% comment %} Screen 1 – Intro / permission {% endcomment %}
+  {% comment %} Screen 1 – Decision after quiz {% endcomment %}
   <div class="fsa-screen fsa-screen--intro" data-screen="intro">
-    <div class="fsa-screen-inner">
-      <div class="fsa-intro-icon" aria-hidden="true">
-        <i class="ri-scan-2-line"></i>
+    <div class="fsa-decision-wrap">
+      <div class="fsa-decision-content">
+        <p class="fsa-decision-kicker">Optional AI Camera Scan</p>
+        <h2 class="fsa-heading" id="fsaIntroHeading">Would you like to continue with our AI feature for better results?</h2>
+        <p class="fsa-body-text" id="fsaIntroBody">
+          Your privacy matters. We never save scan data, and you can skip the camera and use your quiz answers only.
+        </p>
+        <p class="fsa-privacy-note">
+          <i class="ri-lock-line"></i> Processed entirely on your device — nothing is uploaded
+        </p>
+        <div class="fsa-decision-actions">
+          <button class="fsa-btn fsa-btn--primary" id="fsaStart" type="button">
+            <i class="ri-camera-line fsa-btn-icon"></i>
+            <span class="fsa-btn-text">Continue with camera</span>
+            <span class="fsa-btn-spinner" aria-hidden="true"></span>
+          </button>
+          <button class="fsa-btn fsa-btn--outline" id="fsaNoCamera" type="button">
+            Continue without camera
+          </button>
+        </div>
+        <p class="fsa-error" id="fsaError" role="alert" aria-live="polite"></p>
       </div>
-      <h2 class="fsa-heading">Find Your Perfect Frames</h2>
-      <p class="fsa-body-text">
-        We'll analyse your face shape in seconds and recommend frames that suit you best.
-      </p>
-      <p class="fsa-privacy-note">
-        <i class="ri-lock-line"></i> Processed entirely on your device — nothing is uploaded
-      </p>
-      <button class="fsa-btn fsa-btn--primary" id="fsaStart" type="button">
-        <i class="ri-camera-line fsa-btn-icon"></i>
-        <span class="fsa-btn-text">Start Analysis</span>
-        <span class="fsa-btn-spinner" aria-hidden="true"></span>
-      </button>
-      <p class="fsa-error" id="fsaError" role="alert" aria-live="polite"></p>
+      <div class="fsa-decision-visual" aria-hidden="true">
+        <div class="fsa-decision-glass">
+          <p>Let's find your perfect pair.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Screen 1b – Quiz flow {% endcomment %}
+  <div class="fsa-screen fsa-screen--quiz" data-screen="quiz">
+    <div class="fsa-quiz-shell">
+      <div class="fsa-quiz-topbar">
+        <button class="fsa-nav-btn" id="fsaBack" type="button" aria-label="Go back">
+          <i class="ri-arrow-left-s-line"></i>
+        </button>
+        <div class="fsa-quiz-brand">Frame Finder</div>
+        <div class="fsa-quiz-step-pill" id="fsaStepCount">1/4</div>
+      </div>
+      <div class="fsa-quiz-progress">
+        <div class="fsa-quiz-progress-fill" id="fsaQuizProgress"></div>
+      </div>
+      <div class="fsa-quiz-body">
+        <div class="fsa-quiz-copy">
+          <h2 class="fsa-quiz-title" id="fsaQuizTitle">What type of glasses are you looking for?</h2>
+          <p class="fsa-quiz-subtitle" id="fsaQuizSubtitle"></p>
+        </div>
+        <div class="fsa-quiz-options" id="fsaQuizOptions"></div>
+        <div class="fsa-quiz-actions">
+          <button class="fsa-btn fsa-btn--primary fsa-btn--disabled" id="fsaQuizContinue" type="button" disabled>Continue</button>
+          <button class="fsa-quiz-skip" id="fsaQuizSkip" type="button">Skip this step</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -88,7 +177,7 @@
       <div class="fsa-result-inner">
         <div class="fsa-result-badge">
           <div class="fsa-shape-label">
-            <p class="fsa-result-eyebrow">Scan Complete</p>
+            <p class="fsa-result-eyebrow" id="fsaResultEyebrow">Scan Complete</p>
             <h2 class="fsa-result-name" id="fsaShapeName">Here Are Your Frames</h2>
           </div>
         </div>
@@ -158,10 +247,30 @@
   align-items: center;
   justify-content: center;
 }
+.fsa-overlay[data-screen="quiz"] .fsa-screen--quiz {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
 .fsa-overlay[data-screen="camera"] .fsa-screen--camera { display: block; }
 .fsa-overlay[data-screen="result"] .fsa-screen--result {
   display: flex;
   align-items: stretch;
+}
+.fsa-overlay[data-screen="quiz"],
+.fsa-overlay[data-screen="intro"] {
+  background: #f6f8fb;
+  color: #111827;
+}
+.fsa-overlay[data-screen="quiz"] .fsa-close-btn,
+.fsa-overlay[data-screen="intro"] .fsa-close-btn {
+  background: rgba(255,255,255,0.9);
+  color: #64748b;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+.fsa-overlay[data-screen="quiz"] .fsa-close-btn:hover,
+.fsa-overlay[data-screen="intro"] .fsa-close-btn:hover {
+  background: #ffffff;
 }
 
 /* ── Screen 1: Intro ── */
@@ -206,6 +315,85 @@
   line-height: 1.5;
   min-height: 20px;
 }
+.fsa-decision-wrap {
+  width: min(1180px, calc(100% - 48px));
+  min-height: min(760px, calc(100vh - 48px));
+  margin: 24px;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
+  border-radius: 28px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.12);
+}
+.fsa-decision-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px 56px 48px;
+  text-align: left;
+}
+.fsa-decision-kicker {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5aa9ef;
+}
+.fsa-decision-content .fsa-heading {
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+.fsa-decision-content .fsa-body-text {
+  color: #475569;
+  margin-bottom: 16px;
+}
+.fsa-decision-content .fsa-privacy-note {
+  justify-content: flex-start;
+  color: #64748b;
+  margin-bottom: 30px;
+}
+.fsa-decision-actions {
+  display: grid;
+  gap: 14px;
+  justify-items: flex-start;
+}
+.fsa-decision-visual {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(17,48,113,0.08), rgba(17,48,113,0.08)),
+    linear-gradient(135deg, #dceeff 0%, #f3f8ff 100%);
+  overflow: hidden;
+}
+.fsa-decision-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(90,169,239,0.38) 0, rgba(90,169,239,0) 32%),
+    linear-gradient(135deg, rgba(17,48,113,0.1) 0%, rgba(17,48,113,0.02) 100%);
+}
+.fsa-decision-glass {
+  position: absolute;
+  right: 36px;
+  bottom: 42px;
+  width: min(340px, calc(100% - 72px));
+  padding: 28px 30px;
+  border-radius: 26px;
+  background: rgba(255,255,255,0.28);
+  border: 1px solid rgba(255,255,255,0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(17, 48, 113, 0.16);
+}
+.fsa-decision-glass p {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
 
 /* ── Buttons ── */
 .fsa-btn {
@@ -242,6 +430,173 @@
 .fsa-btn--ghost:hover {
   background: rgba(255,255,255,0.08);
   color: #fff;
+}
+.fsa-btn--outline {
+  background: transparent;
+  color: #3786dd;
+  border: 2px solid #5aa9ef;
+}
+.fsa-btn--outline:hover {
+  background: rgba(90,169,239,0.08);
+  color: #226ab9;
+}
+.fsa-btn--disabled,
+.fsa-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Quiz */
+.fsa-quiz-shell {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.fsa-quiz-topbar {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 24px 10px;
+}
+.fsa-nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #d9e2ec;
+  background: #ffffff;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+}
+.fsa-quiz-brand {
+  justify-self: center;
+  color: #113071;
+  font-size: 18px;
+  font-weight: 700;
+}
+.fsa-quiz-step-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+}
+.fsa-quiz-progress {
+  height: 6px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+.fsa-quiz-progress-fill {
+  width: 0;
+  height: 100%;
+  background: #5aa9ef;
+  transition: width 0.2s ease;
+}
+.fsa-quiz-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 24px 56px;
+}
+.fsa-quiz-copy {
+  text-align: center;
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+.fsa-quiz-title {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(32px, 3.2vw, 54px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+}
+.fsa-quiz-subtitle {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.fsa-quiz-options {
+  width: min(100%, 420px);
+  display: grid;
+  gap: 14px;
+}
+.fsa-quiz-option {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  min-height: 98px;
+  border-radius: 18px;
+  border: 1px solid #e7edf3;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.fsa-quiz-option:hover {
+  transform: translateY(-2px);
+  border-color: rgba(17,48,113,0.16);
+}
+.fsa-quiz-option.is-selected {
+  border-color: #5aa9ef;
+  box-shadow: 0 16px 30px rgba(90, 169, 239, 0.14);
+}
+.fsa-quiz-option__icon {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #eef2f7;
+  color: #6b7784;
+  font-size: 34px;
+}
+.fsa-quiz-option__label {
+  padding: 0 22px;
+  color: #0f172a;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.fsa-quiz-swatch-group {
+  display: inline-flex;
+  align-items: center;
+}
+.fsa-quiz-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
+  margin-left: -10px;
+}
+.fsa-quiz-swatch:first-child {
+  margin-left: 0;
+}
+.fsa-quiz-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+.fsa-quiz-skip {
+  border: none;
+  background: none;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Button loading state */
@@ -505,6 +860,45 @@
 
 /* ── Mobile ── */
 @media (max-width: 576px) {
+  .fsa-decision-wrap {
+    width: calc(100% - 24px);
+    min-height: calc(100vh - 24px);
+    margin: 12px;
+    grid-template-columns: 1fr;
+  }
+  .fsa-decision-content {
+    padding: 34px 22px 28px;
+    text-align: center;
+  }
+  .fsa-decision-content .fsa-privacy-note {
+    justify-content: center;
+  }
+  .fsa-decision-actions {
+    justify-items: stretch;
+  }
+  .fsa-decision-visual {
+    min-height: 240px;
+  }
+  .fsa-decision-glass {
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    width: auto;
+  }
+  .fsa-quiz-topbar {
+    grid-template-columns: 40px 1fr auto;
+    padding: 14px 14px 10px;
+  }
+  .fsa-quiz-title {
+    font-size: 28px;
+  }
+  .fsa-quiz-options {
+    width: 100%;
+  }
+  .fsa-quiz-option {
+    grid-template-columns: 86px 1fr;
+    min-height: 88px;
+  }
   .fsa-screen-inner       { padding: 32px 20px; }
   .fsa-result-scroll      { padding: 60px 16px 36px; }
   .fsa-result-badge       { flex-direction: column; gap: 10px; }
@@ -573,9 +967,10 @@
   var S = {
     IDLE: 'idle', LOADING_SDK: 'loading_sdk', PERMISSION: 'permission',
     CAMERA_INIT: 'camera_init', SCANNING: 'scanning', HOLDING: 'holding',
-    RESULT: 'result', ERROR: 'error'
+    RESULT: 'result', ERROR: 'error', QUIZ: 'quiz', DECISION: 'decision'
   };
   var state     = S.IDLE;
+  var finderCategory = 'both';
   var faceMesh  = null;
   var vidStream = null;
   var rafId     = null;
@@ -586,17 +981,25 @@
   var BUF_SIZE  = 15;
   var HOLD_MS   = 2000;
   var products  = {};
+  var catalogProducts = [];
+  var quizSteps = [];
+  var quizIndex = 0;
+  var launchHasCategory = false;
+  var quizAnswers = { category: '', material: '', colors: [], headWidth: '', frameStyle: '' };
 
   /* ─── DOM ─── */
   var overlay, video, canvas, ctx;
-  var openBtns, closeBtn, startBtn, cancelBtn, retryBtn;
+  var openBtns, closeBtn, startBtn, cancelBtn, retryBtn, noCameraBtn, backBtn, quizContinueBtn, quizSkipBtn;
   var statusTxt, progFill, errorEl;
-  var shapeName, shapeDesc, prodsGrid, seeAllA;
+  var shapeName, shapeDesc, prodsGrid, seeAllA, introHeading, introBody, resultEyebrow;
+  var quizTitle, quizSubtitle, quizOptions, quizProgress, quizStepCount;
 
   /* ─── Init ─── */
   function init() {
     var dataEl = document.getElementById('fsa-product-data');
     if (dataEl) { try { products = JSON.parse(dataEl.textContent); } catch(e) {} }
+    var catalogEl = document.getElementById('fsa-product-catalog');
+    if (catalogEl) { try { catalogProducts = JSON.parse(catalogEl.textContent); } catch(e) {} }
 
     overlay   = document.getElementById('fsa-overlay');
     video     = document.getElementById('fsaVideo');
@@ -606,6 +1009,10 @@
     startBtn  = document.getElementById('fsaStart');
     cancelBtn = document.getElementById('fsaCancel');
     retryBtn  = document.getElementById('fsaRetry');
+    noCameraBtn = document.getElementById('fsaNoCamera');
+    backBtn = document.getElementById('fsaBack');
+    quizContinueBtn = document.getElementById('fsaQuizContinue');
+    quizSkipBtn = document.getElementById('fsaQuizSkip');
     statusTxt = document.getElementById('fsaStatusText');
     progFill  = document.getElementById('fsaProgressFill');
     errorEl   = document.getElementById('fsaError');
@@ -613,6 +1020,14 @@
     shapeDesc = document.getElementById('fsaShapeDesc');
     prodsGrid = document.getElementById('fsaProductsGrid');
     seeAllA   = document.getElementById('fsaSeeAll');
+    introHeading = document.getElementById('fsaIntroHeading');
+    introBody = document.getElementById('fsaIntroBody');
+    resultEyebrow = document.getElementById('fsaResultEyebrow');
+    quizTitle = document.getElementById('fsaQuizTitle');
+    quizSubtitle = document.getElementById('fsaQuizSubtitle');
+    quizOptions = document.getElementById('fsaQuizOptions');
+    quizProgress = document.getElementById('fsaQuizProgress');
+    quizStepCount = document.getElementById('fsaStepCount');
 
     if (!overlay) return;
     ctx = canvas ? canvas.getContext('2d') : null;
@@ -621,7 +1036,7 @@
       openBtns.forEach(function(btn) {
         btn.addEventListener('click', function(event) {
           event.preventDefault();
-          openModal();
+          openModal(btn.getAttribute('data-fsa-category') || 'both');
         });
       });
     }
@@ -629,6 +1044,10 @@
     startBtn.addEventListener('click', onStart);
     cancelBtn.addEventListener('click', closeModal);
     retryBtn.addEventListener('click', doRetry);
+    if (noCameraBtn) noCameraBtn.addEventListener('click', finishWithoutCamera);
+    if (backBtn) backBtn.addEventListener('click', handleBack);
+    if (quizContinueBtn) quizContinueBtn.addEventListener('click', handleQuizContinue);
+    if (quizSkipBtn) quizSkipBtn.addEventListener('click', handleQuizSkip);
 
     overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && state !== S.IDLE) closeModal(); });
@@ -638,17 +1057,483 @@
   function setScreen(s) { overlay && overlay.setAttribute('data-screen', s); }
 
   /* ─── Open / close ─── */
-  function openModal() {
+  function getFinderCopy(category) {
+    if (category === 'eyeglasses') {
+      return {
+        heading: 'Find Your Perfect Eyeglasses',
+        body: 'We\'ll analyse your face shape in seconds and recommend optical frames that suit you best.'
+      };
+    }
+    if (category === 'sunglasses') {
+      return {
+        heading: 'Find Your Perfect Sunglasses',
+        body: 'We\'ll analyse your face shape in seconds and recommend sunglass styles that suit you best.'
+      };
+    }
+    return {
+      heading: 'Find Your Perfect Frames',
+      body: 'We\'ll analyse your face shape in seconds and recommend frames that suit you best.'
+    };
+  }
+
+  function applyFinderCopy() {
+    var copy = getFinderCopy(finderCategory);
+    if (introHeading) introHeading.textContent = copy.heading;
+    if (introBody) introBody.textContent = copy.body;
+  }
+
+  function normalizeFacetValue(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/[_]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function titleizeFacetValue(value) {
+    var raw = String(value || '').trim();
+    if (!raw) return '';
+    var lower = normalizeFacetValue(raw);
+    if (lower === 'xl') return 'XL';
+    if (lower === 'xxl') return 'XXL';
+    if (lower === 'metal') return 'Metal';
+    return lower.replace(/\b\w/g, function(char) { return char.toUpperCase(); });
+  }
+
+  function coerceToArray(value) {
+    if (value == null || value === '') return [];
+    if (Array.isArray(value)) {
+      return value.reduce(function(acc, item) {
+        return acc.concat(coerceToArray(item));
+      }, []);
+    }
+    if (typeof value === 'string') {
+      return value
+        .split(/[,|/;]+/)
+        .map(function(item) { return item.trim(); })
+        .filter(Boolean);
+    }
+    return [String(value)];
+  }
+
+  function extractTagFacetValues(tags, prefixes) {
+    var out = [];
+    (tags || []).forEach(function(tag) {
+      var original = String(tag || '').trim();
+      var lower = normalizeFacetValue(original);
+      prefixes.forEach(function(prefix) {
+        var cleanPrefix = normalizeFacetValue(prefix);
+        [cleanPrefix + ':', cleanPrefix + '-', cleanPrefix + '_'].forEach(function(marker) {
+          if (lower.indexOf(marker) === 0) {
+            out.push(original.slice(marker.length).trim());
+          }
+        });
+      });
+    });
+    return out.filter(Boolean);
+  }
+
+  function uniqValues(values) {
+    var seen = {};
+    return values.filter(function(value) {
+      var key = normalizeFacetValue(value);
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  function getProductFacetValues(product, facet) {
+    if (!product) return [];
+    if (facet === 'material') {
+      return uniqValues(
+        coerceToArray(product.material_meta).concat(
+          extractTagFacetValues(product.tags, ['material', 'frame material', 'frame_material'])
+        )
+      );
+    }
+    if (facet === 'style') {
+      return uniqValues(
+        coerceToArray(product.style_meta).concat(
+          extractTagFacetValues(product.tags, ['style', 'frame style', 'frame-style', 'frame_style', 'shape', 'frame shape'])
+        )
+      );
+    }
+    if (facet === 'width') {
+      return uniqValues(
+        coerceToArray(product.fit_meta)
+          .concat(coerceToArray(product.width_meta))
+          .concat(extractTagFacetValues(product.tags, ['fit', 'frame fit', 'width', 'frame width', 'frame_width', 'size']))
+      );
+    }
+    if (facet === 'color') {
+      return uniqValues(
+        coerceToArray(product.color_options).concat(
+          extractTagFacetValues(product.tags, ['color', 'colour', 'frame color', 'frame colour'])
+        )
+      );
+    }
+    return [];
+  }
+
+  function getFacetBuckets(facet) {
+    var buckets = {};
+    catalogProducts.forEach(function(product) {
+      getProductFacetValues(product, facet).forEach(function(value) {
+        var key = normalizeFacetValue(value);
+        if (!key) return;
+        if (!buckets[key]) {
+          buckets[key] = { value: key, label: titleizeFacetValue(value), count: 0 };
+        }
+        buckets[key].count += 1;
+      });
+    });
+    return Object.keys(buckets).map(function(key) { return buckets[key]; })
+      .sort(function(a, b) {
+        if (b.count !== a.count) return b.count - a.count;
+        return a.label.localeCompare(b.label);
+      });
+  }
+
+  function getMaterialIconSvg(value) {
+    var key = normalizeFacetValue(value);
+    if (key.indexOf('metal') !== -1 || key.indexOf('titanium') !== -1 || key.indexOf('steel') !== -1 || key.indexOf('alloy') !== -1) {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="11" stroke="currentColor" stroke-width="3"/><path d="M24 8V14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M24 34V40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M8 24H14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M34 24H40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    }
+    if (key.indexOf('acetate') !== -1 || key.indexOf('plastic') !== -1) {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="11" width="26" height="26" rx="8" stroke="currentColor" stroke-width="3"/><path d="M17 20C20 16 28 16 31 20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M17 28C20 24 28 24 31 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    }
+    return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 15H38" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M10 24H38" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M10 33H38" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="18" cy="15" r="4" fill="#ffffff" stroke="currentColor" stroke-width="3"/><circle cx="30" cy="24" r="4" fill="#ffffff" stroke="currentColor" stroke-width="3"/><circle cx="22" cy="33" r="4" fill="#ffffff" stroke="currentColor" stroke-width="3"/></svg>';
+  }
+
+  function getWidthIconSvg(value) {
+    var key = normalizeFacetValue(value);
+    if (key.indexOf('narrow') !== -1 || key.indexOf('small') !== -1 || key.indexOf('petite') !== -1) {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 15C18 11.6863 20.6863 9 24 9C27.3137 9 30 11.6863 30 15V18C30 21.3137 27.3137 24 24 24C20.6863 24 18 21.3137 18 18V15Z" stroke="currentColor" stroke-width="3"/><path d="M14 36C14 31.5817 17.5817 28 22 28H26C30.4183 28 34 31.5817 34 36V38H14V36Z" stroke="currentColor" stroke-width="3"/><path d="M12 12H14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M34 12H36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    }
+    if (key.indexOf('wide') !== -1 || key.indexOf('large') !== -1 || key.indexOf('oversized') !== -1 || key === 'xl') {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 15C16 10.5817 19.5817 7 24 7C28.4183 7 32 10.5817 32 15V18C32 22.4183 28.4183 26 24 26C19.5817 26 16 22.4183 16 18V15Z" stroke="currentColor" stroke-width="3"/><path d="M10 37C10 31.4772 14.4772 27 20 27H28C33.5228 27 38 31.4772 38 37V39H10V37Z" stroke="currentColor" stroke-width="3"/><path d="M7 12H10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M38 12H41" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    }
+    if (key.indexOf('exact') !== -1 || key.indexOf('size') !== -1 || /^\d/.test(key)) {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 31L31 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M16 10H31V25" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 36H36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M16 33V39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M24 33V39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M32 33V39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    }
+    return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 15C17 11.134 20.134 8 24 8C27.866 8 31 11.134 31 15V18C31 21.866 27.866 25 24 25C20.134 25 17 21.866 17 18V15Z" stroke="currentColor" stroke-width="3"/><path d="M13 36C13 31.0294 17.0294 27 22 27H26C30.9706 27 35 31.0294 35 36V38H13V36Z" stroke="currentColor" stroke-width="3"/></svg>';
+  }
+
+  function getStyleIconSvg(value) {
+    var key = normalizeFacetValue(value);
+    if (key.indexOf('bold') !== -1 || key.indexOf('oversized') !== -1 || key.indexOf('statement') !== -1 || key.indexOf('thick') !== -1) {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 8L27.6 18.4L38 22L27.6 25.6L24 36L20.4 25.6L10 22L20.4 18.4L24 8Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M35 11L36.2 14.8L40 16L36.2 17.2L35 21L33.8 17.2L30 16L33.8 14.8L35 11Z" fill="currentColor"/></svg>';
+    }
+    if (key.indexOf('minimal') !== -1 || key.indexOf('rimless') !== -1 || key.indexOf('thin') !== -1 || key.indexOf('wire') !== -1 || key.indexOf('light') !== -1) {
+      return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="6.5" stroke="currentColor" stroke-width="3"/><path d="M24 9V14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M24 34V39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M9 24H14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M34 24H39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+    }
+    return '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="11" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="3"/><rect x="27" y="11" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="3"/><rect x="11" y="27" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="3"/><rect x="27" y="27" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="3"/></svg>';
+  }
+
+  function getColorIconMarkup(value) {
+    var swatchMap = {
+      black: '#111111',
+      tortoise: '#7b4b2a',
+      brown: '#8b5e3c',
+      blue: '#60a5fa',
+      green: '#34d399',
+      red: '#ef4444',
+      pink: '#f472b6',
+      purple: '#8b5cf6',
+      clear: '#e8f1ff',
+      transparent: '#e8f1ff',
+      crystal: '#eef2ff',
+      beige: '#d6c1a4',
+      gold: '#d4a62a',
+      silver: '#b8c2cc',
+      gray: '#94a3b8',
+      grey: '#94a3b8',
+      white: '#f8fafc'
+    };
+    var key = normalizeFacetValue(value);
+    var tokens = key.split(/[\s/,+-]+/).filter(Boolean);
+    var colors = [];
+    tokens.forEach(function(token) {
+      if (swatchMap[token] && colors.indexOf(swatchMap[token]) === -1) colors.push(swatchMap[token]);
+    });
+    if (!colors.length) colors.push('#cbd5e1');
+    return '<span class="fsa-quiz-swatch-group">' + colors.slice(0, 3).map(function(color) {
+      return '<span class="fsa-quiz-swatch" style="background:' + color + '"></span>';
+    }).join('') + '</span>';
+  }
+
+  function buildQuizSteps() {
+    var steps = [];
+    var materialBuckets = getFacetBuckets('material');
+    var colorBuckets = getFacetBuckets('color');
+    var widthBuckets = getFacetBuckets('width');
+    var styleBuckets = getFacetBuckets('style');
+
+    if (!launchHasCategory) {
+      steps.push({
+        id: 'category',
+        title: 'What type of glasses are you looking for?',
+        subtitle: '',
+        multi: false,
+        options: [
+          { value: 'eyeglasses', label: 'Eyeglasses', icon: '<svg viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5C3 8.46243 5.46243 6 8.5 6H21.5C24.5376 6 27 8.46243 27 11.5V14.5C27 17.5376 24.5376 20 21.5 20H8.5C5.46243 20 3 17.5376 3 14.5V11.5Z" stroke="currentColor" stroke-width="2.5"/><path d="M37 11.5C37 8.46243 39.4624 6 42.5 6H55.5C58.5376 6 61 8.46243 61 11.5V14.5C61 17.5376 58.5376 20 55.5 20H42.5C39.4624 20 37 17.5376 37 14.5V11.5Z" stroke="currentColor" stroke-width="2.5"/><path d="M27 12.5H37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M2 10L7 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M62 10L57 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>' },
+          { value: 'sunglasses', label: 'Sunglasses', icon: '<svg viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5C3 8.46243 5.46243 6 8.5 6H21.5C24.5376 6 27 8.46243 27 11.5V14.5C27 17.5376 24.5376 20 21.5 20H8.5C5.46243 20 3 17.5376 3 14.5V11.5Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2.5"/><path d="M37 11.5C37 8.46243 39.4624 6 42.5 6H55.5C58.5376 6 61 8.46243 61 11.5V14.5C61 17.5376 58.5376 20 55.5 20H42.5C39.4624 20 37 17.5376 37 14.5V11.5Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2.5"/><path d="M27 12.5H37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M2 10L7 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M62 10L57 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>' },
+          { value: 'both', label: 'Both', icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 15H38" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M10 24H38" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path d="M10 33H38" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="18" cy="15" r="4" fill="#ffffff" stroke="currentColor" stroke-width="3"/><circle cx="30" cy="24" r="4" fill="#ffffff" stroke="currentColor" stroke-width="3"/><circle cx="22" cy="33" r="4" fill="#ffffff" stroke="currentColor" stroke-width="3"/></svg>' }
+        ]
+      });
+    }
+
+    if (materialBuckets.length) {
+      steps.push({
+        id: 'material',
+        title: 'Which frame materials are you interested in?',
+        subtitle: 'These options come from your current product data.',
+        multi: false,
+        options: materialBuckets.slice(0, 6).map(function(bucket) {
+          return { value: bucket.value, label: bucket.label, icon: getMaterialIconSvg(bucket.value) };
+        })
+      });
+    }
+
+    if (colorBuckets.length) {
+      steps.push({
+        id: 'colors',
+        title: 'What frame colors do you like?',
+        subtitle: 'You can pick more than one.',
+        multi: true,
+        options: colorBuckets.slice(0, 6).map(function(bucket) {
+          return { value: bucket.value, label: bucket.label, icon: getColorIconMarkup(bucket.value) };
+        })
+      });
+    }
+
+    if (widthBuckets.length) {
+      steps.push({
+        id: 'headWidth',
+        title: 'Which fit or size works best for you?',
+        subtitle: 'These values come from your product sizing data.',
+        multi: false,
+        options: widthBuckets.slice(0, 6).map(function(bucket) {
+          return { value: bucket.value, label: bucket.label, icon: getWidthIconSvg(bucket.value) };
+        })
+      });
+    }
+
+    if (styleBuckets.length) {
+      steps.push({
+        id: 'frameStyle',
+        title: 'What frame style do you prefer?',
+        subtitle: 'These styles come from your current product data.',
+        multi: false,
+        options: styleBuckets.slice(0, 6).map(function(bucket) {
+          return { value: bucket.value, label: bucket.label, icon: getStyleIconSvg(bucket.value) };
+        })
+      });
+    }
+
+    return steps;
+  }
+
+  function getStepValue(stepId) {
+    if (stepId === 'colors') return quizAnswers.colors || [];
+    return quizAnswers[stepId];
+  }
+
+  function setStepValue(stepId, value) {
+    if (stepId === 'colors') {
+      quizAnswers.colors = value;
+    } else {
+      quizAnswers[stepId] = value;
+    }
+    if (stepId === 'category' && value) finderCategory = value;
+  }
+
+  function isStepAnswered(step) {
+    var value = getStepValue(step.id);
+    return step.multi ? value && value.length > 0 : !!value;
+  }
+
+  function renderQuizStep() {
+    var step = quizSteps[quizIndex];
+    if (!step || !quizTitle || !quizOptions) return;
+
+    setScreen('quiz');
+    setState(S.QUIZ);
+    if (quizTitle) quizTitle.textContent = step.title;
+    if (quizSubtitle) {
+      quizSubtitle.textContent = step.subtitle || '';
+      quizSubtitle.style.display = step.subtitle ? '' : 'none';
+    }
+    if (quizStepCount) quizStepCount.textContent = (quizIndex + 1) + '/' + quizSteps.length;
+    if (quizProgress) quizProgress.style.width = (((quizIndex + 1) / quizSteps.length) * 100) + '%';
+    if (backBtn) backBtn.style.visibility = (quizIndex === 0 && launchHasCategory) ? 'hidden' : 'visible';
+
+    var selectedValue = getStepValue(step.id);
+    quizOptions.innerHTML = step.options.map(function(option) {
+      var selected = step.multi
+        ? Array.isArray(selectedValue) && selectedValue.indexOf(option.value) !== -1
+        : selectedValue === option.value;
+      return '<button type="button" class="fsa-quiz-option' + (selected ? ' is-selected' : '') + '" data-step-id="' + step.id + '" data-value="' + option.value + '">'
+        + '<span class="fsa-quiz-option__icon">' + option.icon + '</span>'
+        + '<span class="fsa-quiz-option__label">' + option.label + '</span>'
+        + '</button>';
+    }).join('');
+
+    Array.prototype.slice.call(quizOptions.querySelectorAll('.fsa-quiz-option')).forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        selectQuizOption(step, btn.getAttribute('data-value'));
+      });
+    });
+
+    updateQuizContinueState();
+  }
+
+  function updateQuizContinueState() {
+    if (!quizContinueBtn) return;
+    var step = quizSteps[quizIndex];
+    var enabled = step ? isStepAnswered(step) : false;
+    quizContinueBtn.disabled = !enabled;
+    quizContinueBtn.classList.toggle('fsa-btn--disabled', !enabled);
+  }
+
+  function selectQuizOption(step, value) {
+    if (!step) return;
+    if (step.multi) {
+      var current = (quizAnswers.colors || []).slice();
+      var idx = current.indexOf(value);
+      if (idx === -1) current.push(value); else current.splice(idx, 1);
+      setStepValue(step.id, current);
+    } else {
+      setStepValue(step.id, value);
+    }
+    renderQuizStep();
+  }
+
+  function handleQuizContinue() {
+    if (quizIndex >= quizSteps.length - 1) {
+      showDecision();
+      return;
+    }
+    quizIndex += 1;
+    renderQuizStep();
+  }
+
+  function handleQuizSkip() {
+    var step = quizSteps[quizIndex];
+    if (step) {
+      setStepValue(step.id, step.multi ? [] : '');
+    }
+    if (quizIndex >= quizSteps.length - 1) {
+      showDecision();
+    } else {
+      quizIndex += 1;
+      renderQuizStep();
+    }
+  }
+
+  function handleBack() {
+    if (overlay.getAttribute('data-screen') === 'intro') {
+      renderQuizStep();
+      return;
+    }
+    if (quizIndex === 0) {
+      closeModal();
+      return;
+    }
+    quizIndex -= 1;
+    renderQuizStep();
+  }
+
+  function showDecision() {
+    applyFinderCopy();
+    setScreen('intro');
+    setState(S.DECISION);
+    if (startBtn) {
+      startBtn.disabled = false;
+      startBtn.classList.remove('fsa-btn--disabled');
+    }
+  }
+
+  function summarizeQuizAnswers() {
+    var parts = [];
+    if (finderCategory && finderCategory !== 'both') parts.push(finderCategory);
+    if (quizAnswers.material) {
+      parts.push(titleizeFacetValue(quizAnswers.material));
+    }
+    if (quizAnswers.colors && quizAnswers.colors.length) {
+      parts.push(quizAnswers.colors.map(titleizeFacetValue).join(' + ') + ' tones');
+    }
+    if (quizAnswers.headWidth) {
+      parts.push(titleizeFacetValue(quizAnswers.headWidth) + ' fit');
+    }
+    if (quizAnswers.frameStyle) {
+      parts.push(titleizeFacetValue(quizAnswers.frameStyle) + ' styling');
+    }
+    if (!parts.length) return 'These picks are based on your quick quiz preferences.';
+    return 'These picks are based on your preference for ' + parts.join(', ') + '.';
+  }
+
+  function scoreQuizProduct(product) {
+    var score = 0;
+    var materials = getProductFacetValues(product, 'material').map(normalizeFacetValue);
+    var colors = getProductFacetValues(product, 'color').map(normalizeFacetValue);
+    var widths = getProductFacetValues(product, 'width').map(normalizeFacetValue);
+    var styles = getProductFacetValues(product, 'style').map(normalizeFacetValue);
+    if (finderCategory === 'both' || product.category === finderCategory || product.category === 'both') score += 5;
+    if (quizAnswers.material && materials.indexOf(normalizeFacetValue(quizAnswers.material)) !== -1) score += 4;
+    (quizAnswers.colors || []).forEach(function(colorPref) {
+      if (colors.indexOf(normalizeFacetValue(colorPref)) !== -1) score += 2;
+    });
+    if (quizAnswers.headWidth && widths.indexOf(normalizeFacetValue(quizAnswers.headWidth)) !== -1) score += 3;
+    if (quizAnswers.frameStyle && styles.indexOf(normalizeFacetValue(quizAnswers.frameStyle)) !== -1) score += 3;
+    return score;
+  }
+
+  function renderProductsList(prods) {
+    if (!prodsGrid) return;
+    if (prods.length > 0) {
+      prodsGrid.innerHTML = prods.map(function (p) {
+        var img = p.image
+          ? '<img src="' + p.image + '" alt="' + (p.title || '').replace(/[<>&"]/g, '') + '" loading="lazy">'
+          : '';
+        return '<a class="fsa-product-card" href="' + (p.url || '#') + '">'
+          + '<div class="fsa-product-card__img">' + img + '</div>'
+          + '<div class="fsa-product-card__body">'
+          + '<p class="fsa-product-card__title">' + (p.title || '') + '</p>'
+          + '<p class="fsa-product-card__price">' + (p.price || '') + '</p>'
+          + '</div></a>';
+      }).join('');
+    } else {
+      prodsGrid.innerHTML = '<p class="fsa-no-products">No matching products found yet — try a broader selection.</p>';
+    }
+  }
+
+  function openModal(category) {
     if (state !== S.IDLE) return;
+    finderCategory = category || 'both';
+    launchHasCategory = !!category;
+    quizAnswers = {
+      category: category || '',
+      material: '',
+      colors: [],
+      headWidth: '',
+      frameStyle: ''
+    };
+    quizSteps = buildQuizSteps();
+    quizIndex = 0;
+    applyFinderCopy();
     overlay.setAttribute('aria-hidden', 'false');
     overlay.classList.add('is-open');
-    setScreen('intro');
-    setState(S.LOADING_SDK);
     document.body.style.overflow = 'hidden';
     clearErr();
-    loadSdk()
-      .then(function () { if (state === S.LOADING_SDK) setState(S.PERMISSION); })
-      .catch(function () { setState(S.ERROR); showErr('Could not load the analyzer. Please check your connection.'); });
+    if (quizSteps.length) {
+      setScreen('quiz');
+      setState(S.QUIZ);
+      renderQuizStep();
+    } else {
+      showDecision();
+    }
   }
 
   function closeModal() {
@@ -662,7 +1547,12 @@
     document.body.style.overflow = '';
     if (progFill) progFill.style.width = '0%';
     if (startBtn) startBtn.disabled = false;
+    if (quizProgress) quizProgress.style.width = '0%';
     clearErr();
+    quizAnswers = { category: '', material: '', colors: [], headWidth: '', frameStyle: '' };
+    quizSteps = [];
+    quizIndex = 0;
+    launchHasCategory = false;
     setState(S.IDLE);
   }
 
@@ -674,24 +1564,66 @@
     if (progFill) progFill.style.width = '0%';
     if (startBtn) startBtn.disabled = false;
     clearErr();
-    setState(S.PERMISSION);
-    setScreen('intro');
+    quizAnswers.material = '';
+    quizAnswers.colors = [];
+    quizAnswers.headWidth = '';
+    quizAnswers.frameStyle = '';
+    if (!launchHasCategory) quizAnswers.category = '';
+    quizSteps = buildQuizSteps();
+    quizIndex = 0;
+    if (quizSteps.length) {
+      renderQuizStep();
+    } else {
+      showDecision();
+    }
   }
 
   /* ─── Start button ─── */
   function onStart() {
-    if (state === S.LOADING_SDK) {
-      startBtn.disabled = true;
-      loadSdk().then(function () {
-        setState(S.PERMISSION);
-        startCamera();
-      }).catch(function () {
-        startBtn.disabled = false;
-        showErr('Could not load analyzer. Please check your connection.');
-      });
-      return;
-    }
-    if (state === S.PERMISSION) startCamera();
+    if (state !== S.DECISION && state !== S.LOADING_SDK && state !== S.PERMISSION) return;
+    startBtn.disabled = true;
+    clearErr();
+    setState(S.LOADING_SDK);
+    loadSdk().then(function () {
+      setState(S.PERMISSION);
+      startCamera();
+    }).catch(function () {
+      startBtn.disabled = false;
+      setState(S.DECISION);
+      showErr('Could not load analyzer. Please check your connection.');
+    });
+  }
+
+  function finishWithoutCamera() {
+    stopCamera();
+    stopHold();
+    clearNoFace();
+    if (resultEyebrow) resultEyebrow.textContent = 'Quiz Complete';
+    if (shapeName) shapeName.textContent = 'Your Pairfect Matches';
+    if (shapeDesc) shapeDesc.textContent = summarizeQuizAnswers();
+
+    var scored = catalogProducts
+      .filter(function(product) {
+        return finderCategory === 'both' || product.category === finderCategory || product.category === 'both';
+      })
+      .map(function(product) {
+        return { product: product, score: scoreQuizProduct(product) };
+      })
+      .sort(function(a, b) { return b.score - a.score; })
+      .map(function(entry) { return entry.product; });
+
+    if (!scored.length) scored = catalogProducts.slice();
+    renderProductsList(scored.slice(0, 4));
+
+    var collectionHandle = finderCategory === 'eyeglasses'
+      ? 'eyeglasses'
+      : finderCategory === 'sunglasses'
+        ? 'sunglasses'
+        : 'all';
+    if (seeAllA) seeAllA.href = '/collections/' + collectionHandle;
+
+    setState(S.RESULT);
+    setScreen('result');
   }
 
   /* ─── SDK lazy load ─── */
@@ -767,9 +1699,9 @@
         startNoFace();
       })
       .catch(function (err) {
-        setState(S.ERROR);
         if (startBtn) startBtn.disabled = false;
         setScreen('intro');
+        setState(S.DECISION);
         if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
           showErr('Camera access was denied. Please allow camera permission in your browser settings.');
         } else {
@@ -884,29 +1816,28 @@
   /* ─── Result ─── */
   function renderResult(shape) {
     var meta = SHAPES[shape] || SHAPES.oval;
-
+    if (resultEyebrow) resultEyebrow.textContent = 'Scan Complete';
+    if (shapeName) shapeName.textContent = meta.label + ' Face';
     if (shapeDesc) shapeDesc.textContent = meta.desc;
 
     var prods = products[shape] || [];
-    if (prodsGrid) {
-      if (prods.length > 0) {
-        prodsGrid.innerHTML = prods.map(function (p) {
-          var img = p.image
-            ? '<img src="' + p.image + '" alt="' + (p.title || '').replace(/[<>&"]/g, '') + '" loading="lazy">'
-            : '';
-          return '<a class="fsa-product-card" href="' + (p.url || '#') + '">'
-            + '<div class="fsa-product-card__img">' + img + '</div>'
-            + '<div class="fsa-product-card__body">'
-            + '<p class="fsa-product-card__title">' + (p.title || '') + '</p>'
-            + '<p class="fsa-product-card__price">' + (p.price || '') + '</p>'
-            + '</div></a>';
-        }).join('');
-      } else {
-        prodsGrid.innerHTML = '<p class="fsa-no-products">No products tagged for this shape yet — check back soon.</p>';
-      }
+    if (finderCategory !== 'both') {
+      prods = prods.filter(function(p) {
+        return p.category === finderCategory || p.category === 'both';
+      });
     }
+    if (!prods.length && finderCategory !== 'both') {
+      prods = products[shape] || [];
+    }
+    prods = prods.slice(0, 4);
+    renderProductsList(prods);
 
-    var url = '/collections/all?filter.p.m.custom.face_shape_recommendation=' + shape;
+    var collectionHandle = finderCategory === 'eyeglasses'
+      ? 'eyeglasses'
+      : finderCategory === 'sunglasses'
+        ? 'sunglasses'
+        : 'all';
+    var url = '/collections/' + collectionHandle + '?filter.p.m.custom.face_shape_recommendation=' + shape;
     if (seeAllA)   seeAllA.href = url;
   }
 

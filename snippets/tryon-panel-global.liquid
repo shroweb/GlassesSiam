@@ -316,13 +316,41 @@
   var currentHandle = null;
   var currentProduct = null;
   var showAttempt = 0;
-  var DESKTOP_MIN = 270;
-  var DESKTOP_MAX = 360;
+  var DESKTOP_MIN = 310;
+  var DESKTOP_MAX = 390;
+  var activeModalNode = null;
+  var activeModalInlineStyle = null;
 
   function formatMoney(cents) {
     return Shopify && Shopify.formatMoney
       ? Shopify.formatMoney(cents, "{{ shop.money_format }}")
       : (cents / 100).toFixed(2);
+  }
+
+  function slugifyFacet(value) {
+    return String(value || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function updateCartIndicators(cart) {
+    if (!cart) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.cart-count, .cart-item-count, [data-cart-count], #cart-total'), function(el) {
+      el.textContent = cart.item_count;
+    });
+    document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+    document.dispatchEvent(new CustomEvent('cart:refresh', { detail: { cart: cart } }));
+  }
+
+  function refreshCart() {
+    return fetch('/cart.js', { headers: { Accept: 'application/json' } })
+      .then(function(response) { return response.json(); })
+      .then(function(cart) {
+        updateCartIndicators(cart);
+        return cart;
+      });
   }
 
   function setFeedback(message, isError) {
@@ -438,7 +466,14 @@
     var productUrl = '/products/' + product.handle;
     if (seeFrameEl) seeFrameEl.href = productUrl;
     if (chooseLensesEl) chooseLensesEl.href = productUrl;
-    if (viewMoreEl) viewMoreEl.href = '{{ routes.all_products_collection_url }}';
+    if (viewMoreEl) {
+      var searchTerms = [];
+      if (product.vendor) searchTerms.push(product.vendor);
+      if (product.type) searchTerms.push(product.type);
+      if (!searchTerms.length && product.tags && product.tags.length) searchTerms.push(product.tags[0]);
+      var query = encodeURIComponent(searchTerms.join(' ') || 'frames');
+      viewMoreEl.href = '/search?q=' + query + '&type=product';
+    }
 
     buildSwatches(product);
   }
@@ -461,7 +496,7 @@
     rememberHandleFromNode(event.target);
   }, true);
 
-  function getGlassonModalRect() {
+  function getGlassonModalTarget() {
     var el = document.querySelector('glasson-try-on');
     if (!el || !el.shadowRoot) return null;
     if (!el.shadowRoot.querySelector('.g-dialog-overlay--active')) return null;
@@ -480,34 +515,97 @@
     var vw = window.innerWidth;
     var vh = window.innerHeight;
     var best = null;
+    var bestNode = null;
     var bestArea = 0;
-    rects.forEach(function(rect) {
+    Array.prototype.forEach.call(el.shadowRoot.children, function(node, index) {
+      void index;
+    });
+    function walkWithNode(node) {
+      if (!node || node.nodeType !== 1) return;
+      var rect = node.getBoundingClientRect();
       if (rect.width > 220 && rect.height > 180 && rect.width < vw * 0.98 && rect.height < vh * 0.98) {
         var area = rect.width * rect.height;
         if (area > bestArea) {
           bestArea = area;
           best = rect;
+          bestNode = node;
         }
       }
-    });
-    return best;
+      if (node.shadowRoot) {
+        Array.prototype.forEach.call(node.shadowRoot.children, walkWithNode);
+      }
+      Array.prototype.forEach.call(node.children, walkWithNode);
+    }
+    Array.prototype.forEach.call(el.shadowRoot.children, walkWithNode);
+    return best ? { node: bestNode, rect: best } : null;
   }
 
-  function applyDesktopPosition(rect) {
+  function restoreModalPosition() {
+    if (!activeModalNode) return;
+    if (activeModalInlineStyle) {
+      activeModalNode.setAttribute('style', activeModalInlineStyle);
+    } else {
+      activeModalNode.removeAttribute('style');
+    }
+    activeModalNode = null;
+    activeModalInlineStyle = null;
+  }
+
+  function positionModalAndPanel(target, panelWidth) {
+    var rect = target.rect;
+    var node = target.node;
     var vw = window.innerWidth;
-    var outsideSpace = vw - rect.right - 16;
-    var placeOutside = outsideSpace >= DESKTOP_MIN;
-    var width = placeOutside ? Math.min(DESKTOP_MAX, outsideSpace) : Math.max(DESKTOP_MIN, Math.min(DESKTOP_MAX, rect.width * 0.3));
-    var left = placeOutside ? rect.right + 12 : rect.right - width - 10;
+    var vh = window.innerHeight;
+    var gap = 12;
+    var totalWidth = rect.width + gap + panelWidth;
+    var maxGroupLeft = Math.max(16, vw - totalWidth - 16);
+    var groupLeft = Math.round((vw - totalWidth) / 2);
+    groupLeft = Math.max(16, Math.min(groupLeft, maxGroupLeft));
+    var maxGroupTop = Math.max(16, vh - rect.height - 16);
+    var groupTop = Math.round((vh - rect.height) / 2);
+    groupTop = Math.max(16, Math.min(groupTop, maxGroupTop));
+
+    if (node && node.style) {
+      if (activeModalNode !== node) {
+        restoreModalPosition();
+        activeModalNode = node;
+        activeModalInlineStyle = node.getAttribute('style') || '';
+      }
+      node.style.setProperty('position', 'fixed', 'important');
+      node.style.setProperty('left', Math.round(groupLeft) + 'px', 'important');
+      node.style.setProperty('top', Math.round(groupTop) + 'px', 'important');
+      node.style.setProperty('right', 'auto', 'important');
+      node.style.setProperty('bottom', 'auto', 'important');
+      node.style.setProperty('margin', '0', 'important');
+      node.style.setProperty('transform', 'none', 'important');
+    }
+
+    return {
+      left: groupLeft + rect.width + gap,
+      top: groupTop,
+      height: rect.height
+    };
+  }
+
+  function applyDesktopPosition(target) {
+    var rect = target.rect;
+    var vw = window.innerWidth;
+    var safeWidth = Math.max(320, vw - 32);
+    var width = Math.max(DESKTOP_MIN, Math.min(DESKTOP_MAX, rect.width * 0.3, safeWidth));
+    var coords = positionModalAndPanel(target, width);
+    var left = coords.left;
+    var top = coords.top;
+    var maxHeight = Math.max(320, window.innerHeight - 32);
+    var height = Math.max(320, Math.min(Math.round(coords.height), Math.round(maxHeight)));
 
     panel.style.cssText = [
       'position:fixed',
-      'top:' + Math.round(rect.top) + 'px',
+      'top:' + Math.round(top) + 'px',
       'left:' + Math.round(left) + 'px',
       'right:auto',
       'bottom:auto',
       'width:' + Math.round(width) + 'px',
-      'height:' + Math.round(rect.height) + 'px',
+      'height:' + height + 'px',
       'transform:translateX(100%)',
       'transition:transform 0.38s cubic-bezier(0.4,0,0.2,1)',
       'pointer-events:none',
@@ -542,7 +640,7 @@
     }
 
     function positionAndShow() {
-      var rect = getGlassonModalRect();
+      var rect = getGlassonModalTarget();
       if (rect) {
         applyDesktopPosition(rect);
         slideIn();
@@ -550,7 +648,7 @@
         showAttempt += 1;
         setTimeout(positionAndShow, showAttempt * 90);
       } else {
-        applyDesktopPosition({ top: 32, right: window.innerWidth - 16, width: Math.min(window.innerWidth - 32, 360), height: window.innerHeight - 64 });
+        applyDesktopPosition({ node: null, rect: { top: 32, right: window.innerWidth - 16, width: Math.min(window.innerWidth - 32, 360), height: window.innerHeight - 64 } });
         slideIn();
       }
     }
@@ -569,6 +667,7 @@
     setTimeout(function() {
       panel.classList.remove('is-visible');
       resetPosition();
+      restoreModalPosition();
     }, 420);
   }
 
@@ -649,12 +748,7 @@
       .then(function(data) {
         if (data.status) throw new Error(data.description || data.message);
         setFeedback('Added to cart');
-        return fetch('/cart.js');
-      })
-      .then(function(response) { return response.json(); })
-      .then(function(cart) {
-        var bubble = document.getElementById('cart-total');
-        if (bubble && cart) bubble.textContent = cart.item_count;
+        return refreshCart();
       })
       .catch(function(error) {
         setFeedback(error.message || 'Unable to add this frame right now.', true);
@@ -668,7 +762,7 @@
 
   window.addEventListener('resize', function() {
     if (!panelVisible || window.innerWidth <= 768) return;
-    var rect = getGlassonModalRect();
+    var rect = getGlassonModalTarget();
     if (rect) {
       applyDesktopPosition(rect);
       panel.style.pointerEvents = 'auto';

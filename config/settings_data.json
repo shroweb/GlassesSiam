@@ -1512,6 +1512,18 @@
         "name": "Brand logo pills",
         "settings": {}
       },
+      "home_face_analyzer_xC8mQn": {
+        "type": "home-face-analyzer",
+        "settings": {
+          "eyebrow": "Let's Find Your Pairfect Match",
+          "heading": "What type of glasses are you looking for?",
+          "eyeglasses_label": "Eyeglasses",
+          "sunglasses_label": "Sunglasses",
+          "both_label": "Both",
+          "note": "Use the camera-based face shape analyzer to get a fast recommendation before you shop.",
+          "image": "shopify://shop_images/slide-1.png"
+        }
+      },
       "hero_carousel_with_trustbar_A4wLRp": {
         "type": "hero-carousel-with-trustbar",
         "blocks": {
@@ -1673,6 +1685,7 @@
       "about_banner_NaChwU",
       "our_services_KfcxzE",
       "feature_grid_CxeGiQ",
+      "home_face_analyzer_xC8mQn",
       "new_product_arPhJd",
       "promo_split_card_6DUVnP",
       "ss_simple_faq_GdE4VA"

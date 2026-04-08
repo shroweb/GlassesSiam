@@ -91,7 +91,11 @@
       <a class="tryon-panel__secondary" href="{{ product.url }}#lens-configurator">
         Choose Lenses
       </a>
-      <a class="tryon-panel__text-link" href="{{ routes.all_products_collection_url }}">
+      <a
+        class="tryon-panel__text-link"
+        id="tryonSimilarFrames"
+        href="/search?q={{ product.vendor | url_encode }}+{{ product.type | default: 'frames' | url_encode }}&type=product"
+      >
         View Similar Frames
       </a>
       <p class="tryon-panel__feedback" id="tryonFeedback" aria-live="polite"></p>
@@ -489,14 +493,35 @@
   var panelPrice = document.getElementById('tryonPanelPrice');
   var panelOldPrice = document.getElementById('tryonPanelOldPrice');
   var selectedColorLabel = document.getElementById('tryonSelectedColor');
+  var similarFramesLink = document.getElementById('tryonSimilarFrames');
 
   if (!panel) return;
 
   var selectedVariantId = atcBtn ? atcBtn.dataset.variantId : null;
   var panelVisible = false;
   var userClosedPanel = false;
-  var PANEL_MIN_W = 270;
-  var PANEL_MAX_W = 360;
+  var PANEL_MIN_W = 310;
+  var PANEL_MAX_W = 390;
+  var activeModalNode = null;
+  var activeModalInlineStyle = null;
+
+  function updateCartIndicators(cart) {
+    if (!cart) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.cart-count, .cart-item-count, [data-cart-count], #cart-total'), function(el) {
+      el.textContent = cart.item_count;
+    });
+    document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+    document.dispatchEvent(new CustomEvent('cart:refresh', { detail: { cart: cart } }));
+  }
+
+  function refreshCart() {
+    return fetch('/cart.js', { headers: { Accept: 'application/json' } })
+      .then(function(r) { return r.json(); })
+      .then(function(cart) {
+        updateCartIndicators(cart);
+        return cart;
+      });
+  }
 
   // ── Find the GlassOn dialog bounding rect ──
   //
@@ -522,7 +547,7 @@
     return results;
   }
 
-  function getGlassonModalRect() {
+  function getGlassonModalTarget() {
     var el = document.querySelector('glasson-try-on');
     if (!el || !el.shadowRoot) return null;
     // Only run when the modal is confirmed open
@@ -534,14 +559,14 @@
     var hostRect = el.getBoundingClientRect();
     if (hostRect.width > 200 && hostRect.height > 150 &&
         hostRect.width < vw * 0.97 && hostRect.height < vh * 0.97) {
-      return hostRect;
+      return { node: el, rect: hostRect };
     }
 
     // Strategy 2: exhaustive search — every element inside the shadow root
     // (including nested shadow DOMs) for the largest dialog-sized element.
     // This catches: dialog siblings of the overlay, nested custom elements, etc.
     var all = collectShadowElements(el.shadowRoot);
-    var best = null, bestArea = 0;
+    var best = null, bestNode = null, bestArea = 0;
     for (var i = 0; i < all.length; i++) {
       var r = all[i].getBoundingClientRect();
       // Must be a reasonable dialog size — not tiny, not nearly full-screen
@@ -549,32 +574,87 @@
           r.width < vw * 0.96 && r.height < vh * 0.96 &&
           r.left >= -10 && r.top >= -10) {
         var area = r.width * r.height;
-        if (area > bestArea) { bestArea = area; best = r; }
+        if (area > bestArea) {
+          bestArea = area;
+          best = r;
+          bestNode = all[i];
+        }
       }
     }
-    return best; // null → caller will retry
+    return best ? { node: bestNode, rect: best } : null; // null → caller will retry
+  }
+
+  function restoreModalPosition() {
+    if (!activeModalNode) return;
+    if (activeModalInlineStyle) {
+      activeModalNode.setAttribute('style', activeModalInlineStyle);
+    } else {
+      activeModalNode.removeAttribute('style');
+    }
+    activeModalNode = null;
+    activeModalInlineStyle = null;
+  }
+
+  function positionModalAndPanel(target, panelWidth) {
+    var rect = target.rect;
+    var node = target.node;
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var gap = 12;
+    var totalWidth = rect.width + gap + panelWidth;
+    var maxGroupLeft = Math.max(16, vw - totalWidth - 16);
+    var groupLeft = Math.round((vw - totalWidth) / 2);
+    groupLeft = Math.max(16, Math.min(groupLeft, maxGroupLeft));
+    var maxGroupTop = Math.max(16, vh - rect.height - 16);
+    var groupTop = Math.round((vh - rect.height) / 2);
+    groupTop = Math.max(16, Math.min(groupTop, maxGroupTop));
+
+    if (node && node.style) {
+      if (activeModalNode !== node) {
+        restoreModalPosition();
+        activeModalNode = node;
+        activeModalInlineStyle = node.getAttribute('style') || '';
+      }
+      node.style.setProperty('position', 'fixed', 'important');
+      node.style.setProperty('left', Math.round(groupLeft) + 'px', 'important');
+      node.style.setProperty('top', Math.round(groupTop) + 'px', 'important');
+      node.style.setProperty('right', 'auto', 'important');
+      node.style.setProperty('bottom', 'auto', 'important');
+      node.style.setProperty('margin', '0', 'important');
+      node.style.setProperty('transform', 'none', 'important');
+    }
+
+    return {
+      left: groupLeft + rect.width + gap,
+      top: groupTop,
+      height: rect.height
+    };
   }
 
   // Position the panel inset from the top/bottom of `rect`, flush to its right edge.
   // INSET_TOP clears GlassOn's own close button; INSET_BOTTOM gives a bottom gap.
   // Uses cssText so we own the inline style, then we explicitly drive the
   // slide-in with panel.style.transform (CSS class can't override inline style).
-  function applyPosition(rect) {
+  function applyPosition(target) {
+    var rect = target.rect;
     var vw = window.innerWidth;
-    var outsideSpace = vw - rect.right - 16;
-    var placeOutside = outsideSpace >= PANEL_MIN_W;
-    var pw = placeOutside
-      ? Math.min(PANEL_MAX_W, outsideSpace)
-      : Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, rect.width * 0.3));
-    var left = placeOutside ? rect.right + 12 : rect.right - pw - 10;
+    var gap = 12;
+    var safeWidth = Math.max(320, vw - 32);
+    var pw = Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, rect.width * 0.3, safeWidth));
+    var coords = positionModalAndPanel(target, pw);
+    var left = coords.left;
+    var top = coords.top;
+    var maxHeight = Math.max(320, window.innerHeight - 32);
+    var height = Math.max(320, Math.min(Math.round(coords.height), Math.round(maxHeight)));
+
     panel.style.cssText = [
       'position:fixed',
-      'top:' + Math.round(rect.top) + 'px',
+      'top:' + Math.round(top) + 'px',
       'left:' + Math.round(left) + 'px',
       'right:auto',
       'bottom:auto',
       'width:' + pw + 'px',
-      'height:' + Math.round(rect.height) + 'px',
+      'height:' + height + 'px',
       'transform:translateX(100%)',
       'transition:transform 0.38s cubic-bezier(0.4,0,0.2,1)',
       'pointer-events:none',
@@ -603,7 +683,7 @@
   var showAttempt = 0;
 
   function tryAttachAndShow() {
-    var rect = getGlassonModalRect();
+    var rect = getGlassonModalTarget();
     if (rect) {
       // Found the dialog box — overlay our panel on its right portion
       applyPosition(rect);
@@ -611,16 +691,19 @@
       // GlassOn's open animation may not have settled yet — re-measure once it has
       setTimeout(function() {
         if (!panelVisible) return;
-        var rect2 = getGlassonModalRect();
+        var rect2 = getGlassonModalTarget();
         if (rect2) {
-          panel.style.top    = Math.round(rect2.top) + 'px';
-          var viewportWidth = window.innerWidth;
-          var availableOutside = viewportWidth - rect2.right - 16;
-          var desiredLeft = availableOutside >= PANEL_MIN_W
-            ? rect2.right + 12
-            : rect2.right - panel.offsetWidth - 10;
+          var adjustedMaxHeight = Math.max(320, window.innerHeight - 32);
+          var adjustedRect = rect2.rect;
+          var safeWidth = Math.max(320, window.innerWidth - 32);
+          var adjustedPanelWidth = Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, adjustedRect.width * 0.3, safeWidth));
+          var adjustedCoords = positionModalAndPanel(rect2, adjustedPanelWidth);
+          var adjustedHeight = Math.max(320, Math.min(Math.round(adjustedCoords.height), Math.round(adjustedMaxHeight)));
+          panel.style.top    = Math.round(adjustedCoords.top) + 'px';
+          var desiredLeft = adjustedCoords.left;
           panel.style.left   = Math.round(desiredLeft) + 'px';
-          panel.style.height = Math.round(rect2.height) + 'px';
+          panel.style.width  = Math.round(adjustedPanelWidth) + 'px';
+          panel.style.height = adjustedHeight + 'px';
         }
       }, 420);
     } else if (showAttempt < 10) {
@@ -631,7 +714,7 @@
       // All retries exhausted — GlassOn is likely full-screen.
       // Fall back to right edge of viewport so the panel overlays the camera view.
       var vw = window.innerWidth, vh = window.innerHeight;
-      applyPosition({ top: 0, left: 0, right: vw, bottom: vh, width: vw, height: vh });
+      applyPosition({ node: null, rect: { top: 0, left: 0, right: vw, bottom: vh, width: vw, height: vh } });
       slideIn();
     }
   }
@@ -664,13 +747,14 @@
     setTimeout(function() {
       panel.classList.remove('is-visible');
       resetPanelPosition();
+      restoreModalPosition();
     }, 420);
   }
 
   // Re-position on window resize
   window.addEventListener('resize', function() {
     if (panelVisible && window.innerWidth > 768) {
-      var rect = getGlassonModalRect();
+      var rect = getGlassonModalTarget();
       if (rect) {
         applyPosition(rect);
         panel.style.pointerEvents = 'auto';
@@ -757,6 +841,10 @@
     });
   });
 
+  if (similarFramesLink) {
+    similarFramesLink.href = '/search?q={{ product.vendor | url_encode }}+{{ product.type | default: "frames" | url_encode }}&type=product';
+  }
+
   // ── Add to Cart ──
   if (atcBtn) {
     atcBtn.addEventListener('click', function() {
@@ -779,15 +867,7 @@
           feedback.textContent = '✓ Added to cart!';
           setTimeout(function() { if (feedback) feedback.textContent = ''; }, 3000);
         }
-        // Update cart count if bubble exists
-        var bubble = document.querySelector('.cart-count, .cart-item-count, [data-cart-count]');
-        if (bubble) {
-          fetch('/cart.js')
-            .then(function(r) { return r.json(); })
-            .then(function(cart) {
-              if (bubble) bubble.textContent = cart.item_count;
-            });
-        }
+        return refreshCart();
       })
       .catch(function(err) {
         if (feedback) {
