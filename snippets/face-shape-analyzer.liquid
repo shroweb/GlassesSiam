@@ -17,10 +17,11 @@
       {%- assign fsa_p_shape = fsa_p.metafields.custom.face_shape_recommendation | downcase | strip -%}
       {%- if fsa_p_shape == fsa_shape and fsa_count < 12 -%}
         {%- assign fsa_type = fsa_p.type | downcase -%}
+        {%- assign fsa_category_text = fsa_p.title | append: ' ' | append: fsa_p.type | append: ' ' | append: fsa_p.tags | join: ' ' | downcase -%}
         {%- assign fsa_category = 'both' -%}
-        {%- if fsa_type contains 'sun' -%}
+        {%- if fsa_category_text contains 'sunglass' or fsa_category_text contains 'sun glass' or fsa_category_text contains 'sun ' or fsa_category_text contains '/s' or fsa_category_text contains 'shade' -%}
           {%- assign fsa_category = 'sunglasses' -%}
-        {%- elsif fsa_type contains 'eye' or fsa_type contains 'optical' or fsa_type contains 'frame' or fsa_type contains 'glass' -%}
+        {%- elsif fsa_category_text contains 'eyeglass' or fsa_category_text contains 'eye glass' or fsa_category_text contains 'optical' or fsa_category_text contains 'rx' or fsa_category_text contains 'frame' or fsa_category_text contains 'reader' -%}
           {%- assign fsa_category = 'eyeglasses' -%}
         {%- endif -%}
         {%- if fsa_count > 0 -%},{%- endif -%}
@@ -45,10 +46,11 @@
   {%- assign fsa_catalog_count = 0 -%}
   {%- for fsa_p in collections.all.products -%}
     {%- assign fsa_type = fsa_p.type | downcase -%}
+    {%- assign fsa_category_text = fsa_p.title | append: ' ' | append: fsa_p.type | append: ' ' | append: fsa_p.tags | join: ' ' | downcase -%}
     {%- assign fsa_category = 'both' -%}
-    {%- if fsa_type contains 'sun' -%}
+    {%- if fsa_category_text contains 'sunglass' or fsa_category_text contains 'sun glass' or fsa_category_text contains 'sun ' or fsa_category_text contains '/s' or fsa_category_text contains 'shade' -%}
       {%- assign fsa_category = 'sunglasses' -%}
-    {%- elsif fsa_type contains 'eye' or fsa_type contains 'optical' or fsa_type contains 'frame' or fsa_type contains 'glass' -%}
+    {%- elsif fsa_category_text contains 'eyeglass' or fsa_category_text contains 'eye glass' or fsa_category_text contains 'optical' or fsa_category_text contains 'rx' or fsa_category_text contains 'frame' or fsa_category_text contains 'reader' -%}
       {%- assign fsa_category = 'eyeglasses' -%}
     {%- endif -%}
     {%- assign fsa_search_text = fsa_p.title | append: ' ' | append: fsa_p.type | append: ' ' | append: fsa_p.tags | join: ' ' | downcase -%}
@@ -1565,7 +1567,7 @@
     var colors = getProductFacetValues(product, 'color').map(normalizeFacetValue);
     var widths = getProductFacetValues(product, 'width').map(normalizeFacetValue);
     var styles = getProductFacetValues(product, 'style').map(normalizeFacetValue);
-    if (finderCategory === 'both' || product.category === finderCategory || product.category === 'both') score += 5;
+    if (finderCategory === 'both' || product.category === finderCategory) score += 5;
     if (quizAnswers.material && materials.indexOf(normalizeFacetValue(quizAnswers.material)) !== -1) score += 4;
     (quizAnswers.colors || []).forEach(function(colorPref) {
       if (colors.indexOf(normalizeFacetValue(colorPref)) !== -1) score += 2;
@@ -1692,7 +1694,7 @@
 
     var scored = catalogProducts
       .filter(function(product) {
-        return finderCategory === 'both' || product.category === finderCategory || product.category === 'both';
+        return finderCategory === 'both' || product.category === finderCategory;
       })
       .map(function(product) {
         return { product: product, score: scoreQuizProduct(product) };
@@ -1700,6 +1702,11 @@
       .sort(function(a, b) { return b.score - a.score; })
       .map(function(entry) { return entry.product; });
 
+    if (!scored.length && finderCategory !== 'both') {
+      scored = catalogProducts.filter(function(product) {
+        return product.category === finderCategory;
+      });
+    }
     if (!scored.length) scored = catalogProducts.slice();
     renderProductsList(scored.slice(0, 4));
 
@@ -1911,7 +1918,7 @@
     var prods = products[shape] || [];
     if (finderCategory !== 'both') {
       prods = prods.filter(function(p) {
-        return p.category === finderCategory || p.category === 'both';
+        return p.category === finderCategory;
       });
     }
     if (!prods.length && finderCategory !== 'both') {
