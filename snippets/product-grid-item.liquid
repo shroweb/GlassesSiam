@@ -21,68 +21,12 @@
       {% if has_try_on %}
       <span class="product-card-badge">Live try-on</span>
       {% endif %}
-      {% if settings.pro_rew_enable %}
-      <span class="product-card-rating">
-        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
-      </span>
-      {% endif %}
     </div>
     <a class="pro-img" href="{{ product.url | within: collection }}">
       <img class="img-fluid img1" src="{{ product.featured_image.src | image_url: width: 760 }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" alt="{{ product.featured_image.alt }}" loading="lazy">
     </a>
     <div class="product-label">
       {%- render 'product-label' -%}
-    </div>
-    
-    <div class="product-action">
-      {%- if settings.wishlist_enable -%}
-      {% render 'wishlist-button', product: product %}
-      {%- endif -%}
-
-      {%- if settings.product_quickview_enalbe -%}
-      <a href="javascript:void(0);" onclick="quiqview('{{ product.handle | handleize }}')" class="quick-view{% unless product.available %} disabled{% endunless %}"{% unless product.available %} disabled="disabled"{% endunless %} {% if settings.tooltip_enable %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ settings.tooltip_quickview_title }}"{% endif %}>
-        <span class="quickview-icon btn-icon">
-          <span class="icon"><i class="feather-eye"></i></span>
-        </span>
-      </a>
-      {%- endif -%}
-    </div>
-    <div class="pro-cart-var">
-      <div class="pro-cart">
-        {% if product.available %}
-        <a href="javascript:void(0);" onclick="{{ func }}; return false;" class="add-to-cart ajax-spin-cart add-cart-{{ product.id }}" {% if settings.tooltip_enable %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ settings.tooltip_add_to_cart_title }}"{% endif %}>
-          <span class="btn-icon">
-            <span class="cart-title">
-              <span class="add-c-title">
-                <span class="cart-icon">
-                  <span class="title">{{ settings.tooltip_add_to_cart_title }}</span>
-                </span>
-              </span>
-            </span>
-            <span class="cart-loading load-anim"><i class="ri-loader-4-line"></i></span>
-            <span class="cart-added"><i class="feather-check"></i></span>
-            <span class="cart-unavailable"><i class="bi bi-exclamation-triangle"></i></span>
-          </span>
-        </a>
-        {% else %}
-        <a href="javascript:void(0);" class="disabled-add-to-cart add-to-cart disabled" {% if settings.tooltip_enable %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ settings.tooltip_soldout_title }}"{% endif %}>
-          <span class="btn-icon">
-            <span class="cart-title">
-              <span class="add-c-title">
-                <span class="cart-icon">
-                  <span class="title">{{ settings.tooltip_soldout_title }}</span>
-                </span>
-              </span>
-            </span>
-          </span>
-        </a>
-        {% endif %}
-      </div>
-      <div class="pro-var">
-        {% if settings.pro_gr_option_enable %}
-        {% render 'product-grid-option', product: product, color_label: color_label, section: section %}
-        {% endif %}
-      </div>
     </div>
   </div>
   <div class="product-content">

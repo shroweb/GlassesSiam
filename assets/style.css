@@ -1581,47 +1581,9 @@ account page css
   text-transform: uppercase;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
 }
-.single-product-wrap.product-card-eyewear .product-card-rating {
-  margin-left: auto;
-  min-height: 32px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.88);
-  border: 1px solid rgba(17,48,113,0.08);
-  color: #113071;
-  font-size: 12px;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
-}
-.single-product-wrap.product-card-eyewear .product-image .product-action {
-  top: 18px;
-  right: 18px;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity .18s ease, transform .18s ease;
-}
-.single-product-wrap.product-card-eyewear:hover .product-image .product-action {
-  opacity: 1;
-  transform: translateY(0);
-}
 .single-product-wrap.product-card-eyewear .product-image a.pro-img img {
   object-fit: contain;
   object-position: center center;
-}
-.single-product-wrap.product-card-eyewear .product-image .pro-cart-var {
-  left: 18px;
-  right: 18px;
-  bottom: 18px;
-}
-.single-product-wrap.product-card-eyewear .product-image .pro-cart-var .pro-cart a {
-  color: #113071;
-  font-weight: 700;
-  text-transform: none;
-  line-height: 1;
-  background: rgba(255,255,255,0.9);
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(17,48,113,0.08);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 .single-product-wrap.product-card-eyewear .product-content {
   margin-top: 0;
