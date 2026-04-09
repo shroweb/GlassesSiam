@@ -6,7 +6,7 @@
 -%}
 {%- liquid assign color_label = 'Color,color,colour,couleur,cor,colore,farbe,색,色,カラー,färg,farve,szín,barva' | split: ',' -%}
 <div
-  class="single-product-wrap{% unless product.available %} stock-out{% endunless %}"
+  class="single-product-wrap product-card-eyewear{% unless product.available %} stock-out{% endunless %}"
   data-product-handle="{{ product.handle }}"
   data-product-url="{{ product.url }}"
   data-product-title="{{ product.title | escape }}"
@@ -14,7 +14,7 @@
 >
   <div class="product-image{% unless product.available %} stock-out{% endunless %}">
     <a class="pro-img" href="{{ product.url | within: collection }}">
-      <img class="img-fluid img1" src="{{ product.featured_image.src | image_url: width: 645, height: settings.image_height, crop: 'center' }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" alt="{{ product.featured_image.alt }}" loading="lazy">
+      <img class="img-fluid img1" src="{{ product.featured_image.src | image_url: width: 760 }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" alt="{{ product.featured_image.alt }}" loading="lazy">
     </a>
     <div class="product-label">
       {%- render 'product-label' -%}
@@ -77,16 +77,21 @@
       <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
     </div>
     {% endif %}
+    <div class="product-card-meta">
+      {% if product.vendor != blank %}
+      <p class="product-card-vendor">{{ product.vendor }}</p>
+      {% endif %}
+      {% if settings.show_product_type %}
+      <div class="product-type">
+        {{ product.type | link_to_type }}
+      </div>
+      {% endif %}
+    </div>
     <div class="title-price">
       <div class="title-type">
         <h6>
           <a href="{{ product.url | within: collection }}" title="{{ product.title }}">{{ product.title }}</a>
         </h6>
-        {% if settings.show_product_type %}
-        <div class="product-type">
-          {{ product.type | link_to_type }}
-        </div>
-        {% endif %}
       </div>
       <div class="price-box">
         <span class="new-price">{{ product.price | money }}</span>
@@ -100,6 +105,14 @@
     {%- else -%}
     <p class="product-description">{{ product.description | strip_html | truncatewords: 20 }}</p>
     {%- endif -%}
+    <div class="product-card-cta">
+      <a class="product-card-cta__primary" href="{{ product.url | within: collection }}">View frame</a>
+      {% if product.available %}
+      <a href="javascript:void(0);" onclick="{{ func }}; return false;" class="product-card-cta__secondary ajax-spin-cart add-cart-{{ product.id }}">Quick add</a>
+      {% else %}
+      <span class="product-card-cta__secondary is-disabled">Sold out</span>
+      {% endif %}
+    </div>
     <div class="pro-var">
       {% if settings.pro_gr_option_enable %}
       {% render 'product-grid-option', product: product, color_label: color_label, section: section %}

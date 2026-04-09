@@ -905,6 +905,101 @@
   .fsa-shape-label        { text-align: center; }
   .fsa-products-grid      { gap: 8px; }
 }
+.fsa-overlay[data-screen="result"] {
+  background:
+    radial-gradient(circle at top left, rgba(90,169,239,0.22), rgba(90,169,239,0) 32%),
+    linear-gradient(135deg, #0d224f 0%, #173f91 100%);
+}
+.fsa-result-inner {
+  max-width: 1060px;
+  text-align: left;
+}
+.fsa-result-badge {
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.fsa-shape-label {
+  text-align: left;
+}
+.fsa-result-desc {
+  max-width: 680px;
+  margin-bottom: 26px;
+}
+.fsa-recs-heading {
+  margin-bottom: 18px;
+}
+.fsa-products-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.fsa-product-card {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid rgba(226,232,240,0.7);
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.10);
+}
+.fsa-product-card:hover {
+  background: #ffffff;
+  color: #0f172a;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14);
+}
+.fsa-product-card__img {
+  aspect-ratio: 16 / 11;
+  background: linear-gradient(180deg, #f8fbff 0%, #edf4fb 100%);
+  padding: 20px;
+}
+.fsa-product-card__img img {
+  object-fit: contain;
+  object-position: center center;
+}
+.fsa-product-card__body {
+  padding: 14px 16px 16px;
+}
+.fsa-product-card__title {
+  font-size: 14px;
+  color: #0f172a;
+}
+.fsa-product-card__price {
+  color: #113071;
+  font-size: 14px;
+  font-weight: 700;
+}
+.fsa-see-all {
+  color: #ffffff;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.10);
+}
+.fsa-see-all:hover {
+  color: #ffffff;
+  text-decoration: none;
+  background: rgba(255,255,255,0.18);
+}
+.fsa-btn--retry {
+  margin-top: 12px;
+}
+@media (max-width: 991px) {
+  .fsa-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 576px) {
+  .fsa-result-inner,
+  .fsa-shape-label,
+  .fsa-result-desc {
+    text-align: center;
+  }
+  .fsa-result-badge {
+    justify-content: center;
+  }
+  .fsa-products-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 
 <script>

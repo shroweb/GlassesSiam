@@ -1,4 +1,9 @@
 {% assign first_order = customer.orders.first %}
+{% assign account_locale = localization.language.iso_code | default: shop.locale %}
+{% assign account_is_th = false %}
+{% if account_locale contains 'th' %}
+  {% assign account_is_th = true %}
+{% endif %}
 
 <div class="acc-page">
   <div class="acc-page__inner">
@@ -21,34 +26,47 @@
       <nav class="acc-nav" aria-label="Account navigation">
         <a href="/account" class="acc-nav__item is-active">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Dashboard
+          {% if account_is_th %}แดชบอร์ด{% else %}Dashboard{% endif %}
         </a>
         <a href="#orders" class="acc-nav__item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          Orders
+          {% if account_is_th %}คำสั่งซื้อ{% else %}Orders{% endif %}
           <span class="acc-nav__badge">{{ customer.orders_count }}</span>
         </a>
         <a href="/account/addresses" class="acc-nav__item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Addresses
+          {% if account_is_th %}ที่อยู่{% else %}Addresses{% endif %}
           <span class="acc-nav__badge">{{ customer.addresses_count }}</span>
         </a>
         <a href="/pages/wishlist" class="acc-nav__item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          Wishlist
+          {% if account_is_th %}รายการโปรด{% else %}Wishlist{% endif %}
           <span class="acc-nav__badge wishlist-counter"></span>
+        </a>
+        <a href="#prescriptions" class="acc-nav__item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8"/><path d="M9 3v3"/><path d="M15 3v3"/><path d="M5 7h14"/><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>
+          {% if account_is_th %}ใบสั่งเลนส์ของฉัน{% else %}My prescriptions{% endif %}
+          <span class="acc-nav__badge" data-acc-prescription-count>0</span>
+        </a>
+        <a href="#gift-cards" class="acc-nav__item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M3 12h18"/><path d="M7.5 8C6.1 8 5 6.9 5 5.5S6.1 3 7.5 3C10 3 12 8 12 8"/><path d="M16.5 8c1.4 0 2.5-1.1 2.5-2.5S17.9 3 16.5 3C14 3 12 8 12 8"/></svg>
+          {% if account_is_th %}บัตรของขวัญ{% else %}Gift cards{% endif %}
+        </a>
+        <a href="#language-panel" class="acc-nav__item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          {% if account_is_th %}ภาษา{% else %}Language{% endif %}
         </a>
         <a href="{{ routes.all_products_collection_url }}" class="acc-nav__item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-          Shop eyewear
+          {% if account_is_th %}เลือกซื้อแว่น{% else %}Shop eyewear{% endif %}
         </a>
         <a href="/pages/contact" class="acc-nav__item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Help & support
+          {% if account_is_th %}ช่วยเหลือและบริการ{% else %}Help & support{% endif %}
         </a>
         <a href="{{ routes.account_logout_url }}" class="acc-nav__item acc-nav__item--logout">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Log out
+          {% if account_is_th %}ออกจากระบบ{% else %}Log out{% endif %}
         </a>
       </nav>
 
@@ -83,28 +101,36 @@
             <a href="/account/addresses" class="acc-address-card__edit">Manage addresses</a>
           </div>
         {% endif %}
+        <div class="acc-address-card acc-address-card--locale">
+          <p class="acc-address-card__label">{% if account_is_th %}ภาษาและภูมิภาค{% else %}Language & region{% endif %}</p>
+          <p class="acc-address-card__name">{% if account_is_th %}ภาษาในบัญชี{% else %}Account language{% endif %}</p>
+          <div class="acc-locale-switcher">
+            {% render 'localization-switcher', form_id: 'AccountSidebarLocalizationForm' %}
+          </div>
+          <p class="acc-address-card__note">{% if account_is_th %}สลับภาษาได้จากที่นี่แม้จะอยู่บนมือถือหรือหลังจากล็อกอินแล้ว{% else %}Switch language here even after login and on mobile screens.{% endif %}</p>
+        </div>
       </div>
     </aside>
 
     <main class="acc-main">
       <div class="acc-main__header">
         <div>
-          <p class="acc-main__greeting">Welcome back,</p>
+          <p class="acc-main__greeting">{% if account_is_th %}ยินดีต้อนรับกลับ,{% else %}Welcome back,{% endif %}</p>
           <h1 class="acc-main__name">{{ customer.first_name | default: customer.name }}</h1>
-          <p class="acc-main__subtext">Manage your orders, saved addresses, wishlist, and language preferences from one place.</p>
+          <p class="acc-main__subtext">{% if account_is_th %}จัดการคำสั่งซื้อ ที่อยู่ รายการโปรด ใบสั่งเลนส์ บัตรของขวัญ และการตั้งค่าภาษาได้ในที่เดียว{% else %}Manage your orders, saved addresses, wishlist, prescriptions, gift cards, and language preferences from one place.{% endif %}</p>
         </div>
         <div class="acc-stats">
           <div class="acc-stat">
             <span class="acc-stat__val">{{ customer.orders_count }}</span>
-            <span class="acc-stat__label">Orders</span>
+            <span class="acc-stat__label">{% if account_is_th %}คำสั่งซื้อ{% else %}Orders{% endif %}</span>
           </div>
           <div class="acc-stat">
             <span class="acc-stat__val">{{ customer.total_spent | money_without_trailing_zeros }}</span>
-            <span class="acc-stat__label">Total spent</span>
+            <span class="acc-stat__label">{% if account_is_th %}ยอดใช้จ่าย{% else %}Total spent{% endif %}</span>
           </div>
           <div class="acc-stat">
             <span class="acc-stat__val">{{ customer.addresses_count }}</span>
-            <span class="acc-stat__label">Addresses</span>
+            <span class="acc-stat__label">{% if account_is_th %}ที่อยู่{% else %}Addresses{% endif %}</span>
           </div>
         </div>
       </div>
@@ -113,57 +139,69 @@
         <article class="acc-panel acc-panel--quick">
           <div class="acc-panel__head">
             <div>
-              <p class="acc-panel__eyebrow">Quick actions</p>
-              <h2 class="acc-panel__title">Jump back in</h2>
+              <p class="acc-panel__eyebrow">{% if account_is_th %}การทำงานด่วน{% else %}Quick actions{% endif %}</p>
+              <h2 class="acc-panel__title">{% if account_is_th %}กลับไปทำต่อ{% else %}Jump back in{% endif %}</h2>
             </div>
           </div>
           <div class="acc-action-grid">
             <a href="{{ routes.all_products_collection_url }}" class="acc-action-card">
-              <span class="acc-action-card__title">Shop all eyewear</span>
-              <span class="acc-action-card__meta">Browse frames, sunglasses, and lenses</span>
+              <span class="acc-action-card__title">{% if account_is_th %}เลือกซื้อแว่นทั้งหมด{% else %}Shop all eyewear{% endif %}</span>
+              <span class="acc-action-card__meta">{% if account_is_th %}เลือกดูกรอบแว่น แว่นกันแดด และเลนส์{% else %}Browse frames, sunglasses, and lenses{% endif %}</span>
             </a>
             <a href="/account/addresses" class="acc-action-card">
-              <span class="acc-action-card__title">Update addresses</span>
+              <span class="acc-action-card__title">{% if account_is_th %}จัดการที่อยู่{% else %}Update addresses{% endif %}</span>
               <span class="acc-action-card__meta">{{ customer.addresses_count }} saved address{% if customer.addresses_count != 1 %}es{% endif %}</span>
             </a>
             <a href="/pages/wishlist" class="acc-action-card">
-              <span class="acc-action-card__title">Open wishlist</span>
-              <span class="acc-action-card__meta">Review your saved frames</span>
+              <span class="acc-action-card__title">{% if account_is_th %}เปิดรายการโปรด{% else %}Open wishlist{% endif %}</span>
+              <span class="acc-action-card__meta">{% if account_is_th %}ดูกรอบแว่นที่บันทึกไว้{% else %}Review your saved frames{% endif %}</span>
+            </a>
+            <a href="#prescriptions" class="acc-action-card">
+              <span class="acc-action-card__title">{% if account_is_th %}ใบสั่งเลนส์ของฉัน{% else %}My prescriptions{% endif %}</span>
+              <span class="acc-action-card__meta" data-acc-prescription-summary>{% if account_is_th %}ตรวจสอบใบสั่งเลนส์ที่บันทึกไว้ในอุปกรณ์นี้{% else %}Check prescriptions saved on this device{% endif %}</span>
+            </a>
+            <a href="#gift-cards" class="acc-action-card">
+              <span class="acc-action-card__title">{% if account_is_th %}บัตรของขวัญ{% else %}Gift cards{% endif %}</span>
+              <span class="acc-action-card__meta">{% if account_is_th %}ซื้อหรือใช้บัตรของขวัญสำหรับการสั่งซื้อครั้งถัดไป{% else %}Buy or use store gift cards for your next order{% endif %}</span>
+            </a>
+            <a href="#language-panel" class="acc-action-card">
+              <span class="acc-action-card__title">{% if account_is_th %}เปลี่ยนภาษา{% else %}Switch language{% endif %}</span>
+              <span class="acc-action-card__meta">{% if account_is_th %}รีโหลดหน้านี้พร้อมเนื้อหาในภาษาที่เลือก{% else %}Reload this page with the selected language{% endif %}</span>
             </a>
             <a href="/pages/contact" class="acc-action-card">
-              <span class="acc-action-card__title">Need help?</span>
-              <span class="acc-action-card__meta">Contact the support team</span>
+              <span class="acc-action-card__title">{% if account_is_th %}ต้องการความช่วยเหลือ?{% else %}Need help?{% endif %}</span>
+              <span class="acc-action-card__meta">{% if account_is_th %}ติดต่อทีมซัพพอร์ตได้ทุกเมื่อ{% else %}Contact the support team{% endif %}</span>
             </a>
           </div>
         </article>
 
         <div class="acc-overview__aside">
           <article class="acc-panel">
-            <p class="acc-panel__eyebrow">Profile</p>
-            <h2 class="acc-panel__title">Account details</h2>
+            <p class="acc-panel__eyebrow">{% if account_is_th %}โปรไฟล์{% else %}Profile{% endif %}</p>
+            <h2 class="acc-panel__title">{% if account_is_th %}รายละเอียดบัญชี{% else %}Account details{% endif %}</h2>
             <dl class="acc-detail-list">
               <div class="acc-detail-list__row">
-                <dt>Name</dt>
+                <dt>{% if account_is_th %}ชื่อ{% else %}Name{% endif %}</dt>
                 <dd>{{ customer.name | default: 'Not provided' }}</dd>
               </div>
               <div class="acc-detail-list__row">
-                <dt>Email</dt>
+                <dt>{% if account_is_th %}อีเมล{% else %}Email{% endif %}</dt>
                 <dd>{{ customer.email }}</dd>
               </div>
               <div class="acc-detail-list__row">
-                <dt>Phone</dt>
+                <dt>{% if account_is_th %}โทรศัพท์{% else %}Phone{% endif %}</dt>
                 <dd>{{ customer.phone | default: 'Add a phone number in your address book' }}</dd>
               </div>
               <div class="acc-detail-list__row">
-                <dt>Language</dt>
+                <dt>{% if account_is_th %}ภาษา{% else %}Language{% endif %}</dt>
                 <dd>{{ localization.language.endonym_name | default: localization.language.name }}</dd>
               </div>
             </dl>
           </article>
 
           <article class="acc-panel">
-            <p class="acc-panel__eyebrow">Latest order</p>
-            <h2 class="acc-panel__title">Recent activity</h2>
+            <p class="acc-panel__eyebrow">{% if account_is_th %}คำสั่งซื้อล่าสุด{% else %}Latest order{% endif %}</p>
+            <h2 class="acc-panel__title">{% if account_is_th %}ความเคลื่อนไหวล่าสุด{% else %}Recent activity{% endif %}</h2>
             {% if first_order %}
               <div class="acc-latest-order">
                 <p class="acc-latest-order__name">{{ first_order.name }}</p>
@@ -177,22 +215,62 @@
                   </span>
                 </div>
                 <p class="acc-latest-order__meta">{{ first_order.total_price | money }}</p>
-                <a href="{{ first_order.customer_url }}" class="acc-address-card__edit">View latest order</a>
+                <a href="{{ first_order.customer_url }}" class="acc-address-card__edit">{% if account_is_th %}ดูคำสั่งซื้อล่าสุด{% else %}View latest order{% endif %}</a>
               </div>
             {% else %}
-              <p class="acc-panel__empty">No orders yet. Start shopping to see your latest activity here.</p>
+              <p class="acc-panel__empty">{% if account_is_th %}ยังไม่มีคำสั่งซื้อ เริ่มเลือกซื้อสินค้าเพื่อดูความเคลื่อนไหวที่นี่{% else %}No orders yet. Start shopping to see your latest activity here.{% endif %}</p>
             {% endif %}
           </article>
         </div>
       </div>
 
+      <div class="acc-tools">
+        <article class="acc-panel acc-tool-panel" id="prescriptions">
+          <div class="acc-panel__head">
+            <div>
+              <p class="acc-panel__eyebrow">{% if account_is_th %}เลนส์และค่าสายตา{% else %}Lenses & prescriptions{% endif %}</p>
+              <h2 class="acc-panel__title">{% if account_is_th %}ใบสั่งเลนส์ของฉัน{% else %}My prescriptions{% endif %}</h2>
+            </div>
+            <span class="acc-tool-panel__count" data-acc-prescription-count>0</span>
+          </div>
+          <p class="acc-panel__empty" data-acc-prescription-detail>{% if account_is_th %}ยังไม่มีใบสั่งเลนส์ที่บันทึกไว้ในอุปกรณ์นี้ เมื่อลูกค้าเพิ่มเลนส์และเลือกบันทึก ระบบจะเก็บไว้ในเบราว์เซอร์นี้เพื่อใช้งานครั้งถัดไป{% else %}No saved prescriptions on this device yet. When a customer completes the lens form and chooses save, it will appear here for faster reuse on future orders.{% endif %}</p>
+          <div class="acc-tool-panel__actions">
+            <a href="{{ routes.all_products_collection_url }}" class="acc-address-card__edit">{% if account_is_th %}เลือกกรอบแว่นพร้อมเลนส์{% else %}Shop frames with lenses{% endif %}</a>
+          </div>
+        </article>
+        <article class="acc-panel acc-tool-panel" id="gift-cards">
+          <div class="acc-panel__head">
+            <div>
+              <p class="acc-panel__eyebrow">{% if account_is_th %}เครดิตร้านค้า{% else %}Store credit{% endif %}</p>
+              <h2 class="acc-panel__title">{% if account_is_th %}บัตรของขวัญ{% else %}Gift cards{% endif %}</h2>
+            </div>
+          </div>
+          <p class="acc-panel__empty">{% if account_is_th %}ซื้อบัตรของขวัญสำหรับผู้อื่น หรือกลับไปเลือกซื้อบัตรของขวัญได้จากที่นี่{% else %}Buy a gift card for someone else or jump straight into gift-card shopping from your account.{% endif %}</p>
+          <div class="acc-tool-panel__actions">
+            <a href="{{ routes.search_url }}?q=gift%20card&type=product" class="acc-address-card__edit">{% if account_is_th %}เลือกซื้อบัตรของขวัญ{% else %}Shop gift cards{% endif %}</a>
+          </div>
+        </article>
+        <article class="acc-panel acc-tool-panel" id="language-panel">
+          <div class="acc-panel__head">
+            <div>
+              <p class="acc-panel__eyebrow">{% if account_is_th %}ภาษา{% else %}Language{% endif %}</p>
+              <h2 class="acc-panel__title">{% if account_is_th %}เปลี่ยนภาษาของบัญชี{% else %}Switch your account language{% endif %}</h2>
+            </div>
+          </div>
+          <div class="acc-main-locale">
+            {% render 'localization-switcher', form_id: 'AccountMainLocalizationForm' %}
+          </div>
+          <p class="acc-panel__empty">{% if account_is_th %}ตัวเลือกนี้จะปรากฏในพื้นที่บัญชีเสมอเพื่อให้เปลี่ยนภาษาได้แม้บนมือถือ{% else %}This selector stays visible inside the account area so language switching is available after login, including on mobile.{% endif %}</p>
+        </article>
+      </div>
+
       <div class="acc-orders" id="orders">
         <div class="acc-panel__head">
           <div>
-            <p class="acc-panel__eyebrow">Orders</p>
-            <h2 class="acc-orders__title">Order history</h2>
+            <p class="acc-panel__eyebrow">{% if account_is_th %}คำสั่งซื้อ{% else %}Orders{% endif %}</p>
+            <h2 class="acc-orders__title">{% if account_is_th %}ประวัติการสั่งซื้อ{% else %}Order history{% endif %}</h2>
           </div>
-        <a href="{{ routes.all_products_collection_url }}" class="acc-orders__browse-link">Continue shopping</a>
+        <a href="{{ routes.all_products_collection_url }}" class="acc-orders__browse-link">{% if account_is_th %}เลือกซื้อสินค้าต่อ{% else %}Continue shopping{% endif %}</a>
         </div>
 
         {% paginate customer.orders by 10 %}
@@ -261,8 +339,8 @@
           {% else %}
             <div class="acc-orders__empty">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              <p>You haven't placed any orders yet.</p>
-              <a href="{{ routes.all_products_collection_url }}" class="acc-orders__shop-btn">Start shopping</a>
+              <p>{% if account_is_th %}คุณยังไม่มีคำสั่งซื้อ{% else %}You haven't placed any orders yet.{% endif %}</p>
+              <a href="{{ routes.all_products_collection_url }}" class="acc-orders__shop-btn">{% if account_is_th %}เริ่มช้อป{% else %}Start shopping{% endif %}</a>
             </div>
           {% endif %}
         {% endpaginate %}
@@ -270,6 +348,41 @@
     </main>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var customerId = {{ customer.id | json }};
+  var storageKey = 'lens_prescriptions_' + (customerId || 'guest');
+  var locale = {{ account_locale | json }};
+  var isThai = locale && String(locale).toLowerCase().indexOf('th') !== -1;
+  var count = 0;
+
+  try {
+    var storedPrescriptions = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    count = Array.isArray(storedPrescriptions) ? storedPrescriptions.length : 0;
+  } catch (error) {
+    count = 0;
+  }
+
+  document.querySelectorAll('[data-acc-prescription-count]').forEach(function(el) {
+    el.textContent = count;
+  });
+
+  var summaryEl = document.querySelector('[data-acc-prescription-summary]');
+  if (summaryEl) {
+    summaryEl.textContent = isThai
+      ? (count ? 'พบใบสั่งเลนส์ที่บันทึกไว้ ' + count + ' รายการบนอุปกรณ์นี้' : 'ยังไม่มีใบสั่งเลนส์ที่บันทึกไว้ในอุปกรณ์นี้')
+      : (count ? count + ' prescription' + (count === 1 ? '' : 's') + ' saved on this device' : 'No prescriptions saved on this device yet');
+  }
+
+  var detailEl = document.querySelector('[data-acc-prescription-detail]');
+  if (detailEl && count) {
+    detailEl.textContent = isThai
+      ? 'พบใบสั่งเลนส์ ' + count + ' รายการในเบราว์เซอร์นี้ ลูกค้าสามารถกลับไปใช้ระหว่างขั้นตอนเลือกเลนส์ได้'
+      : 'We found ' + count + ' saved prescription' + (count === 1 ? '' : 's') + ' in this browser. Customers can reuse them during lens selection.';
+  }
+});
+</script>
 
 <style>
 .acc-page {
@@ -426,6 +539,24 @@
 .acc-address-card__edit:hover {
   text-decoration: underline;
 }
+.acc-address-card__note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #64748b;
+}
+.acc-locale-switcher .localization-form {
+  margin-top: 10px;
+}
+.acc-locale-switcher .localization-switcher__select,
+.acc-main-locale .localization-switcher__select {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 14px;
+  border: 1px solid #d9e2ef;
+  background: #ffffff;
+  padding: 0 40px 0 14px;
+}
 
 .acc-main {
   display: flex;
@@ -496,6 +627,11 @@
   display: grid;
   gap: 1.5rem;
 }
+.acc-tools {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
 .acc-panel,
 .acc-orders {
   background: #fff;
@@ -552,6 +688,24 @@
   font-size: 13px;
   line-height: 1.5;
   color: #64748b;
+}
+.acc-tool-panel__count {
+  min-width: 42px;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #113071;
+  font-size: 15px;
+  font-weight: 700;
+}
+.acc-tool-panel__actions {
+  margin-top: 12px;
+}
+.acc-main-locale .localization-form {
+  max-width: 320px;
 }
 .acc-detail-list {
   margin: 0;
@@ -779,7 +933,8 @@
 
 @media (max-width: 1100px) {
   .acc-page__inner,
-  .acc-overview {
+  .acc-overview,
+  .acc-tools {
     grid-template-columns: 1fr;
   }
   .acc-sidebar {
@@ -802,14 +957,26 @@
 }
 @media (max-width: 640px) {
   .acc-page {
-    padding: 1.5rem 1rem 3rem;
+    padding: 1.15rem 0.85rem 2.4rem;
   }
   .acc-main__header,
   .acc-panel,
   .acc-orders,
   .acc-sidebar {
-    padding: 1.25rem;
-    border-radius: 20px;
+    padding: 1.05rem;
+    border-radius: 18px;
+  }
+  .acc-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+  .acc-stat {
+    min-width: 0;
+    padding: 12px;
+  }
+  .acc-nav__item {
+    padding: 11px 12px;
   }
   .acc-detail-list__row {
     grid-template-columns: 1fr;

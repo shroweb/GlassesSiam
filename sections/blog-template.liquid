@@ -17,15 +17,15 @@
         </div>
         {% endif %}
       </div>
-      {%- endpaginate -%}
       {%- unless section.settings.blog_news_sidebar_handle == 'without_sidebar' -%}
       <div class="col-xl-3 col-lg-4 col-md-12 col-12 blog-grid-wrap">
         {% render 'blog-sidebar' %}
       </div>
       {%- endunless -%}
+      {%- endpaginate -%}
     </div>
   </div>
-</div>
+</section>
 {% schema %}
 {
   "name": "Blog Page",

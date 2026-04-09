@@ -1,3 +1,4 @@
+{% assign recover_success = false %}
 <section class="customer-page section-ptb">
   <div class="container">
     <div class="row">
@@ -49,14 +50,22 @@
               <div class="login">
               {% form 'recover_customer_password' %}
               {% if form.posted_successfully? %}
+                {% assign recover_success = true %}
               {% endif %}
               <div class="login-form-container">
                 <div class="section-capture">
                   <div class="section-title">
                   <h2>{{ 'customer.recover_password.title' | t }}</h2>
-                  <p>{{ 'customer.recover_password.subtext' | t }}</p>
+                  <p>{% if form.posted_successfully? %}If an account exists for this email address, we've sent a password reset link.{% else %}{{ 'customer.recover_password.subtext' | t }}{% endif %}</p>
                 </div>
                 </div>
+                {% if form.posted_successfully? %}
+                <div id="ResetSuccess" class="form-state-banner form-state-banner--success">
+                  <strong>Check your email</strong>
+                  <p>We've sent a reset link if the email address is in our customer records. Open the email, follow the link, and then come back here to sign in.</p>
+                  <button class="btn btn-style form-state-banner__action" type="button" id="ResetSuccessBack">Back to sign in</button>
+                </div>
+                {% else %}
                 {{ form.errors | default_errors }}
                 <ul class="fill-form">
                   <li class="log-email">
@@ -70,6 +79,7 @@
                     </div>
                   </li>
                 </ul>
+                {% endif %}
               </div>
               {% endform %}
             </div>
@@ -94,6 +104,28 @@
     </div>
   </div>
 </section>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var customerLoginForm = document.getElementById('CustomerLoginForm');
+    var recoverForm = document.getElementById('RecoverPasswordForm');
+    var resetSuccess = document.getElementById('ResetSuccess');
+    var successBackBtn = document.getElementById('ResetSuccessBack');
+    var recoverSuccess = {{ recover_success | json }};
+
+    if (customerLoginForm && recoverForm && (window.location.hash === '#recover' || resetSuccess || recoverSuccess)) {
+      customerLoginForm.style.display = 'none';
+      recoverForm.style.display = '';
+    }
+
+    if (successBackBtn && customerLoginForm && recoverForm) {
+      successBackBtn.addEventListener('click', function() {
+        recoverForm.style.display = 'none';
+        customerLoginForm.style.display = '';
+        window.location.hash = '';
+      });
+    }
+  });
+</script>
 <style>
   .customer-page .log-acc-page{
     width: 50%;
@@ -131,6 +163,27 @@
   /* form css */
   .customer-page .log-acc-page .login-form-container p{
     margin-top: 15px;
+  }
+  .customer-page .log-acc-page .login-form-container .form-state-banner{
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    border: 1px solid #dbe7ff;
+    background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
+  }
+  .customer-page .log-acc-page .login-form-container .form-state-banner strong{
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #113071;
+  }
+  .customer-page .log-acc-page .login-form-container .form-state-banner p{
+    margin: 8px 0 0;
+    color: #475569;
+    line-height: 1.6;
+  }
+  .customer-page .log-acc-page .login-form-container .form-state-banner__action{
+    margin-top: 14px;
   }
   .customer-page .log-acc-page .login-form-container ul.fill-form li{
     margin-top: 28px;

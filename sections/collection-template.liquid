@@ -3,7 +3,10 @@
     <div class="row{% if section.settings.sidebar_handle == 'left_sidebar_handle' %} position-left{% elsif section.settings.sidebar_handle == 'right_sidebar_handle' %} position-right{% endif %}">
       <div class="{% if section.settings.sidebar_handle == 'without_sidebar' %}col{% else %}col-xl-9 col-lg-8 col-md-12 col-12 pro-grli-wrap{% endif %}">
         <div class="collection-img-wrap">
-          <h6 class="st-title">{{ collection.title }} ({{ collection.all_products_count }})</h6>
+          <div class="collection-heading-row">
+            <h6 class="st-title">{{ collection.title }}</h6>
+            <span class="collection-count-pill">{{ collection.all_products_count }} products</span>
+          </div>
           {%- if section.settings.collection_info_enable -%}
           <div class="collection-info">
             <div class="collection-image">
@@ -444,6 +447,129 @@ collection-template css
   .shop-product-wrap.grid-3 ul.product-view li.st-col-item{
     width: calc(100% - 15px);
     margin: 30px 0 0 15px;
+  }
+}
+.collection-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.collection-count-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: #113071;
+  font-size: 12px;
+  font-weight: 700;
+}
+.shop-page .collection-img-wrap .collection-info {
+  overflow: hidden;
+  border-radius: 26px;
+  border: 1px solid #e6edf5;
+  background: #ffffff;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.04);
+}
+.shop-page .collection-img-wrap .collection-info img {
+  width: 100%;
+  aspect-ratio: 18 / 5;
+  object-fit: cover;
+}
+.shop-page .shop-top-bar {
+  margin-top: 24px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  border: 1px solid #e6edf5;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
+}
+.shop-page .shop-sidebar-inner form .shop-sidebar,
+.shop-page .shop-sidebar.sidebar-filter {
+  border-radius: 20px;
+  border: 1px solid #e6edf5;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
+  padding: 20px;
+}
+.shop-page .shop-sidebar .title {
+  font-size: 15px;
+  font-weight: 700;
+}
+.shop-page .shop-sidebar .facets-header {
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #edf2f7;
+}
+.shop-page .active-filter ul li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.shop-page .active-filter .active-facets__button-inner,
+.shop-page .active-filter .clear-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #dbe5f1;
+  color: #113071;
+}
+.shop-page .shop-sidebar .filter-element ul.scrollbar li label.cust-checkbox-label {
+  min-height: 42px;
+  padding: 0 0 0 36px;
+}
+.shop-page .shop-sidebar .filter-element .price-range {
+  padding-top: 4px;
+}
+.shop-page .shop-product-wrap ul.product-view {
+  margin-left: -20px;
+}
+.shop-page .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
+  width: calc(33.33% - 20px);
+  margin: 20px 0 0 20px;
+}
+@media(max-width: 991px){
+  .shop-page .shop-top-bar {
+    padding: 14px 16px;
+  }
+  .shop-page .shop-sidebar-inner form .shop-sidebar,
+  .shop-page .shop-sidebar.sidebar-filter {
+    padding: 16px;
+  }
+}
+@media(max-width: 767px){
+  .collection-count-pill {
+    min-height: 30px;
+    padding: 0 12px;
+  }
+  .shop-page .collection-img-wrap .collection-info img {
+    aspect-ratio: 4 / 3;
+  }
+  .shop-page .shop-product-wrap ul.product-view {
+    margin-left: -15px;
+  }
+  .shop-page .shop-product-wrap.grid-1 ul.product-view li.st-col-item,
+  .shop-page .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
+  .shop-page .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
+    width: calc(50% - 15px);
+    margin: 18px 0 0 15px;
+  }
+}
+@media(max-width: 479px){
+  .shop-page .shop-top-bar {
+    gap: 10px;
+  }
+  .shop-page .shop-product-wrap.grid-1 ul.product-view li.st-col-item,
+  .shop-page .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
+  .shop-page .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
+    width: calc(100% - 15px);
   }
 }
 </style>

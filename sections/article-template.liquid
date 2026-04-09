@@ -64,11 +64,11 @@
                           {%- render 'pagination', paginate: paginate -%}
                         </div>
                         {% endif %}
-                        {% endpaginate %}
                         <div class="blog-comment-form">
                             {% render 'blog-comment-form' %}
                         </div>
                     </div>
+                    {% endpaginate %}
                     {% endif %}
                 </div>
             </div>

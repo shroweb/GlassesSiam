@@ -211,6 +211,10 @@
   color: #ffffff;
   cursor: pointer;
 }
+.tryon-panel__atc[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 .tryon-panel__atc:hover { background: #0d2458; transform: translateY(-1px); }
 .tryon-panel__see-frame {
   border: 1px solid #d7dfeb;
@@ -364,6 +368,31 @@
     return COLOUR_MAP[slug] || name || '#e5e7eb';
   }
 
+  function getPreferredVariant(product) {
+    if (!product || !product.variants || !product.variants.length) return null;
+
+    var rememberedVariant = null;
+    if (currentVariantId) {
+      rememberedVariant = product.variants.find(function(candidate) {
+        return String(candidate.id) === String(currentVariantId);
+      });
+    }
+
+    if (rememberedVariant && rememberedVariant.available) return rememberedVariant;
+
+    return product.variants.find(function(candidate) {
+      return !!candidate.available;
+    }) || rememberedVariant || product.variants[0];
+  }
+
+  function syncAddToCartState(variant) {
+    if (!atcBtn) return;
+
+    var canAdd = !!(variant && variant.available && currentVariantId);
+    atcBtn.disabled = !canAdd;
+    atcBtn.textContent = canAdd ? 'Add to Cart' : 'Out of stock';
+  }
+
   function buildSwatches(product) {
     if (!swatchesWrap || !swatchesEl || !product || !product.options || !product.options.length) return;
 
@@ -427,6 +456,7 @@
         if (imgEl && button.dataset.image) {
           imgEl.src = button.dataset.image;
         }
+        syncAddToCartState(variant);
       });
 
       swatchesEl.appendChild(button);
@@ -443,7 +473,7 @@
     currentProduct = product;
     currentHandle = product.handle;
 
-    var variant = product.variants && product.variants.length ? product.variants[0] : null;
+    var variant = getPreferredVariant(product);
     currentVariantId = variant ? String(variant.id) : null;
 
     if (titleEl) titleEl.textContent = product.title || '';
@@ -476,6 +506,7 @@
     }
 
     buildSwatches(product);
+    syncAddToCartState(variant);
   }
 
   function collectCandidateHandles() {
@@ -684,7 +715,10 @@
     }
 
     fetch('/products/' + handle + '.js')
-      .then(function(response) { return response.json(); })
+      .then(function(response) {
+        if (!response.ok) throw new Error('Unable to load this frame right now.');
+        return response.json();
+      })
       .then(function(product) {
         populate(product);
         showPanel();
