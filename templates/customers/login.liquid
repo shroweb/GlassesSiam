@@ -59,13 +59,12 @@
                   <p>{% if form.posted_successfully? %}If an account exists for this email address, we've sent a password reset link.{% else %}{{ 'customer.recover_password.subtext' | t }}{% endif %}</p>
                 </div>
                 </div>
-                {% if form.posted_successfully? %}
-                <div id="ResetSuccess" class="form-state-banner form-state-banner--success">
+                <div id="ResetSuccess" class="form-state-banner form-state-banner--success"{% unless form.posted_successfully? %} style="display: none;"{% endunless %}>
                   <strong>Check your email</strong>
                   <p>We've sent a reset link if the email address is in our customer records. Open the email, follow the link, and then come back here to sign in.</p>
                   <button class="btn btn-style form-state-banner__action" type="button" id="ResetSuccessBack">Back to sign in</button>
                 </div>
-                {% else %}
+                <div id="RecoverPasswordFields"{% if form.posted_successfully? %} style="display: none;"{% endif %}>
                 {{ form.errors | default_errors }}
                 <ul class="fill-form">
                   <li class="log-email">
@@ -79,7 +78,7 @@
                     </div>
                   </li>
                 </ul>
-                {% endif %}
+                </div>
               </div>
               {% endform %}
             </div>
@@ -109,18 +108,63 @@
     var customerLoginForm = document.getElementById('CustomerLoginForm');
     var recoverForm = document.getElementById('RecoverPasswordForm');
     var resetSuccess = document.getElementById('ResetSuccess');
+    var recoverFields = document.getElementById('RecoverPasswordFields');
     var successBackBtn = document.getElementById('ResetSuccessBack');
+    var recoverFormElement = recoverForm ? recoverForm.querySelector('form') : null;
     var recoverSuccess = {{ recover_success | json }};
+    var recoverSubmitted = false;
 
-    if (customerLoginForm && recoverForm && (window.location.hash === '#recover' || resetSuccess || recoverSuccess)) {
+    try {
+      recoverSubmitted = window.sessionStorage.getItem('customerRecoverSubmitted') === 'true';
+    } catch (error) {
+      recoverSubmitted = false;
+    }
+
+    function showRecoverView(showSuccessState) {
+      if (!customerLoginForm || !recoverForm) {
+        return;
+      }
+
       customerLoginForm.style.display = 'none';
       recoverForm.style.display = '';
+
+      if (showSuccessState && resetSuccess) {
+        resetSuccess.style.display = '';
+      }
+
+      if (recoverFields) {
+        recoverFields.style.display = showSuccessState ? 'none' : '';
+      }
+    }
+
+    if (recoverFormElement) {
+      recoverFormElement.addEventListener('submit', function() {
+        try {
+          window.sessionStorage.setItem('customerRecoverSubmitted', 'true');
+        } catch (error) {}
+      });
+    }
+
+    if (customerLoginForm && recoverForm && (window.location.hash === '#recover' || recoverSuccess || recoverSubmitted)) {
+      showRecoverView(recoverSuccess || recoverSubmitted);
+    }
+
+    if ((recoverSuccess || recoverSubmitted) && resetSuccess) {
+      try {
+        window.sessionStorage.removeItem('customerRecoverSubmitted');
+      } catch (error) {}
     }
 
     if (successBackBtn && customerLoginForm && recoverForm) {
       successBackBtn.addEventListener('click', function() {
         recoverForm.style.display = 'none';
         customerLoginForm.style.display = '';
+        if (resetSuccess) {
+          resetSuccess.style.display = 'none';
+        }
+        if (recoverFields) {
+          recoverFields.style.display = '';
+        }
         window.location.hash = '';
       });
     }
