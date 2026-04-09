@@ -13,6 +13,20 @@
   data-product-vendor="{{ product.vendor | escape }}"
 >
   <div class="product-image{% unless product.available %} stock-out{% endunless %}">
+    {% assign has_try_on = false %}
+    {% if product.metafields.custom.glasson_id != blank or product.tags contains 'live-try-on' or product.tags contains 'virtual-try-on' %}
+      {% assign has_try_on = true %}
+    {% endif %}
+    <div class="product-card-topline">
+      {% if has_try_on %}
+      <span class="product-card-badge">Live try-on</span>
+      {% endif %}
+      {% if settings.pro_rew_enable %}
+      <span class="product-card-rating">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+      </span>
+      {% endif %}
+    </div>
     <a class="pro-img" href="{{ product.url | within: collection }}">
       <img class="img-fluid img1" src="{{ product.featured_image.src | image_url: width: 760 }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" alt="{{ product.featured_image.alt }}" loading="lazy">
     </a>
@@ -72,11 +86,6 @@
     </div>
   </div>
   <div class="product-content">
-    {% if settings.pro_rew_enable %}
-    <div class="product-ratting">
-      <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
-    </div>
-    {% endif %}
     <div class="product-card-meta">
       {% if product.vendor != blank %}
       <p class="product-card-vendor">{{ product.vendor }}</p>
@@ -113,7 +122,7 @@
       <span class="product-card-cta__secondary is-disabled">Sold out</span>
       {% endif %}
     </div>
-    <div class="pro-var">
+    <div class="pro-var product-card-swatches">
       {% if settings.pro_gr_option_enable %}
       {% render 'product-grid-option', product: product, color_label: color_label, section: section %}
       {% endif %}
