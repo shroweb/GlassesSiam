@@ -50,36 +50,6 @@
         {%- if section.settings.tab_bar_enable or section.settings.short_by_enable -%}
         {%- render 'collection-sorting' -%}
         {%- endif -%}
-        {%- unless collection.filters == empty -%}
-        <div class="collection-quick-filters" aria-label="Popular filters">
-          <div class="collection-quick-filters__header">
-            <p class="collection-quick-filters__eyebrow">Shop by</p>
-            <h2 class="collection-quick-filters__title">Popular filters</h2>
-          </div>
-          <div class="collection-quick-filters__row">
-            {%- assign quick_filter_count = 0 -%}
-            {%- for filter in collection.filters -%}
-              {%- if filter.type == 'list' and quick_filter_count < 4 and filter.values.size > 0 -%}
-              <div class="collection-quick-group">
-                <span class="collection-quick-group__label">{{ filter.label | escape }}</span>
-                <div class="collection-quick-group__chips">
-                  {%- for value in filter.values limit: 6 -%}
-                  <a
-                    href="{{ value.url_to_add }}"
-                    class="collection-quick-chip{% if value.active %} is-active{% endif %}"
-                    {% if value.count == 0 and value.active == false %}aria-disabled="true"{% endif %}
-                  >
-                    {{ value.label | escape }}
-                  </a>
-                  {%- endfor -%}
-                </div>
-              </div>
-              {%- assign quick_filter_count = quick_filter_count | plus: 1 -%}
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
-        </div>
-        {%- endunless -%}
         <div class="get-data-products">
           <div class="shop-grid">
             <div id="ProductGridContainer">
@@ -517,88 +487,6 @@ collection-template css
   background: #ffffff;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
 }
-.collection-quick-filters {
-  margin-top: 18px;
-  padding: 20px 22px;
-  border-radius: 22px;
-  border: 1px solid #e6edf5;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
-}
-.collection-quick-filters__header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.collection-quick-filters__eyebrow {
-  margin: 0;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  font-weight: 700;
-}
-.collection-quick-filters__title {
-  margin: 0;
-  font-size: 22px;
-  color: #0f172a;
-  font-weight: 700;
-}
-.collection-quick-filters__row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-.collection-quick-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.collection-quick-group__label {
-  font-size: 12px;
-  color: #64748b;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.collection-quick-group__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.collection-quick-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1px solid #dbe5f1;
-  color: #113071;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
-}
-.collection-quick-chip:hover {
-  color: #113071;
-  text-decoration: none;
-  transform: translateY(-1px);
-  border-color: #113071;
-  background: #f8fbff;
-}
-.collection-quick-chip.is-active {
-  background: #113071;
-  color: #ffffff;
-  border-color: #113071;
-}
-.collection-quick-chip[aria-disabled="true"] {
-  opacity: 0.42;
-  pointer-events: none;
-}
 .shop-page .shop-sidebar-inner form .shop-sidebar,
 .shop-page .shop-sidebar.sidebar-filter {
   border-radius: 20px;
@@ -655,12 +543,6 @@ collection-template css
   .shop-page .shop-top-bar {
     padding: 14px 16px;
   }
-  .collection-quick-filters {
-    padding: 16px;
-  }
-  .collection-quick-filters__row {
-    grid-template-columns: 1fr;
-  }
   .shop-page .shop-sidebar-inner form .shop-sidebar,
   .shop-page .shop-sidebar.sidebar-filter {
     padding: 16px;
@@ -687,9 +569,6 @@ collection-template css
 @media(max-width: 479px){
   .shop-page .shop-top-bar {
     gap: 10px;
-  }
-  .collection-quick-filters__title {
-    font-size: 20px;
   }
   .shop-page .shop-product-wrap.grid-1 ul.product-view li.st-col-item,
   .shop-page .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
