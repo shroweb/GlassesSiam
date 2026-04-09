@@ -84,42 +84,10 @@
         "sidebar_handle": "left_sidebar_handle",
         "products_limit_handle": "12"
       }
-    },
-    "filter_pills_mnWq9W": {
-      "type": "filter-pills",
-      "name": "Collection Filter Bar",
-      "settings": {
-        "background_color": "#ffffff",
-        "sticky_position": "relative",
-        "box_shadow": "0 2px 4px rgba(0,0,0,0.05)",
-        "padding_top": 20,
-        "padding_bottom": 20,
-        "show_price": true,
-        "show_brand": true,
-        "show_product_type": true,
-        "show_availability": true,
-        "show_sort": true,
-        "show_search": true,
-        "button_bg": "#b93a3a",
-        "button_color": "#ffffff",
-        "button_border": "#b93a3a",
-        "button_hover_bg": "#a32e2e",
-        "button_hover_border": "#a32e2e",
-        "button_active_bg": "#8b2525",
-        "button_active_border": "#8b2525",
-        "button_active_color": "#ffffff",
-        "button_radius": 50,
-        "button_padding_v": 14,
-        "button_padding_h": 30,
-        "button_text_size": 16,
-        "button_gap": 10,
-        "dropdown_border": "#e0e0e0"
-      }
     }
   },
   "order": [
     "brand_logo_pills_wFVG4D",
-    "filter_pills_mnWq9W",
     "1768937175fd4b2256",
     "17685124544a9c3ea8",
     "collection-template"
