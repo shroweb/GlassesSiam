@@ -28,6 +28,11 @@
       break
     endif
   endfor
+
+  assign has_pdp_benefits = false
+  if product.metafields.custom.progressive_bifocal != blank or has_try_on or product.metafields.custom.material != blank or product.metafields.custom.size != blank
+    assign has_pdp_benefits = true
+  endif
 -%}
 <section class="product-details-page">
   <div class="container">
@@ -61,6 +66,14 @@
               {%- for media in product.media -%}
                 {% render 'media', media: media %}
               {%- endfor -%}
+            </div>
+            <div class="product-hero-gallery__toolbar">
+              {% if has_360 %}
+              <span class="product-hero-gallery__badge">360</span>
+              {% endif %}
+              {% if has_try_on %}
+              <a class="product-hero-gallery__tryon" href="#live-try-on">Live Try On</a>
+              {% endif %}
             </div>
           </div>
           <div class="product_slider_img">
@@ -97,6 +110,14 @@
               {%- for media in product.media -%}
               {% render 'media', media: media %}
               {%- endfor -%}
+            </div>
+            <div class="product-hero-gallery__toolbar">
+              {% if has_360 %}
+              <span class="product-hero-gallery__badge">360</span>
+              {% endif %}
+              {% if has_try_on %}
+              <a class="product-hero-gallery__tryon" href="#live-try-on">Live Try On</a>
+              {% endif %}
             </div>
           </div>
           <div class="product_slider_img">
@@ -157,6 +178,14 @@
               {% render 'media', media: media %}
               {%- endfor -%}
             </div>
+            <div class="product-hero-gallery__toolbar">
+              {% if has_360 %}
+              <span class="product-hero-gallery__badge">360</span>
+              {% endif %}
+              {% if has_try_on %}
+              <a class="product-hero-gallery__tryon" href="#live-try-on">Live Try On</a>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
@@ -185,6 +214,9 @@
               {% endif %}
             </div>
             <h6>{{ product.title }}</h6>
+            <div class="product-hero-review-row">
+              <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+            </div>
             <div class="product-hero-highlights">
               {% if has_try_on %}
               <span class="product-hero-highlights__item">Live try-on</span>
@@ -222,10 +254,23 @@
                 {{ product.metafields.custom.timer }}
               </div>
               {%- endif -%}
-              <div class="product-ratting">
-                <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
-              </div>
             </div>
+            {% if has_pdp_benefits %}
+            <div class="product-hero-merch-points">
+              {% if product.metafields.custom.progressive_bifocal != blank %}
+              <div class="product-hero-merch-points__item">{{ product.metafields.custom.progressive_bifocal }}</div>
+              {% endif %}
+              {% if has_try_on %}
+              <div class="product-hero-merch-points__item">Live try-on available</div>
+              {% endif %}
+              {% if product.metafields.custom.material != blank %}
+              <div class="product-hero-merch-points__item">Material: {{ product.metafields.custom.material }}</div>
+              {% endif %}
+              {% if product.metafields.custom.size != blank %}
+              <div class="product-hero-merch-points__item">Size: {{ product.metafields.custom.size }}</div>
+              {% endif %}
+            </div>
+            {% endif %}
             <div class="brand-block product-hero-brand-block">
               <div class="product-brand">
                 <h6>{{ section.settings.brand_title }}</h6>
@@ -725,7 +770,7 @@
   }
   .product-layout-row {
     align-items: flex-start;
-    row-gap: 28px;
+    row-gap: 36px;
   }
   .product_details.product_details_gallery,
   .product_details.product_details_content {
@@ -734,69 +779,116 @@
   .product-hero-gallery {
     position: sticky;
     top: 24px;
-    border-radius: 30px;
-    background: linear-gradient(180deg, #fbfdff 0%, #f1f6fb 100%);
-    border: 1px solid #e1e9f2;
-    padding: 22px;
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
+    border-radius: 28px;
+    background: #ffffff;
+    border: 1px solid #e7edf5;
+    padding: 18px;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.05);
     width: 100%;
     min-height: 100%;
   }
   .product-hero-gallery .product_img_top {
+    position: relative;
     border-radius: 24px;
     overflow: hidden;
     background: #ffffff;
     border: 1px solid #edf2f7;
-    min-height: 520px;
+    min-height: 600px;
   }
   .product-hero-gallery .product_img_top .slider-for,
   .product-hero-gallery .product_img_top .product-single__thumbnail,
   .product-hero-gallery .product_img_top .zoom {
     height: 100%;
-    min-height: 520px;
+    min-height: 600px;
   }
   .product-hero-gallery .product-featured-media {
     width: 100%;
     height: 100%;
     object-fit: contain;
     object-position: center;
-    padding: 32px;
+    padding: 42px;
   }
   .product-hero-gallery .product_slider_img {
     margin-top: 16px;
+  }
+  .product-hero-gallery .slick-list {
+    margin: 0 -6px;
   }
   .product-hero-gallery .slick-slide {
     padding: 0 6px;
   }
   .product-hero-gallery .product-single__thumbnail {
     display: block;
-    border-radius: 18px;
+    border-radius: 20px;
     overflow: hidden;
     background: #ffffff;
     border: 1px solid #e5edf5;
   }
   .product-hero-gallery .product-single__thumbnail img {
     width: 100%;
-    height: 108px;
+    height: 148px;
     object-fit: contain;
-    padding: 14px;
-    background: #f8fbff;
+    padding: 18px;
+    background: #f7fafc;
+  }
+  .product-hero-gallery__toolbar {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .product-hero-gallery__badge,
+  .product-hero-gallery__tryon {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(17,48,113,0.12);
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+  }
+  .product-hero-gallery__tryon {
+    background: #111111;
+    border-color: #111111;
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .product-hero-gallery__tryon:hover {
+    color: #ffffff;
+    text-decoration: none;
   }
   .product-hero-info {
-    border-radius: 30px;
+    border-radius: 28px;
     background: #ffffff;
-    border: 1px solid #e1e9f2;
-    padding: 28px;
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e7edf5;
+    padding: 28px 30px;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.04);
     width: 100%;
     min-height: 100%;
   }
   .product-hero-title h6 {
-    margin: 10px 0 0;
-    font-size: clamp(32px, 4vw, 48px);
-    line-height: 1.02;
+    margin: 12px 0 0;
+    font-size: clamp(34px, 4vw, 46px);
+    line-height: 1.04;
     letter-spacing: -0.04em;
     color: #0f172a;
+  }
+  .product-hero-review-row {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    min-height: 24px;
   }
   .product-hero-kicker {
     display: flex;
@@ -832,7 +924,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 20px;
   }
   .product-hero-highlights__item {
     display: inline-flex;
@@ -847,9 +939,13 @@
     font-weight: 600;
   }
   .product-hero-info .small-info {
-    margin-top: 24px;
-    padding-top: 24px;
+    margin-top: 26px;
+    padding-top: 26px;
     border-top: 1px solid #e5edf5;
+  }
+  .product-hero-info .price-block {
+    display: grid;
+    gap: 10px;
   }
   .product-hero-info .pro-prlb .price-box {
     gap: 14px;
@@ -864,19 +960,55 @@
     font-size: 18px;
     color: #94a3b8;
   }
+  .product-hero-merch-points {
+    display: grid;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .product-hero-merch-points__item {
+    position: relative;
+    padding-left: 22px;
+    color: #334155;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .product-hero-merch-points__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #16a34a;
+  }
   .product-hero-brand-block {
     margin-top: 20px;
     padding: 18px 20px;
-    border-radius: 20px;
+    border-radius: 18px;
     background: #f8fbff;
     border: 1px solid #e1e9f2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .product-hero-brand-block h6 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 6px;
+  }
+  .product-hero-brand-block span {
+    color: #334155;
+    font-weight: 600;
   }
   .product-hero-description-card {
     margin-top: 22px;
-    padding: 20px 22px;
-    border-radius: 22px;
-    background: #f8fbff;
-    border: 1px solid #e1e9f2;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
   }
   .product-hero-description-card p {
     margin: 0;
@@ -888,11 +1020,81 @@
     margin-top: 24px;
     border-top: 1px solid #e5edf5;
   }
+  .product-hero-info .product-variant-option .swatch-variant .swatch {
+    margin-top: 24px;
+  }
+  .product-hero-info .product-variant-option .swatch-variant .swatch h6 {
+    font-size: 15px;
+    color: #0f172a;
+  }
+  .product-hero-info .product-variant-option .swatch-variant .swatch .swatch-element label {
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 999px;
+    font-size: 13px;
+    text-transform: none;
+  }
+  .product-hero-info .product-actions {
+    margin-top: 20px;
+    display: grid;
+    gap: 14px;
+  }
+  .product-hero-info .product-quantity-action {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 14px;
+    align-items: stretch;
+  }
+  .product-hero-info .product-quantity .cart-plus-minus {
+    height: 56px;
+    border-radius: 14px;
+    border: 1px solid #d9e3ee;
+    background: #ffffff;
+  }
+  .product-hero-info .product-quantity .cart-plus-minus input {
+    height: 56px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .product-hero-info .product-quantity .cart-plus-minus .dec,
+  .product-hero-info .product-quantity .cart-plus-minus .inc {
+    width: 30px;
+  }
+  .product-hero-info .instant-buy {
+    display: none;
+  }
+  .product-hero-info .product-payment-image,
+  .product-hero-info .pro-skss {
+    padding-top: 20px;
+    border-top: 1px solid #e5edf5;
+  }
   .product-app-block,
   .product-hero-info .pro-detail-action,
   .product-hero-info .product-payment-image,
   .product-hero-info .pro-skss {
     margin-top: 24px;
+  }
+  .product-hero-info .product-payment-image img {
+    max-height: 26px;
+    width: auto;
+  }
+  .product-hero-info .pro-skss {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+  }
+  .product-hero-info .pro-skss .product-sku,
+  .product-hero-info .pro-skss .share-icon {
+    margin: 0;
+  }
+  .product-hero-info .pro-skss h6 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 4px;
   }
   @media (max-width: 1199px) {
     .product_details.product_details_gallery,
@@ -908,6 +1110,10 @@
     .product-hero-gallery .product_img_top .zoom {
       min-height: 420px;
     }
+    .product-hero-brand-block {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
   }
   @media (max-width: 767px) {
     .product-hero-gallery,
@@ -919,16 +1125,30 @@
     .product-hero-gallery .product_img_top .slider-for,
     .product-hero-gallery .product_img_top .product-single__thumbnail,
     .product-hero-gallery .product_img_top .zoom {
-      min-height: 300px;
+      min-height: 320px;
     }
     .product-hero-gallery .product-featured-media {
       padding: 18px;
+    }
+    .product-hero-gallery__toolbar {
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
     }
     .product-hero-title h6 {
       font-size: 30px;
     }
     .product-hero-info .pro-prlb .price-box .new-price {
       font-size: 30px;
+    }
+    .product-hero-info .product-quantity-action {
+      grid-template-columns: 1fr;
+    }
+    .product-hero-gallery .product-single__thumbnail img {
+      height: 112px;
+      padding: 14px;
     }
   }
   /* Price sizes set in product-template-css.liquid */
