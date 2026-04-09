@@ -29,8 +29,13 @@
     endif
   endfor
 
+  assign pdp_size_value = product.metafields.custom.size | strip
+  if pdp_size_value == '0' or pdp_size_value == '0.0' or pdp_size_value == blank
+    assign pdp_size_value = blank
+  endif
+
   assign has_pdp_benefits = false
-  if product.metafields.custom.progressive_bifocal != blank or has_try_on or product.metafields.custom.material != blank or product.metafields.custom.size != blank
+  if product.metafields.custom.progressive_bifocal != blank or has_try_on or product.metafields.custom.material != blank or pdp_size_value != blank
     assign has_pdp_benefits = true
   endif
 -%}
@@ -266,8 +271,8 @@
               {% if product.metafields.custom.material != blank %}
               <div class="product-hero-merch-points__item">Material: {{ product.metafields.custom.material }}</div>
               {% endif %}
-              {% if product.metafields.custom.size != blank %}
-              <div class="product-hero-merch-points__item">Size: {{ product.metafields.custom.size }}</div>
+              {% if pdp_size_value != blank %}
+              <div class="product-hero-merch-points__item">Size: {{ pdp_size_value }}</div>
               {% endif %}
             </div>
             {% endif %}
@@ -300,8 +305,10 @@
             <form action="/cart/add" method="post" class="cart-{{ product.id }}" enctype="multipart/form-data" id="add-item-form">
               {% render 'product-swatch-variant' product: product, block: block %}
               <div class="product-actions">
-                <div class="product-quantity-action">
+                <div class="product-quantity-action{% unless current_variant.available %} is-unavailable{% endunless %}">
+                  {% if current_variant.available %}
                   {% render 'product-quantity', product: product %}
+                  {% endif %}
                   {% render 'product-cart-action', product: product %}
                 </div>
                 <div class="instant-buy">
@@ -779,37 +786,37 @@
   .product-hero-gallery {
     position: sticky;
     top: 24px;
-    border-radius: 28px;
-    background: #ffffff;
-    border: 1px solid #e7edf5;
-    padding: 18px;
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.05);
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
     width: 100%;
     min-height: 100%;
   }
   .product-hero-gallery .product_img_top {
     position: relative;
-    border-radius: 24px;
+    border-radius: 16px;
     overflow: hidden;
-    background: #ffffff;
+    background: #f8fafc;
     border: 1px solid #edf2f7;
-    min-height: 600px;
+    min-height: 540px;
   }
   .product-hero-gallery .product_img_top .slider-for,
   .product-hero-gallery .product_img_top .product-single__thumbnail,
   .product-hero-gallery .product_img_top .zoom {
     height: 100%;
-    min-height: 600px;
+    min-height: 540px;
   }
   .product-hero-gallery .product-featured-media {
     width: 100%;
     height: 100%;
     object-fit: contain;
     object-position: center;
-    padding: 42px;
+    padding: 34px;
   }
   .product-hero-gallery .product_slider_img {
-    margin-top: 16px;
+    margin-top: 14px;
   }
   .product-hero-gallery .slick-list {
     margin: 0 -6px;
@@ -819,17 +826,17 @@
   }
   .product-hero-gallery .product-single__thumbnail {
     display: block;
-    border-radius: 20px;
+    border-radius: 14px;
     overflow: hidden;
     background: #ffffff;
     border: 1px solid #e5edf5;
   }
   .product-hero-gallery .product-single__thumbnail img {
     width: 100%;
-    height: 148px;
+    height: 132px;
     object-fit: contain;
-    padding: 18px;
-    background: #f7fafc;
+    padding: 14px;
+    background: #f8fafc;
   }
   .product-hero-gallery__toolbar {
     position: absolute;
@@ -869,18 +876,18 @@
     text-decoration: none;
   }
   .product-hero-info {
-    border-radius: 28px;
-    background: #ffffff;
-    border: 1px solid #e7edf5;
-    padding: 28px 30px;
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.04);
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    padding: 6px 0 0 26px;
+    box-shadow: none;
     width: 100%;
     min-height: 100%;
   }
   .product-hero-title h6 {
     margin: 12px 0 0;
-    font-size: clamp(34px, 4vw, 46px);
-    line-height: 1.04;
+    font-size: clamp(30px, 3.3vw, 42px);
+    line-height: 1.08;
     letter-spacing: -0.04em;
     color: #0f172a;
   }
@@ -900,17 +907,17 @@
   .product-hero-kicker__status {
     display: inline-flex;
     align-items: center;
-    min-height: 34px;
-    padding: 0 14px;
+    min-height: 28px;
+    padding: 0 12px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .product-hero-kicker__vendor {
-    color: #113071;
-    background: #eff5ff;
+    color: #0f172a;
+    background: #f5f7fb;
   }
   .product-hero-kicker__status.is-in-stock {
     color: #166534;
@@ -924,7 +931,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 16px;
   }
   .product-hero-highlights__item {
     display: inline-flex;
@@ -932,15 +939,15 @@
     min-height: 38px;
     padding: 0 16px;
     border-radius: 999px;
-    background: #f8fbff;
-    border: 1px solid #dce7f3;
+    background: #ffffff;
+    border: 1px solid #dce3eb;
     color: #334155;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
   }
   .product-hero-info .small-info {
-    margin-top: 26px;
-    padding-top: 26px;
+    margin-top: 22px;
+    padding-top: 18px;
     border-top: 1px solid #e5edf5;
   }
   .product-hero-info .price-block {
@@ -952,7 +959,7 @@
     align-items: baseline;
   }
   .product-hero-info .pro-prlb .price-box .new-price {
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 800;
     color: #0f172a;
   }
@@ -962,14 +969,14 @@
   }
   .product-hero-merch-points {
     display: grid;
-    gap: 10px;
-    margin-top: 22px;
+    gap: 8px;
+    margin-top: 16px;
   }
   .product-hero-merch-points__item {
     position: relative;
     padding-left: 22px;
     color: #334155;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
   }
   .product-hero-merch-points__item::before {
@@ -983,14 +990,15 @@
     background: #16a34a;
   }
   .product-hero-brand-block {
-    margin-top: 20px;
-    padding: 18px 20px;
-    border-radius: 18px;
-    background: #f8fbff;
-    border: 1px solid #e1e9f2;
+    margin-top: 16px;
+    padding: 14px 0 0;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid #e5edf5;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
   .product-hero-brand-block h6 {
     font-size: 12px;
@@ -1003,8 +1011,23 @@
     color: #334155;
     font-weight: 600;
   }
+  .product-hero-brand-block .product-brand,
+  .product-hero-brand-block .product-inventory {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .product-hero-brand-block .product-brand h6,
+  .product-hero-brand-block .product-inventory h6 {
+    margin: 0;
+  }
+  .product-hero-brand-block .product-brand span,
+  .product-hero-brand-block .product-inventory span {
+    margin: 0;
+  }
   .product-hero-description-card {
-    margin-top: 22px;
+    margin-top: 16px;
     padding: 0;
     border-radius: 0;
     background: transparent;
@@ -1017,11 +1040,11 @@
     color: #475569;
   }
   .product-hero-info .product-variant-option .swatch-variant {
-    margin-top: 24px;
+    margin-top: 18px;
     border-top: 1px solid #e5edf5;
   }
   .product-hero-info .product-variant-option .swatch-variant .swatch {
-    margin-top: 24px;
+    margin-top: 18px;
   }
   .product-hero-info .product-variant-option .swatch-variant .swatch h6 {
     font-size: 15px;
@@ -1035,7 +1058,7 @@
     text-transform: none;
   }
   .product-hero-info .product-actions {
-    margin-top: 20px;
+    margin-top: 18px;
     display: grid;
     gap: 14px;
   }
@@ -1044,6 +1067,9 @@
     grid-template-columns: 104px minmax(0, 1fr);
     gap: 14px;
     align-items: stretch;
+  }
+  .product-hero-info .product-quantity-action.is-unavailable {
+    grid-template-columns: 1fr;
   }
   .product-hero-info .product-quantity .cart-plus-minus {
     height: 56px;
@@ -1110,16 +1136,16 @@
     .product-hero-gallery .product_img_top .zoom {
       min-height: 420px;
     }
-    .product-hero-brand-block {
-      grid-template-columns: 1fr;
-      gap: 14px;
+    .product-hero-info {
+      padding-left: 0;
+      margin-top: 24px;
     }
   }
   @media (max-width: 767px) {
     .product-hero-gallery,
     .product-hero-info {
-      border-radius: 22px;
-      padding: 18px;
+      border-radius: 0;
+      padding: 0;
     }
     .product-hero-gallery .product_img_top,
     .product-hero-gallery .product_img_top .slider-for,
@@ -1138,7 +1164,7 @@
       justify-content: flex-start;
     }
     .product-hero-title h6 {
-      font-size: 30px;
+      font-size: 28px;
     }
     .product-hero-info .pro-prlb .price-box .new-price {
       font-size: 30px;
