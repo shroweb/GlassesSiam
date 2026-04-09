@@ -76,7 +76,7 @@
         "show_availability": true,
         "show_sort": true,
         "show_search": true,
-        "button_alignment": "flex-start",
+        "button_alignment": "center",
         "button_bg": "#b6493e",
         "button_color": "#ffffff",
         "button_border": "#b6493e",
