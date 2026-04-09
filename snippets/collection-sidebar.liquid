@@ -67,20 +67,6 @@
               </svg>
             </span>
           </div>
-          <div class="sidebar-filter-shortcuts">
-            {%- for filter in results.filters -%}
-              {%- assign filter_label_downcase = filter.label | downcase -%}
-              {%- if filter.type == 'price_range' -%}
-              <button type="button" class="sidebar-filter-shortcut" data-filter-target="collapse-{{ forloop.index }}">Price</button>
-              {%- elsif filter.type == 'list' and filter_label_downcase contains 'brand' or filter_label_downcase contains 'vendor' -%}
-              <button type="button" class="sidebar-filter-shortcut" data-filter-target="collapse-{{ forloop.index }}">Brand</button>
-              {%- elsif filter.type == 'list' and filter_label_downcase contains 'availability' -%}
-              <button type="button" class="sidebar-filter-shortcut" data-filter-target="collapse-{{ forloop.index }}">Availability</button>
-              {%- elsif filter.type == 'list' and filter_label_downcase contains 'type' -%}
-              <button type="button" class="sidebar-filter-shortcut" data-filter-target="collapse-{{ forloop.index }}">Type</button>
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
           <div class="active-filter active-facets-desktop">
             <ul>
               <li>
@@ -192,53 +178,3 @@
   </div>
 </div>
 {% render 'collection-sidebar-css' %}
-<style>
-  .sidebar-filter-shortcuts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 18px 0 0;
-  }
-  .sidebar-filter-shortcut {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 42px;
-    padding: 0 18px;
-    border-radius: 999px;
-    border: 1px solid #b93a3a;
-    background: #b93a3a;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform .18s ease, background .18s ease, border-color .18s ease;
-  }
-  .sidebar-filter-shortcut:hover {
-    transform: translateY(-1px);
-    background: #a32e2e;
-    border-color: #a32e2e;
-  }
-</style>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.sidebar-filter-shortcut').forEach(function(button) {
-      button.addEventListener('click', function() {
-        var targetId = button.getAttribute('data-filter-target');
-        if (!targetId) return;
-        var trigger = document.querySelector('a[href="#' + targetId + '"]');
-        var panel = document.getElementById(targetId);
-
-        if (trigger) {
-          trigger.click();
-        }
-
-        if (panel) {
-          setTimeout(function() {
-            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 120);
-        }
-      });
-    });
-  });
-</script>
