@@ -25,7 +25,21 @@
       {% for block in section.blocks %}
         {% if block.type == 'brand' %}
           {%- liquid
-            assign brand_name = block.settings.name | default: 'Brand' | strip
+            assign brand_name = block.settings.name | strip
+            assign logo_path = block.settings.logo | downcase
+            if brand_name == blank
+              if logo_path contains 'oak'
+                assign brand_name = 'Oakley'
+              elsif logo_path contains 'herrera'
+                assign brand_name = 'Carolina Herrera'
+              elsif logo_path contains 'rayban' or logo_path contains 'ray-ban'
+                assign brand_name = 'Ray-Ban'
+              elsif logo_path contains 'revel'
+                assign brand_name = 'Revel'
+              else
+                assign brand_name = 'Brand'
+              endif
+            endif
             assign brand_filter_name = brand_name
             assign brand_filter_name = brand_filter_name | replace: ' Eyewear', ''
             assign brand_filter_name = brand_filter_name | replace: ' eyewear', ''
@@ -60,7 +74,7 @@
 
 {% style %}
 .brand-pills-gusa {
-  padding: 52px 20px;
+  padding: 42px 20px;
   background: #edf4fb;
 }
 .brand-pills-gusa__inner {
@@ -77,9 +91,9 @@
   text-transform: uppercase;
 }
 .brand-pills-gusa__heading {
-  margin: 0 0 24px;
+  margin: 0 0 18px;
   color: #111827;
-  font-size: clamp(28px, 3.2vw, 46px);
+  font-size: clamp(24px, 2.8vw, 38px);
   line-height: 1.05;
   letter-spacing: -0.045em;
 }
@@ -92,8 +106,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 78px;
-  padding: 14px 18px;
+  min-height: 68px;
+  padding: 12px 16px;
   border-radius: 999px;
   border: 1.5px solid #d6deea;
   background: rgba(255,255,255,0.96);
@@ -106,8 +120,8 @@
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
 }
 .brand-pills-gusa__pill img {
-  max-width: 124px;
-  max-height: 36px;
+  max-width: 112px;
+  max-height: 32px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -121,13 +135,13 @@
 }
 .brand-pills-gusa__text {
   color: #374151;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1;
 }
 .brand-pills-gusa__pill--all .brand-pills-gusa__text {
   color: #2a80e3;
-  font-size: 18px;
+  font-size: 17px;
 }
 @media (max-width: 1199px) {
   .brand-pills-gusa__list {
@@ -136,33 +150,33 @@
 }
 @media (max-width: 991px) {
   .brand-pills-gusa {
-    padding: 44px 18px;
+    padding: 38px 18px;
   }
   .brand-pills-gusa__list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
   }
   .brand-pills-gusa__pill {
-    min-height: 72px;
-    padding: 13px 16px;
+    min-height: 64px;
+    padding: 12px 15px;
   }
 }
 @media (max-width: 767px) {
   .brand-pills-gusa {
-    padding: 36px 14px;
+    padding: 32px 14px;
   }
   .brand-pills-gusa__heading {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
   .brand-pills-gusa__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .brand-pills-gusa__pill {
-    min-height: 64px;
+    min-height: 58px;
   }
   .brand-pills-gusa__pill img {
-    max-width: 96px;
-    max-height: 28px;
+    max-width: 88px;
+    max-height: 24px;
   }
   .brand-pills-gusa__text {
     font-size: 16px;
