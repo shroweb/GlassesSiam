@@ -1708,9 +1708,10 @@ account page css
   background: #f8fafc;
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches__label {
-  margin: 0 0 8px;
+  display: block;
+  margin: 0 0 10px;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1719,12 +1720,14 @@ account page css
 .single-product-wrap.product-card-eyewear .product-card-swatches .pr-gr-option {
   display: flex;
   align-items: center;
+  margin-top: 0;
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches .option-block {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches .variant-option {
   margin: 0;
