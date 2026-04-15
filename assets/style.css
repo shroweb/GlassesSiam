@@ -1700,8 +1700,21 @@ account page css
   display: block;
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches {
-  margin-top: -2px;
-  min-height: 30px;
+  margin-top: 10px;
+  min-height: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid #e6edf5;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+.single-product-wrap.product-card-eyewear .product-card-swatches__label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a8798;
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches .pr-gr-option {
   display: flex;
@@ -1718,17 +1731,17 @@ account page css
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches .op-lb.color,
 .single-product-wrap.product-card-eyewear .product-card-swatches .op-lb.color-img {
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
   border-radius: 999px;
   border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #d6dfeb;
+  box-shadow: 0 0 0 1px #cfd8e3;
   overflow: hidden;
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches .active-variant .op-lb.color,
 .single-product-wrap.product-card-eyewear .product-card-swatches .active-variant .op-lb.color-img {
-  box-shadow: 0 0 0 2px #113071;
+  box-shadow: 0 0 0 2px #113071, 0 6px 12px rgba(17, 48, 113, 0.16);
 }
 .single-product-wrap.product-card-eyewear .product-card-swatches .op-lb.color .color-swatch {
   width: 100%;
@@ -1743,7 +1756,7 @@ account page css
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
-  margin-top: auto;
+  margin-top: 14px;
 }
 .single-product-wrap.product-card-eyewear .product-card-cta__primary,
 .single-product-wrap.product-card-eyewear .product-card-cta__secondary {
@@ -1818,7 +1831,8 @@ account page css
     font-size: 17px;
   }
   .single-product-wrap.product-card-eyewear .product-card-swatches {
-    min-height: 0;
+    margin-top: 8px;
+    padding: 10px;
   }
   .single-product-wrap.product-card-eyewear .product-card-cta {
     grid-template-columns: 1fr;
