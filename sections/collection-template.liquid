@@ -415,6 +415,8 @@ collection-template css
   gap: 24px;
   margin: 20px 0 0;
   padding: 0;
+  width: 100%;
+  list-style: none;
 }
 .shop-product-wrap.grid-4 ul.product-view{
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -429,10 +431,12 @@ collection-template css
   grid-template-columns: minmax(0, 1fr);
 }
 .shop-product-wrap ul.product-view li.st-col-item{
-  width: auto;
+  width: 100% !important;
+  max-width: none !important;
   margin: 0;
   display: block;
   min-width: 0;
+  flex: none !important;
 }
 .shop-product-wrap .single-product-wrap .product-content h6 a{
   -webkit-transition: all 0s ease-in-out 0s;
@@ -603,8 +607,15 @@ collection-template css
   gap: 24px;
 }
 .shop-page .shop-product-wrap ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear {
+  display: flex !important;
   width: 100%;
+  max-width: none;
+  min-width: 0;
   border-radius: 22px;
+}
+.shop-page .shop-product-wrap ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .product-image,
+.shop-page .shop-product-wrap ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .product-content {
+  width: 100%;
 }
 .shop-page .shop-product-wrap.grid-4 ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .product-image {
   aspect-ratio: 5 / 4;
