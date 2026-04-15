@@ -978,6 +978,16 @@ document.addEventListener('DOMContentLoaded', function() {
   .acc-nav__item {
     padding: 11px 12px;
   }
+  .acc-sidebar__avatar {
+    align-items: flex-start;
+  }
+  .acc-main__subtext {
+    font-size: 13px;
+  }
+  .acc-panel__head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
   .acc-detail-list__row {
     grid-template-columns: 1fr;
     gap: 4px;
@@ -986,6 +996,48 @@ document.addEventListener('DOMContentLoaded', function() {
   .acc-order-card__foot {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .acc-main-locale .localization-form {
+    max-width: 100%;
+  }
+}
+@media (max-width: 540px) {
+  .acc-page__inner {
+    gap: 1rem;
+  }
+  .acc-nav {
+    gap: 8px;
+  }
+  .acc-nav__item {
+    min-height: 46px;
+  }
+  .acc-stats {
+    grid-template-columns: 1fr;
+  }
+  .acc-stat {
+    width: 100%;
+  }
+  .acc-action-card {
+    min-height: 0;
+    padding: 14px;
+  }
+  .acc-tools {
+    gap: 1rem;
+  }
+  .acc-order-item {
+    align-items: flex-start;
+  }
+  .acc-order-item img,
+  .acc-order-item__no-img {
+    width: 54px;
+    height: 54px;
+  }
+  .acc-order-card__more {
+    padding-left: 0;
+  }
+  .acc-orders__shop-btn {
+    width: 100%;
+    min-width: 0;
   }
 }
 </style>

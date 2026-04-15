@@ -217,9 +217,22 @@
   .top-notification-bar .notification-block ul.notification-entry li.info-block,
   .top-notification-bar .notification-block ul.notification-entry li.custom-link {
     display: none;
-  } 
+  }
   .top-notification-bar .notification-block ul.notification-entry li.offer-text {
     width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .top-notification-bar {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .offer-text .text-wrap p,
+  .offer-text .text-wrap p a,
+  .info-block .info-area .info-text p,
+  .info-block .info-area .info-text p a {
+    font-size: 12px;
+    line-height: 1.4;
   }
 }
 
@@ -391,6 +404,12 @@
 @media (max-width: 1199px) {
   .custom-link ul.custom-link-ul li.custom-link-li.topbar-locale-wrap {
     display: none;
+  }
+}
+@media (max-width: 767px) {
+  .topbar-a11y-btn {
+    width: 30px;
+    height: 30px;
   }
 }
 </style>

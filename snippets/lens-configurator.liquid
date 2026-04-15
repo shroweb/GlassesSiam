@@ -452,8 +452,29 @@ FEATURES:
 .lens-delete-prescription {position: absolute;top: 12px;right: 12px;background: #fee2e2;color: #dc2626;border: none;padding: 6px 12px;border-radius: 6px;font-size: 12px;font-weight: 600;cursor: pointer;transition: all 0.2s;}
 .lens-delete-prescription:hover {background: #fecaca;}
 @media (max-width: 640px) {
-  .lens-modal__inner {padding: 24px 20px;}
+  .lens-modal {
+    padding: 12px;
+    align-items: flex-end;
+  }
+  .lens-modal__inner {
+    padding: 22px 16px 18px;
+    max-height: min(88vh, 760px);
+    border-radius: 18px 18px 0 0;
+  }
+  .lens-step {
+    gap: 14px;
+  }
   .lens-step h2 {font-size: 20px;}
+  .lens-subtitle {font-size: 13px;}
+  .lens-option,
+  .lens-next-btn,
+  .lens-back-btn,
+  .lens-secondary-btn {
+    min-height: 48px;
+  }
+  .lens-option-content {
+    gap: 10px;
+  }
   .lens-option-price,.lens-checkbox-price {font-size: 16px;}
   .lens-option-icon {display: none;}
   .lens-prescription-table {font-size: 12px;}

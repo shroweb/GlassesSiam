@@ -1802,8 +1802,23 @@ account page css
   .single-product-wrap.product-card-eyewear .product-content {
     padding: 16px;
   }
+  .single-product-wrap.product-card-eyewear .product-card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
   .single-product-wrap.product-card-eyewear .title-price .title-type h6 a {
     font-size: 16px;
+  }
+  .single-product-wrap.product-card-eyewear .title-price {
+    display: grid;
+    gap: 8px;
+  }
+  .single-product-wrap.product-card-eyewear .price-box span.new-price {
+    font-size: 17px;
+  }
+  .single-product-wrap.product-card-eyewear .product-card-swatches {
+    min-height: 0;
   }
   .single-product-wrap.product-card-eyewear .product-card-cta {
     grid-template-columns: 1fr;
@@ -1817,5 +1832,24 @@ account page css
   }
   .single-product-wrap.product-card-eyewear .product-card-colors-count {
     bottom: 12px;
+  }
+}
+@media (max-width: 479px) {
+  .single-product-wrap.product-card-eyewear .product-image {
+    aspect-ratio: 1 / 1;
+    padding: 18px 14px 14px;
+  }
+  .single-product-wrap.product-card-eyewear .product-content {
+    padding: 14px;
+  }
+  .single-product-wrap.product-card-eyewear .title-price .title-type h6 a {
+    font-size: 15px;
+    line-height: 1.35;
+  }
+  .single-product-wrap.product-card-eyewear .product-card-hover-actions__button,
+  .single-product-wrap.product-card-eyewear .product-card-cta__primary,
+  .single-product-wrap.product-card-eyewear .product-card-cta__secondary {
+    width: 100%;
+    min-width: 0;
   }
 }
