@@ -106,53 +106,11 @@
       <span class="product-card-cta__secondary is-disabled">Sold out</span>
       {% endif %}
     </div>
+    {% if settings.pro_gr_option_enable and color_count > 1 %}
     <div class="pro-var product-card-swatches">
-      {% if settings.pro_gr_option_enable %}
       {% render 'product-grid-option', product: product, color_label: color_label, section: section %}
-      {% endif %}
     </div>
-    <div class="product-action">
-      {%- if settings.product_quickview_enalbe -%}
-      <a href="javascript:void(0);" onclick="quiqview('{{ product.handle | handleize }}')" class="quick-view{% unless product.available %} disabled{% endunless %}"{% unless product.available %} disabled="disabled"{% endunless %} {% if settings.tooltip_enable %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ settings.tooltip_quickview_title }}"{% endif %}>
-        <span class="quickview-icon btn-icon">
-          <span class="icon"><i class="feather-eye"></i></span>
-        </span>
-      </a>
-      {%- endif -%}
-
-      {% if product.available %}
-      <a href="javascript:void(0);" onclick="{{ func }}; return false;" class="add-to-cart ajax-spin-cart add-cart-{{ product.id }}" {% if settings.tooltip_enable %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ settings.tooltip_add_to_cart_title }}"{% endif %}>
-        <span class="btn-icon">
-          <span class="cart-title">
-            <span class="add-c-title">
-              <span class="cart-icon">
-                <span class="icon"><i class="feather-shopping-bag"></i></span>
-              </span>
-            </span>
-          </span>
-          <span class="cart-loading load-anim"><i class="ri-loader-4-line"></i></span>
-          <span class="cart-added"><i class="feather-check"></i></span>
-          <span class="cart-unavailable"><i class="bi bi-exclamation-triangle"></i></span>
-        </span>
-      </a>
-      {% else %}
-      <a href="javascript:void(0);" class="disabled-add-to-cart add-to-cart disabled" {% if settings.tooltip_enable %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ settings.tooltip_soldout_title }}"{% endif %}>
-        <span class="btn-icon">
-          <span class="cart-title">
-            <span class="add-c-title">
-              <span class="cart-icon">
-                <span class="icon"><i class="feather-shopping-bag"></i></span>
-              </span>
-            </span>
-          </span>
-        </span>
-      </a>
-      {% endif %}
-
-      {%- if settings.wishlist_enable -%}
-      {% render 'wishlist-button', product: product %}
-      {%- endif -%}
-    </div>
+    {% endif %}
   </div>
 </div>
 
