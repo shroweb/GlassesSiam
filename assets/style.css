@@ -775,6 +775,13 @@ product tab slider css
 product css
 ======================================*/
 /* grid css */
+.shop-product-wrap.grid-4 ul.product-view li.st-col-item {
+    width: calc(25% - 30px);
+    display: flex;
+}
+.shop-product-wrap.grid-4 ul.product-view li.st-col-item.st-col {
+    width: calc(25% - 30px);
+}
 .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
     width: calc(33.33% - 30px);
     display: flex;
@@ -783,6 +790,12 @@ product css
     width: calc(25% - 30px);
 }
 @media (max-width: 1199px) {
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item {
+        width: calc(33.33% - 30px);
+    }
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item.st-col {
+        width: calc(33.33% - 30px);
+    }
     .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
         width: calc(50% - 30px);
     }
@@ -791,11 +804,19 @@ product css
     }
 }
 @media (max-width: 991px) {
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item,
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item.st-col {
+        width: calc(50% - 30px);
+    }
     .shop-product-wrap.grid-3 ul.product-view li.st-col-item.st-col {
         width: calc(50% - 30px);
     }
 }
 @media (max-width: 767px) {
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item,
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item.st-col {
+        width: calc(50% - 12px);
+    }
     .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
         width: calc(50% - 12px);
     }
@@ -804,6 +825,10 @@ product css
     }
 }
 @media (max-width: 320px) {
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item,
+    .shop-product-wrap.grid-4 ul.product-view li.st-col-item.st-col {
+        width: calc(100% - 12px);
+    }
     .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
         width: calc(100% - 12px);
     }
