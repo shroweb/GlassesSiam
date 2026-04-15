@@ -24,29 +24,30 @@
     <div class="brand-pills-gusa__list">
       {% for block in section.blocks %}
         {% if block.type == 'brand' %}
-          {% if block.settings.url != blank %}
-            <a href="{{ block.settings.url }}" class="brand-pills-gusa__pill" {{ block.shopify_attributes }}>
-          {% else %}
-            <div class="brand-pills-gusa__pill" {{ block.shopify_attributes }}>
-          {% endif %}
+          {%- liquid
+            assign brand_name = block.settings.name | default: 'Brand' | strip
+            assign brand_filter_name = brand_name
+            assign brand_filter_name = brand_filter_name | replace: ' Eyewear', ''
+            assign brand_filter_name = brand_filter_name | replace: ' eyewear', ''
+            assign brand_filter_param = brand_filter_name | url_encode
+            assign fallback_brand_url = '/a/search/brands?filter_brand=' | append: brand_filter_param
+            assign brand_url = block.settings.url | default: fallback_brand_url
+          -%}
+          <a href="{{ brand_url }}" class="brand-pills-gusa__pill" {{ block.shopify_attributes }}>
 
           {% if block.settings.logo %}
             <img
               src="{{ block.settings.logo | image_url: width: 320 }}"
-              alt="{{ block.settings.name | escape }}"
+              alt="{{ brand_name | escape }}"
               loading="lazy"
             >
-          {% elsif block.settings.name != blank %}
-            <span class="brand-pills-gusa__text">{{ block.settings.name }}</span>
+          {% elsif brand_name != blank %}
+            <span class="brand-pills-gusa__text">{{ brand_name }}</span>
           {% else %}
             <span class="brand-pills-gusa__text">Brand</span>
           {% endif %}
 
-          {% if block.settings.url != blank %}
-            </a>
-          {% else %}
-            </div>
-          {% endif %}
+          </a>
         {% endif %}
       {% endfor %}
 
