@@ -25,7 +25,7 @@
                 {% for product in category_product.products limit: product_limit %}
                 <div class="swiper-slide">
                   {%- liquid
-                    render 'product-grid-item', product: product
+                    render 'product-grid-item', product: product, card_context: 'rail'
                    -%}
                 </div>
                 {% else %}
@@ -461,14 +461,32 @@ addEventListener('DOMContentLoaded', (event) => {
   .new-product .collection-category .section-capture {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 26px;
   }
   .new-product .collection-category .section-capture .section-title {
-    text-align: left;
+    text-align: center;
   }
   .new-product .collection-category .section-capture .swiper-buttons {
-    margin-top: 0px;
+    margin-top: 0;
+    gap: 0;
+  }
+  .new-product .collection-category .section-capture .section-title h2 {
+    font-size: clamp(34px, 3vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+    color: #111827;
+  }
+  .new-product .collection-category .section-capture .section-title span {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #6b7280;
   }
   @media (max-width: 479px) {
     .new-product .collection-category .section-capture {
@@ -508,6 +526,73 @@ addEventListener('DOMContentLoaded', (event) => {
   @media (max-width: 479px) {
     .new-product .collection-category .collection-wrap .swiper-buttons {
       display: flex;
+    }
+  }
+  .new-product .collection-wrap {
+    position: relative;
+  }
+  .new-product .collection-wrap .swiper-buttons,
+  .new-product .collection-category .section-capture .swiper-buttons {
+    position: absolute;
+    inset: 50% 0 auto 0;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    transform: translateY(-50%);
+    z-index: 3;
+  }
+  .new-product .collection-wrap .swiper-buttons button,
+  .new-product .collection-category .section-capture .swiper-buttons button {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    pointer-events: auto;
+    color: #475569;
+  }
+  .new-product .collection-wrap .swiper-buttons button:hover,
+  .new-product .collection-category .section-capture .swiper-buttons button:hover {
+    background: #ffffff;
+    color: #111827;
+    border-color: #d1d5db;
+  }
+  .new-product .collection-wrap .swiper-buttons {
+    left: -24px;
+    right: -24px;
+  }
+  .new-product .collection-slider.swiper {
+    padding: 0 18px;
+  }
+  .new-product .collection-slider .swiper-wrapper {
+    align-items: stretch;
+  }
+  .new-product .collection-slider .swiper-slide {
+    height: auto;
+  }
+  .new-product .collection-slider .swiper-slide .single-product-wrap {
+    height: 100%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+  @media (max-width: 1199px) {
+    .new-product .collection-wrap .swiper-buttons {
+      left: -8px;
+      right: -8px;
+    }
+  }
+  @media (max-width: 767px) {
+    .new-product .collection-slider.swiper {
+      padding: 0 10px;
+    }
+    .new-product .collection-wrap .swiper-buttons,
+    .new-product .collection-category .section-capture .swiper-buttons {
+      display: none;
+    }
+    .new-product .collection-category .section-capture .section-title h2 {
+      font-size: 30px;
     }
   }
 </style>

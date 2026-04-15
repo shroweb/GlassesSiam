@@ -1536,23 +1536,23 @@ account page css
 .single-product-wrap.product-card-eyewear {
   display: flex;
   flex-direction: column;
-  border-radius: 24px;
+  border-radius: 20px;
   background: #ffffff;
-  border: 1px solid #e6edf5;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e9eef5;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
   transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
 }
 .single-product-wrap.product-card-eyewear:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 22px 44px rgba(15, 23, 42, 0.10);
-  border-color: #d7e1ee;
+  transform: translateY(-3px);
+  box-shadow: 0 20px 36px rgba(15, 23, 42, 0.08);
+  border-color: #d9e2ee;
 }
 .single-product-wrap.product-card-eyewear .product-image {
   position: relative;
-  border-radius: 24px 24px 0 0;
-  background: linear-gradient(180deg, #f8fbff 0%, #f1f6fb 100%);
-  aspect-ratio: 16 / 10;
-  padding: 22px 18px 18px;
+  border-radius: 20px 20px 0 0;
+  background: #f7faff;
+  aspect-ratio: 16 / 11;
+  padding: 18px 18px 28px;
   overflow: hidden;
 }
 .single-product-wrap.product-card-eyewear .product-card-topline {
@@ -1570,34 +1570,34 @@ account page css
 .single-product-wrap.product-card-eyewear .product-card-badge {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 0 12px;
+  min-height: 28px;
+  padding: 0 10px;
   border-radius: 999px;
   background: rgba(255,255,255,0.88);
   border: 1px solid rgba(17,48,113,0.10);
   color: #113071;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
 }
 .single-product-wrap.product-card-eyewear .product-image a.pro-img img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center center;
-  transform: scale(1.05);
+  transform: scale(1.02);
   transition: transform .28s ease;
 }
 .single-product-wrap.product-card-eyewear:hover .product-image a.pro-img img {
-  transform: scale(1.12);
+  transform: scale(1.08);
 }
 .single-product-wrap.product-card-eyewear .product-card-hover-actions {
   position: absolute;
-  left: 18px;
-  right: 18px;
-  bottom: 18px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -1611,13 +1611,13 @@ account page css
   transform: translateY(0);
 }
 .single-product-wrap.product-card-eyewear .product-card-hover-actions__button {
-  min-height: 40px;
-  padding: 0 16px;
+  min-height: 38px;
+  padding: 0 15px;
   border-radius: 999px;
   background: rgba(255,255,255,0.92);
   border: 1px solid rgba(17,48,113,0.14);
   color: #113071;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-decoration: none;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
@@ -1630,15 +1630,15 @@ account page css
 .single-product-wrap.product-card-eyewear .product-card-colors-count {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  bottom: 10px;
   transform: translateX(-50%);
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: 999px;
   background: rgba(255,255,255,0.94);
   color: #475569;
   font-size: 12px;
   font-weight: 600;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
   transition: opacity .22s ease;
 }
 .single-product-wrap.product-card-eyewear:hover .product-card-colors-count {
@@ -1646,13 +1646,13 @@ account page css
 }
 .single-product-wrap.product-card-eyewear .product-content {
   margin-top: 0;
-  padding: 18px 18px 20px;
-  gap: 12px;
+  padding: 18px 18px 18px;
+  gap: 8px;
   flex: 1 1 auto;
 }
 .single-product-wrap.product-card-eyewear .title-price .title-type h6 a {
-  font-size: 18px;
-  line-height: 1.3;
+  font-size: 17px;
+  line-height: 1.28;
   color: #0f172a;
 }
 .single-product-wrap.product-card-eyewear .title-price .title-type h6 a:hover {
@@ -1662,7 +1662,7 @@ account page css
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 .single-product-wrap.product-card-eyewear .product-card-vendor {
   margin: 0;
@@ -1683,131 +1683,112 @@ account page css
   font-weight: 700;
 }
 .single-product-wrap.product-card-eyewear .title-price {
-  gap: 10px;
-}
-.single-product-wrap.product-card-eyewear .product-content p.product-description {
-  display: -webkit-box;
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #64748b;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: calc(1.6em * 2);
+  gap: 6px;
 }
 .single-product-wrap.product-card-eyewear .product-content .pro-var {
   display: block;
 }
-.single-product-wrap.product-card-eyewear .product-card-swatches {
-  margin-top: 10px;
-  min-height: 0;
-  padding: 10px 12px 12px;
-  border: 1px solid #e6edf5;
-  border-radius: 14px;
-  background: #f8fafc;
-}
-.single-product-wrap.product-card-eyewear .product-card-swatches__label {
-  display: block;
-  margin: 0 0 10px;
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #7a8798;
-}
-.single-product-wrap.product-card-eyewear .product-card-swatches .pr-gr-option {
-  display: flex;
-  align-items: center;
-  margin-top: 0;
-}
-.single-product-wrap.product-card-eyewear .product-card-swatches .option-block {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  width: 100%;
-}
-.single-product-wrap.product-card-eyewear .product-card-swatches .variant-option {
+.single-product-wrap.product-card-eyewear .product-card-rail-title {
   margin: 0;
 }
-.single-product-wrap.product-card-eyewear .product-card-swatches .op-lb.color,
-.single-product-wrap.product-card-eyewear .product-card-swatches .op-lb.color-img {
-  width: 26px;
-  height: 26px;
-  min-width: 26px;
-  border-radius: 999px;
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #cfd8e3;
-  overflow: hidden;
+.single-product-wrap.product-card-eyewear .product-card-rail-title a {
+  color: #111827;
+  font-size: 18px;
+  line-height: 1.25;
 }
-.single-product-wrap.product-card-eyewear .product-card-swatches .active-variant .op-lb.color,
-.single-product-wrap.product-card-eyewear .product-card-swatches .active-variant .op-lb.color-img {
-  box-shadow: 0 0 0 2px #113071, 0 6px 12px rgba(17, 48, 113, 0.16);
-}
-.single-product-wrap.product-card-eyewear .product-card-swatches .op-lb.color .color-swatch {
-  width: 100%;
-  height: 100%;
-  border-radius: 999px;
+.single-product-wrap.product-card-eyewear .price-box {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 8px;
 }
 .single-product-wrap.product-card-eyewear .price-box span.new-price {
   font-size: 18px;
   font-weight: 700;
+  color: #111827;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  margin-top: 14px;
+.single-product-wrap.product-card-eyewear .price-box span.old-price {
+  font-size: 13px;
+  color: #9ca3af;
+  text-decoration: line-through;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta__primary,
-.single-product-wrap.product-card-eyewear .product-card-cta__secondary {
-  min-height: 44px;
+.single-product-wrap.product-card-eyewear .price-box .product-price-note {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+.single-product-wrap.product-card-eyewear .product-delivery-chip {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  font-size: 13px;
+  align-self: flex-start;
+  min-height: 28px;
+  margin: 4px 0 0;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #ecfdf3;
+  color: #2f9a59;
+  font-size: 12px;
   font-weight: 700;
-  text-decoration: none;
-  transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta__primary {
-  background: #113071;
-  color: #ffffff;
-  border: 1px solid #113071;
+.single-product-wrap.product-card-eyewear.is-rail {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta__primary:hover {
-  color: #ffffff;
-  text-decoration: none;
-  transform: translateY(-1px);
-  background: #0d2458;
+.single-product-wrap.product-card-eyewear.is-rail:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta__secondary {
-  min-width: 108px;
-  background: #f8fafc;
-  color: #113071;
-  border: 1px solid #d9e2ef;
+.single-product-wrap.product-card-eyewear.is-rail .product-image {
+  border-radius: 0;
+  background: transparent;
+  aspect-ratio: 16 / 9;
+  padding: 0 12px 10px;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta__secondary:hover {
-  color: #113071;
-  text-decoration: none;
-  transform: translateY(-1px);
-  border-color: #113071;
+.single-product-wrap.product-card-eyewear.is-rail .product-card-topline,
+.single-product-wrap.product-card-eyewear.is-rail .product-card-hover-actions,
+.single-product-wrap.product-card-eyewear.is-rail .product-label,
+.single-product-wrap.product-card-eyewear.is-rail .product-card-badge,
+.single-product-wrap.product-card-eyewear.is-rail .product-card-meta,
+.single-product-wrap.product-card-eyewear.is-rail .product-delivery-chip {
+  display: none !important;
 }
-.single-product-wrap.product-card-eyewear .product-card-cta__secondary.is-disabled {
-  color: #94a3b8;
-  background: #f8fafc;
-  border-color: #e2e8f0;
-  cursor: not-allowed;
+.single-product-wrap.product-card-eyewear.is-rail .product-card-colors-count {
+  position: static;
+  transform: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  margin-top: 6px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+}
+.single-product-wrap.product-card-eyewear.is-rail:hover .product-card-colors-count {
+  opacity: 1;
+}
+.single-product-wrap.product-card-eyewear.is-rail .product-content {
+  padding: 6px 8px 0;
+  text-align: center;
+  align-items: center;
+}
+.single-product-wrap.product-card-eyewear.is-rail .price-box {
+  justify-content: center;
+}
+.single-product-wrap.product-card-eyewear.is-rail .price-box .new-price {
+  color: #eb5757;
+}
+.single-product-wrap.product-card-eyewear.is-rail .price-box .product-price-note {
+  font-size: 14px;
 }
 @media (max-width: 767px) {
   .single-product-wrap.product-card-eyewear {
     border-radius: 20px;
   }
   .single-product-wrap.product-card-eyewear .product-image {
-    padding: 20px 16px 16px;
+    padding: 16px 14px 24px;
     aspect-ratio: 4 / 3;
   }
   .single-product-wrap.product-card-eyewear .product-card-topline {
@@ -1828,17 +1809,10 @@ account page css
   }
   .single-product-wrap.product-card-eyewear .title-price {
     display: grid;
-    gap: 8px;
+    gap: 4px;
   }
   .single-product-wrap.product-card-eyewear .price-box span.new-price {
     font-size: 17px;
-  }
-  .single-product-wrap.product-card-eyewear .product-card-swatches {
-    margin-top: 8px;
-    padding: 10px;
-  }
-  .single-product-wrap.product-card-eyewear .product-card-cta {
-    grid-template-columns: 1fr;
   }
   .single-product-wrap.product-card-eyewear .product-card-hover-actions {
     position: static;
@@ -1849,6 +1823,12 @@ account page css
   }
   .single-product-wrap.product-card-eyewear .product-card-colors-count {
     bottom: 12px;
+  }
+  .single-product-wrap.product-card-eyewear.is-rail .product-image {
+    padding: 0 0 8px;
+  }
+  .single-product-wrap.product-card-eyewear.is-rail .product-card-rail-title a {
+    font-size: 16px;
   }
 }
 @media (max-width: 479px) {
@@ -1863,9 +1843,7 @@ account page css
     font-size: 15px;
     line-height: 1.35;
   }
-  .single-product-wrap.product-card-eyewear .product-card-hover-actions__button,
-  .single-product-wrap.product-card-eyewear .product-card-cta__primary,
-  .single-product-wrap.product-card-eyewear .product-card-cta__secondary {
+  .single-product-wrap.product-card-eyewear .product-card-hover-actions__button {
     width: 100%;
     min-width: 0;
   }
