@@ -58,9 +58,6 @@
       <a class="product-card-hover-actions__button" href="{{ product.url | within: collection }}#product-gallery">360 view</a>
       {% endif %}
     </div>
-    {% if color_count > 0 %}
-    <div class="product-card-colors-count">{{ color_count }} color{% if color_count != 1 %}s{% endif %}</div>
-    {% endif %}
     <div class="product-label">
       {%- render 'product-label' -%}
     </div>
@@ -98,12 +95,6 @@
         Prescription-ready frame with a clean front-facing fit.
       {% endif %}
     </p>
-    {% if settings.pro_gr_option_enable and color_count > 1 %}
-    <div class="pro-var product-card-swatches">
-      <p class="product-card-swatches__label">{{ color_count }} color{% if color_count != 1 %}s{% endif %}</p>
-      {% render 'product-grid-option', product: product, color_label: color_label, section: section %}
-    </div>
-    {% endif %}
     <div class="product-card-cta">
       <a class="product-card-cta__primary" href="{{ product.url | within: collection }}">View frame</a>
       {% if product.available %}
