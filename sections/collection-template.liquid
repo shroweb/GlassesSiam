@@ -57,7 +57,7 @@
               {%- paginate collection.products by products_limit -%}
               {%- if collection.products.size > 0 -%}
               <div class="product-grid-view">
-                <div class="shop-product-wrap grid-4 collection">
+                <div class="shop-product-wrap grid-{{ section.settings.desktop_products_per_row }} collection">
                   <div class="row">
                     <div class="col">
                       <ul class="product-view" id="product-grid" data-id="{{ section.id }}">
@@ -265,6 +265,22 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "desktop_products_per_row",
+      "label": "Desktop products per row",
+      "options": [
+        {
+          "value": "3",
+          "label": "3 products"
+        },
+        {
+          "value": "4",
+          "label": "4 products"
+        }
+      ],
+      "default": "4"
+    },
+    {
       "type": "header",
       "content": "Collection Sidebar"
     },
@@ -394,18 +410,29 @@ collection-template css
   opacity: 1;
 }
 .shop-product-wrap ul.product-view{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin: 20px 0 0;
+  padding: 0;
+}
+.shop-product-wrap.grid-4 ul.product-view{
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.shop-product-wrap.grid-3 ul.product-view{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.shop-product-wrap.grid-2 ul.product-view{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.shop-product-wrap.grid-1 ul.product-view{
+  grid-template-columns: minmax(0, 1fr);
+}
+.shop-product-wrap ul.product-view li.st-col-item{
+  width: auto;
+  margin: 0;
   display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  margin: 0 0 0 -30px;
-}
-.shop-product-wrap.grid-1 ul.product-view li.st-col-item{
-  width: calc(100% - 30px);
-  margin: 30px 0 0 30px;
-}
-.shop-product-wrap.grid-3 ul.product-view li.st-col-item{
-  width: calc(33.33% - 30px);
-  margin: 30px 0 0 30px;
+  min-width: 0;
 }
 .shop-product-wrap .single-product-wrap .product-content h6 a{
   -webkit-transition: all 0s ease-in-out 0s;
@@ -413,28 +440,27 @@ collection-template css
   transition: all 0s ease-in-out 0s;
 }
 @media(max-width: 1199px){
-  .shop-product-wrap.grid-3 ul.product-view li.st-col-item{
-    width: calc(50% - 30px);
+  .shop-product-wrap.grid-4 ul.product-view,
+  .shop-product-wrap.grid-3 ul.product-view{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 @media(max-width: 991px){
-  .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
-  .shop-product-wrap.grid-3 ul.product-view li.st-col-item{
-    width: calc(50% - 30px);
+  .shop-product-wrap.grid-4 ul.product-view,
+  .shop-product-wrap.grid-3 ul.product-view,
+  .shop-product-wrap.grid-2 ul.product-view{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media(max-width: 767px){
   .shop-product-wrap ul.product-view{
-    margin: 0 0 0 -15px;
+    gap: 18px;
+    margin-top: 18px;
   }
-  .shop-product-wrap.grid-1 ul.product-view li.st-col-item{
-    width: calc(50% - 15px);
-    margin: 30px 0 0 15px;
-  }
-  .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
-  .shop-product-wrap.grid-3 ul.product-view li.st-col-item{
-    width: calc(50% - 15px);
-    margin: 30px 0 0 15px;
+  .shop-product-wrap.grid-4 ul.product-view,
+  .shop-product-wrap.grid-3 ul.product-view,
+  .shop-product-wrap.grid-2 ul.product-view{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .shop-page.section-ptb {
     padding-top: 24px;
@@ -476,12 +502,11 @@ collection-template css
   }
 }
 @media(max-width: 479px){
-  .shop-product-wrap.grid-1 ul.product-view li.st-col-item{
-    width: calc(100% - 15px);
-  }
-  .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
-  .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
-    width: calc(100% - 15px);
+  .shop-product-wrap.grid-4 ul.product-view,
+  .shop-product-wrap.grid-3 ul.product-view,
+  .shop-product-wrap.grid-2 ul.product-view,
+  .shop-product-wrap.grid-1 ul.product-view{
+    grid-template-columns: minmax(0, 1fr);
   }
   .collection-heading-row h6.st-title {
     font-size: 24px;
@@ -489,13 +514,6 @@ collection-template css
   }
   .shop-page .shop-top-bar {
     padding: 12px 14px;
-  }
-}
-@media(max-width: 320px){
-  .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
-  .shop-product-wrap.grid-3 ul.product-view li.st-col-item{
-    width: calc(100% - 15px);
-    margin: 30px 0 0 15px;
   }
 }
 .collection-heading-row {
@@ -582,11 +600,26 @@ collection-template css
   padding-top: 4px;
 }
 .shop-page .shop-product-wrap ul.product-view {
-  margin-left: -20px;
+  gap: 24px;
 }
-.shop-page .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
-  width: calc(33.33% - 20px);
-  margin: 20px 0 0 20px;
+.shop-page .shop-product-wrap ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear {
+  border-radius: 22px;
+}
+.shop-page .shop-product-wrap.grid-4 ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .product-image {
+  aspect-ratio: 5 / 4;
+  padding: 14px 14px 38px;
+}
+.shop-page .shop-product-wrap.grid-4 ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .product-content {
+  padding: 16px 16px 18px;
+}
+.shop-page .shop-product-wrap.grid-4 ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .title-price .title-type h6 a {
+  font-size: 15px;
+}
+.shop-page .shop-product-wrap.grid-4 ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .price-box span.new-price {
+  font-size: 16px;
+}
+.shop-page .shop-product-wrap.grid-4 ul.product-view li.st-col-item .single-product-wrap.product-card-eyewear .price-box .product-price-note {
+  font-size: 12px;
 }
 @media(max-width: 991px){
   .shop-page .shop-top-bar {
@@ -606,23 +639,12 @@ collection-template css
     aspect-ratio: 4 / 3;
   }
   .shop-page .shop-product-wrap ul.product-view {
-    margin-left: -15px;
-  }
-  .shop-page .shop-product-wrap.grid-1 ul.product-view li.st-col-item,
-  .shop-page .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
-  .shop-page .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
-    width: calc(50% - 15px);
-    margin: 18px 0 0 15px;
+    gap: 18px;
   }
 }
 @media(max-width: 479px){
   .shop-page .shop-top-bar {
     gap: 10px;
-  }
-  .shop-page .shop-product-wrap.grid-1 ul.product-view li.st-col-item,
-  .shop-page .shop-product-wrap.grid-2 ul.product-view li.st-col-item,
-  .shop-page .shop-product-wrap.grid-3 ul.product-view li.st-col-item {
-    width: calc(100% - 15px);
   }
 }
 </style>

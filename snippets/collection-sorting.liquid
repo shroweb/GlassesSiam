@@ -9,7 +9,7 @@
   {% if section.settings.tab_bar_enable %}
   <div class="product-view-mode">
     <!-- shop-item-filter-list start -->
-    <a class="list-change-view grid-three {% if template == 'collection' or template == 'collection.right' or template == 'collection.without' %}active{% endif %}" data-grid-view="4">
+    <a class="list-change-view grid-three {% if template == 'collection' or template == 'collection.right' or template == 'collection.without' %}active{% endif %}" data-grid-view="{{ section.settings.desktop_products_per_row | default: 4 }}">
       <i class="feather-grid"></i>
     </a>
     <a class="list-change-view list-one {% if template == 'collection.list' or template == 'collection.list-right' or template == 'collection.list-without' %}active{% endif %}" data-grid-view="1">
