@@ -400,7 +400,7 @@ Integrates with Shopify's native filtering
 
   @media (max-width: 768px) {
     .filter-bar-section .container {
-      padding: 0 14px !important;
+      padding: 0 !important;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -417,10 +417,12 @@ Integrates with Shopify's native filtering
       scrollbar-width: none;
       justify-content: flex-start !important;
       width: max-content;
-      min-width: 100%;
-      gap: 8px !important;
-      padding: 0 2px 8px;
+      min-width: 0;
+      gap: 10px !important;
+      padding: 0 16px 10px;
       scroll-snap-type: x proximity;
+      scroll-padding-left: 16px;
+      scroll-padding-right: 16px;
     }
 
     .filter-buttons::-webkit-scrollbar {
@@ -429,14 +431,27 @@ Integrates with Shopify's native filtering
 
     .filter-btn {
       flex: 0 0 auto;
-      min-height: 48px;
-      padding: 11px 18px !important;
+      min-height: 44px;
+      padding: 10px 16px !important;
       border-width: 1px !important;
       border-radius: 999px !important;
-      font-size: 14px !important;
+      font-size: 13px !important;
+      gap: 8px !important;
       line-height: 1 !important;
       box-shadow: none !important;
       scroll-snap-align: start;
+    }
+
+    .sort-btn {
+      padding-right: 14px !important;
+    }
+
+    .sort-btn .sort-value {
+      display: inline-block;
+      max-width: 118px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .filter-btn:hover {
@@ -450,9 +465,10 @@ Integrates with Shopify's native filtering
     }
 
     .dropdown-content {
-      right: 0;
-      left: auto;
-      min-width: 280px;
+      left: 16px;
+      right: 16px;
+      min-width: auto;
+      width: auto;
     }
   }
 </style>

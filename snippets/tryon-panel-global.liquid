@@ -253,33 +253,50 @@
   text-align: center;
 }
 @media (max-width: 768px) {
-  .tryon-panel:not([style]) {
+  .tryon-panel {
     top: auto !important;
-    right: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
+    right: 12px !important;
+    left: 12px !important;
+    bottom: 12px !important;
+    width: auto !important;
     height: auto !important;
-    max-height: 72vh !important;
-    transform: translateY(100%) !important;
+    max-height: min(68vh, 560px) !important;
+    transform: translateY(calc(100% + 18px)) !important;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    pointer-events: none !important;
+    z-index: 2000000 !important;
   }
-  .tryon-panel:not([style]).is-visible {
+  .tryon-panel.is-visible {
     transform: translateY(0) !important;
+    pointer-events: auto !important;
   }
   .tryon-panel__inner {
     border-radius: 24px 24px 0 0;
+    height: auto;
   }
   .tryon-panel__thumb {
-    height: 170px;
+    height: 132px;
+    padding: 16px;
   }
   .tryon-panel__info {
-    padding: 14px 14px 16px;
+    padding: 14px 14px 18px;
+  }
+  .tryon-panel__vendor,
+  .tryon-panel__eyebrow {
+    font-size: 10px;
   }
   .tryon-panel__title {
-    font-size: 16px;
+    font-size: 15px;
   }
   .tryon-panel__price-new {
-    font-size: 20px;
+    font-size: 18px;
+  }
+  .tryon-panel__meta {
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .tryon-panel__meta-item {
+    font-size: 12px;
   }
   .tryon-panel__actions {
     gap: 8px;
@@ -288,9 +305,12 @@
   .tryon-panel__atc,
   .tryon-panel__see-frame,
   .tryon-panel__secondary {
-    min-height: 44px;
+    min-height: 42px;
     font-size: 13px;
     padding: 0 14px;
+  }
+  .tryon-panel__text-link {
+    font-size: 12px;
   }
 }
 </style>
@@ -685,8 +705,10 @@
 
     if (window.innerWidth <= 768) {
       resetPosition();
-      panel.classList.add('is-visible');
-      panel.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(function() {
+        panel.classList.add('is-visible');
+        panel.setAttribute('aria-hidden', 'false');
+      });
       return;
     }
 
@@ -710,7 +732,9 @@
   function hidePanel() {
     panelVisible = false;
     panel.setAttribute('aria-hidden', 'true');
-    if (panel.style.cssText) {
+    if (window.innerWidth <= 768) {
+      panel.classList.remove('is-visible');
+    } else if (panel.style.cssText) {
       panel.style.transform = 'translateX(100%)';
     } else {
       panel.classList.remove('is-visible');
