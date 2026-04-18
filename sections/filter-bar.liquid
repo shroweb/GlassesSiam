@@ -466,9 +466,25 @@
     }
 
     @media (max-width: 991px) {
+      .collection-filter-rail {
+        padding: 0 0 14px;
+      }
+
+      .collection-filter-rail__heading {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .collection-filter-rail__heading h1 {
+        font-size: 28px;
+      }
+
       .collection-filter-rail__shell {
         align-items: stretch;
         flex-direction: column;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 18px;
       }
 
       .collection-filter-rail__left,
@@ -480,6 +496,7 @@
         flex-wrap: nowrap;
         overflow-x: auto;
         padding-bottom: 4px;
+        gap: 10px;
       }
 
       .collection-filter-rail__left::-webkit-scrollbar {
@@ -490,6 +507,11 @@
         justify-content: flex-start;
       }
 
+      .collection-filter-rail__sort {
+        width: 100%;
+        justify-content: space-between;
+      }
+
       .collection-filter-rail__panel {
         left: 0;
       }
@@ -497,18 +519,18 @@
 
     @media (max-width: 767px) {
       .collection-filter-rail {
-        padding: 6px 0 14px;
+        padding: 0 0 12px;
       }
 
       .collection-filter-rail__heading {
         align-items: flex-start;
         flex-direction: column;
-        gap: 6px;
+        gap: 4px;
         margin-bottom: 10px;
       }
 
       .collection-filter-rail__heading h1 {
-        font-size: 24px;
+        font-size: 22px;
       }
 
       .collection-filter-rail__heading p {
@@ -516,19 +538,46 @@
       }
 
       .collection-filter-rail__shell {
-        padding: 14px;
-        border-radius: 18px;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 16px;
       }
 
       .collection-filter-rail__button,
       .collection-filter-rail__sort {
-        min-height: 44px;
-        padding: 0 14px;
-        font-size: 14px;
+        min-height: 42px;
+        padding: 0 13px;
+        font-size: 13px;
       }
 
       .collection-filter-rail__panel {
         min-width: 220px;
+      }
+
+      .collection-filter-rail__left {
+        gap: 8px;
+        margin: 0 -2px;
+        padding: 0 2px 4px;
+      }
+
+      .collection-filter-rail__sort span {
+        font-size: 11px;
+      }
+
+      .collection-filter-rail__sort select {
+        min-width: 0;
+        max-width: 62vw;
+        font-size: 13px;
+        text-overflow: ellipsis;
+      }
+
+      .collection-filter-rail__panel {
+        min-width: min(260px, calc(100vw - 40px));
+        max-width: calc(100vw - 32px);
+      }
+
+      .collection-filter-rail__price-fields {
+        grid-template-columns: minmax(0, 1fr);
       }
     }
   {% endstyle %}
