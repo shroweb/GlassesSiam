@@ -63,35 +63,8 @@
       "settings": {}
     },
     "collection_filter_pills_xK7m2Q": {
-      "type": "filter-pills",
-      "settings": {
-        "background_color": "#ffffff",
-        "sticky_position": "relative",
-        "box_shadow": "0 2px 4px rgba(0,0,0,0.05)",
-        "padding_top": 20,
-        "padding_bottom": 20,
-        "show_price": true,
-        "show_brand": true,
-        "show_product_type": false,
-        "show_availability": true,
-        "show_sort": true,
-        "show_search": true,
-        "button_alignment": "center",
-        "button_bg": "#b6493e",
-        "button_color": "#ffffff",
-        "button_border": "#b6493e",
-        "button_hover_bg": "#9f3c33",
-        "button_hover_border": "#9f3c33",
-        "button_active_bg": "#8f342c",
-        "button_active_border": "#8f342c",
-        "button_active_color": "#ffffff",
-        "button_radius": 50,
-        "button_padding_v": 14,
-        "button_padding_h": 30,
-        "button_text_size": 16,
-        "button_gap": 10,
-        "dropdown_border": "#e0e0e0"
-      }
+      "type": "filter-bar",
+      "settings": {}
     },
     "collection-template": {
       "type": "collection-template",
@@ -111,8 +84,9 @@
         "collection_desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
         "collection_desc_enable": false,
         "tab_bar_enable": true,
-        "short_by_enable": true,
-        "sidebar_handle": "left_sidebar_handle",
+        "short_by_enable": false,
+        "desktop_products_per_row": "4",
+        "sidebar_handle": "without_sidebar",
         "products_limit_handle": "12"
       }
     }

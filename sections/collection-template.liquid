@@ -3,7 +3,7 @@
     <div class="row{% if section.settings.sidebar_handle == 'left_sidebar_handle' %} position-left{% elsif section.settings.sidebar_handle == 'right_sidebar_handle' %} position-right{% endif %}">
       <div class="{% if section.settings.sidebar_handle == 'without_sidebar' %}col{% else %}col-xl-9 col-lg-8 col-md-12 col-12 pro-grli-wrap{% endif %}">
         <div class="collection-img-wrap">
-          <div class="collection-heading-row">
+          <div class="collection-heading-row{% if section.settings.sidebar_handle == 'without_sidebar' %} is-hidden-when-filter-rail{% endif %}">
             <h6 class="st-title">{{ collection.title }}</h6>
             <span class="collection-count-pill">{{ collection.all_products_count }} products</span>
           </div>
@@ -361,6 +361,12 @@ collection-template css
   font-weight: var(--font-custom-weight-section-header);
   line-height: 1;
 }
+.shop-page .row .col > .collection-img-wrap:first-child .collection-heading-row {
+  margin-bottom: 0;
+}
+.shop-page .row .col > .collection-img-wrap:first-child .collection-heading-row.is-hidden-when-filter-rail {
+  display: none;
+}
 /* collection-info css */
 .collection-img-wrap .collection-info {
   margin-top: 30px;
@@ -486,9 +492,9 @@ collection-template css
     border-radius: 16px;
     padding: 16px;
   }
-  .collection-heading-row {
-    align-items: flex-start;
-  }
+.collection-heading-row {
+  align-items: flex-start;
+}
   .collection-count-pill {
     min-height: 30px;
     padding: 0 12px;
