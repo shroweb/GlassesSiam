@@ -1,5 +1,19 @@
 {% liquid
   assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign has_brand_filter = false
+  assign has_type_filter = false
+  assign vendor_values = collection.products | map: 'vendor' | uniq
+  assign type_values = collection.products | map: 'type' | uniq
+
+  for filter in collection.filters
+    assign filter_label_downcase = filter.label | downcase
+    if filter_label_downcase contains 'brand' or filter_label_downcase contains 'vendor'
+      assign has_brand_filter = true
+    endif
+    if filter_label_downcase contains 'type' or filter_label_downcase contains 'category'
+      assign has_type_filter = true
+    endif
+  endfor
 %}
 
 {% if collection %}
@@ -11,6 +25,92 @@
       </div>
       <div class="collection-filter-rail__shell">
         <div class="collection-filter-rail__left">
+          {% if has_brand_filter == false and vendor_values.size > 1 %}
+            <details class="collection-filter-rail__item">
+              <summary class="collection-filter-rail__button">
+                <span>Brand</span>
+                <i class="feather-chevron-down"></i>
+              </summary>
+              <div class="collection-filter-rail__panel">
+                <ul class="collection-filter-rail__options" role="list">
+                  {% for vendor in vendor_values %}
+                    {% assign vendor_name = vendor | strip %}
+                    {% if vendor_name != blank %}
+                      <li>
+                        <form action="{{ collection.url }}" method="get" class="collection-filter-rail__quick-form">
+                          <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                          {% for active_filter in collection.filters %}
+                            {% if active_filter.type == 'list' %}
+                              {% for active_value in active_filter.active_values %}
+                                {% unless active_value.param_name contains 'vendor' %}
+                                  <input type="hidden" name="{{ active_value.param_name }}" value="{{ active_value.value | escape }}">
+                                {% endunless %}
+                              {% endfor %}
+                            {% elsif active_filter.type == 'price_range' %}
+                              {% if active_filter.min_value.value %}
+                                <input type="hidden" name="{{ active_filter.min_value.param_name }}" value="{{ active_filter.min_value.value | money_without_currency | replace: ',', '' }}">
+                              {% endif %}
+                              {% if active_filter.max_value.value %}
+                                <input type="hidden" name="{{ active_filter.max_value.param_name }}" value="{{ active_filter.max_value.value | money_without_currency | replace: ',', '' }}">
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                          <button type="submit" class="collection-filter-rail__option collection-filter-rail__option--button">
+                            <span>{{ vendor_name }}</span>
+                          </button>
+                          <input type="hidden" name="filter.p.vendor" value="{{ vendor_name | escape }}">
+                        </form>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </details>
+          {% endif %}
+
+          {% if has_type_filter == false and type_values.size > 1 %}
+            <details class="collection-filter-rail__item">
+              <summary class="collection-filter-rail__button">
+                <span>Category</span>
+                <i class="feather-chevron-down"></i>
+              </summary>
+              <div class="collection-filter-rail__panel">
+                <ul class="collection-filter-rail__options" role="list">
+                  {% for product_type in type_values %}
+                    {% assign type_name = product_type | strip %}
+                    {% if type_name != blank %}
+                      <li>
+                        <form action="{{ collection.url }}" method="get" class="collection-filter-rail__quick-form">
+                          <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                          {% for active_filter in collection.filters %}
+                            {% if active_filter.type == 'list' %}
+                              {% for active_value in active_filter.active_values %}
+                                {% unless active_value.param_name contains 'product_type' %}
+                                  <input type="hidden" name="{{ active_value.param_name }}" value="{{ active_value.value | escape }}">
+                                {% endunless %}
+                              {% endfor %}
+                            {% elsif active_filter.type == 'price_range' %}
+                              {% if active_filter.min_value.value %}
+                                <input type="hidden" name="{{ active_filter.min_value.param_name }}" value="{{ active_filter.min_value.value | money_without_currency | replace: ',', '' }}">
+                              {% endif %}
+                              {% if active_filter.max_value.value %}
+                                <input type="hidden" name="{{ active_filter.max_value.param_name }}" value="{{ active_filter.max_value.value | money_without_currency | replace: ',', '' }}">
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                          <button type="submit" class="collection-filter-rail__option collection-filter-rail__option--button">
+                            <span>{{ type_name }}</span>
+                          </button>
+                          <input type="hidden" name="filter.p.product_type" value="{{ type_name | escape }}">
+                        </form>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </details>
+          {% endif %}
+
           {% for filter in collection.filters %}
             {% if filter.type == 'list' and filter.values.size > 0 %}
               <details class="collection-filter-rail__item">
@@ -141,14 +241,14 @@
 
   {% style %}
     .collection-filter-rail {
-      padding: 4px 0 18px;
+      padding: 0 0 16px;
     }
 
     .collection-filter-rail__heading {
       display: flex;
       align-items: baseline;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .collection-filter-rail__heading h1 {
@@ -171,10 +271,10 @@
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      padding: 14px 16px;
+      padding: 16px 18px;
       background: #f3f5f8;
       border: 1px solid rgba(28, 51, 103, 0.08);
-      border-radius: 18px;
+      border-radius: 22px;
     }
 
     .collection-filter-rail__left {
@@ -211,7 +311,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      min-height: 46px;
+      min-height: 48px;
       padding: 0 16px;
       border-radius: 14px;
       border: 1px solid rgba(28, 51, 103, 0.10);
@@ -276,6 +376,10 @@
       overflow-y: auto;
     }
 
+    .collection-filter-rail__quick-form {
+      margin: 0;
+    }
+
     .collection-filter-rail__option {
       display: flex;
       align-items: center;
@@ -304,6 +408,13 @@
       color: #7f8aa3;
       font-size: 12px;
       font-weight: 600;
+    }
+
+    .collection-filter-rail__option--button {
+      width: 100%;
+      border: 0;
+      text-align: left;
+      cursor: pointer;
     }
 
     .collection-filter-rail__panel--price {
@@ -405,8 +516,8 @@
       }
 
       .collection-filter-rail__shell {
-        padding: 12px;
-        border-radius: 16px;
+        padding: 14px;
+        border-radius: 18px;
       }
 
       .collection-filter-rail__button,
