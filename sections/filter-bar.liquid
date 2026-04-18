@@ -203,6 +203,107 @@
         });
       }
 
+      var filterRail = document.querySelector('.collection-filter-rail');
+      var productGrid = document.getElementById('product-grid');
+      var filterLeft = document.querySelector('.collection-filter-rail__left');
+      var cards = productGrid ? Array.prototype.slice.call(productGrid.querySelectorAll('.single-product-wrap')) : [];
+
+      function normaliseValues(raw) {
+        if (!raw) return [];
+        return raw
+          .split('|')
+          .map(function(value) { return value.trim(); })
+          .filter(function(value) { return value.length > 0; });
+      }
+
+      if (filterRail && filterLeft && cards.length) {
+        var existingLabels = Array.prototype.slice.call(filterLeft.querySelectorAll('.collection-filter-rail__button span'))
+          .map(function(node) { return node.textContent.trim().toLowerCase(); });
+        var selectedValues = {};
+        var dynamicConfigs = [
+          { key: 'material', label: 'Material' },
+          { key: 'shape', label: 'Shape' },
+          { key: 'gender', label: 'Gender' },
+          { key: 'color', label: 'Color' },
+          { key: 'size', label: 'Size' },
+          { key: 'frame-type', label: 'Frame Type' }
+        ];
+
+        function applyClientFilters() {
+          cards.forEach(function(card) {
+            var shouldShow = dynamicConfigs.every(function(config) {
+              var selected = selectedValues[config.key];
+              if (!selected) return true;
+              var cardValues = normaliseValues(card.dataset['filter' + config.key.replace(/(^|-)([a-z])/g, function(_, __, letter) { return letter.toUpperCase(); })]);
+              return cardValues.indexOf(selected) !== -1;
+            });
+            var listItem = card.closest('li');
+            if (listItem) {
+              listItem.style.display = shouldShow ? '' : 'none';
+            }
+          });
+        }
+
+        dynamicConfigs.forEach(function(config) {
+          if (existingLabels.indexOf(config.label.toLowerCase()) !== -1) return;
+
+          var unique = [];
+          cards.forEach(function(card) {
+            var datasetKey = 'filter' + config.key.replace(/(^|-)([a-z])/g, function(_, __, letter) { return letter.toUpperCase(); });
+            normaliseValues(card.dataset[datasetKey]).forEach(function(value) {
+              if (unique.indexOf(value) === -1) unique.push(value);
+            });
+          });
+
+          if (unique.length < 2) return;
+
+          var details = document.createElement('details');
+          details.className = 'collection-filter-rail__item collection-filter-rail__item--dynamic';
+          details.innerHTML =
+            '<summary class="collection-filter-rail__button"><span>' + config.label + '</span><i class="feather-chevron-down"></i></summary>' +
+            '<div class="collection-filter-rail__panel"><ul class="collection-filter-rail__options" role="list"></ul></div>';
+
+          var optionsList = details.querySelector('.collection-filter-rail__options');
+
+          details.addEventListener('toggle', function() {
+            if (!details.open) return;
+            document.querySelectorAll('.collection-filter-rail details').forEach(function(other) {
+              if (other !== details) other.open = false;
+            });
+          });
+
+          var allItem = document.createElement('li');
+          allItem.innerHTML = '<button type="button" class="collection-filter-rail__option collection-filter-rail__option--button is-active"><span>All</span></button>';
+          optionsList.appendChild(allItem);
+
+          unique.sort().forEach(function(value) {
+            var item = document.createElement('li');
+            item.innerHTML = '<button type="button" class="collection-filter-rail__option collection-filter-rail__option--button"><span>' + value + '</span></button>';
+            optionsList.appendChild(item);
+          });
+
+          optionsList.addEventListener('click', function(event) {
+            var button = event.target.closest('.collection-filter-rail__option--button');
+            if (!button) return;
+            event.preventDefault();
+            optionsList.querySelectorAll('.collection-filter-rail__option--button').forEach(function(optionButton) {
+              optionButton.classList.remove('is-active');
+            });
+            button.classList.add('is-active');
+            var value = button.textContent.trim();
+            if (value === 'All') {
+              delete selectedValues[config.key];
+            } else {
+              selectedValues[config.key] = value;
+            }
+            applyClientFilters();
+            details.open = false;
+          });
+
+          filterLeft.appendChild(details);
+        });
+      }
+
       document.querySelectorAll('.collection-filter-rail details').forEach(function(detail) {
         detail.addEventListener('toggle', function() {
           if (!detail.open) return;

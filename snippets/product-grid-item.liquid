@@ -34,6 +34,23 @@
   if product_text contains 'sunglass' or product_text contains '/s' or product_text contains 'sun '
     assign eyewear_category = 'Sunglasses'
   endif
+
+  assign material_value = product.metafields.custom.material.value | default: product.metafields.custom.material
+  assign shape_value = product.metafields.custom.shape.value | default: product.metafields.custom.shape
+  assign gender_value = product.metafields.custom.gender.value | default: product.metafields.custom.gender
+  assign frame_type_value = product.metafields.custom.frame_type.value | default: product.metafields.custom.frame_type
+  assign size_value = product.metafields.custom.size.value | default: product.metafields.custom.size
+  assign color_values = ''
+  for option in product.options_with_values
+    assign option_name_downcase = option.name | downcase
+    if color_label contains option_name_downcase
+      assign color_values = option.values | join: '|'
+      break
+    endif
+  endfor
+  if color_values == blank
+    assign color_values = product.metafields.custom.color.value | default: product.metafields.custom.color
+  endif
 -%}
 <div
   class="single-product-wrap product-card-eyewear{% unless product.available %} stock-out{% endunless %}{% if card_context == 'rail' %} is-rail{% endif %}"
@@ -41,6 +58,15 @@
   data-product-url="{{ product.url }}"
   data-product-title="{{ product.title | escape }}"
   data-product-vendor="{{ product.vendor | escape }}"
+  data-filter-vendor="{{ product.vendor | escape }}"
+  data-filter-category="{{ eyewear_category | escape }}"
+  data-filter-availability="{% if product.available %}In stock{% else %}Out of stock{% endif %}"
+  data-filter-material="{{ material_value | escape }}"
+  data-filter-shape="{{ shape_value | escape }}"
+  data-filter-gender="{{ gender_value | escape }}"
+  data-filter-color="{{ color_values | escape }}"
+  data-filter-size="{{ size_value | escape }}"
+  data-filter-frame-type="{{ frame_type_value | escape }}"
 >
   <div class="product-image{% unless product.available %} stock-out{% endunless %}">
     <div class="product-card-topline">
