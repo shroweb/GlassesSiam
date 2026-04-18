@@ -47,7 +47,7 @@
           </div>
           {%- endif -%}
         </div>
-        {%- if section.settings.tab_bar_enable or section.settings.short_by_enable -%}
+        {%- if section.settings.sidebar_handle != 'without_sidebar' and (section.settings.tab_bar_enable or section.settings.short_by_enable) -%}
         {%- render 'collection-sorting' -%}
         {%- endif -%}
         <div class="get-data-products">

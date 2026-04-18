@@ -83,7 +83,7 @@
         "collection_image_enable": false,
         "collection_desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
         "collection_desc_enable": false,
-        "tab_bar_enable": true,
+        "tab_bar_enable": false,
         "short_by_enable": false,
         "desktop_products_per_row": "4",
         "sidebar_handle": "without_sidebar",
