@@ -16,6 +16,27 @@
   endfor
 %}
 
+{% capture rail_base_query %}
+  sort_by={{ sort_by | url_encode }}
+  {% for active_filter in collection.filters %}
+    {% if active_filter.type == 'list' %}
+      {% for active_value in active_filter.active_values %}
+        {% unless active_value.param_name contains 'vendor' or active_value.param_name contains 'product_type' %}
+          &{{ active_value.param_name | escape }}={{ active_value.value | url_encode }}
+        {% endunless %}
+      {% endfor %}
+    {% elsif active_filter.type == 'price_range' %}
+      {% if active_filter.min_value.value %}
+        &{{ active_filter.min_value.param_name | escape }}={{ active_filter.min_value.value | money_without_currency | replace: ',', '' | url_encode }}
+      {% endif %}
+      {% if active_filter.max_value.value %}
+        &{{ active_filter.max_value.param_name | escape }}={{ active_filter.max_value.value | money_without_currency | replace: ',', '' | url_encode }}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+{% assign rail_base_query = rail_base_query | strip | strip_newlines | replace: ' ', '' %}
+
 {% if collection %}
   <section class="collection-filter-rail">
     <div class="container">
@@ -36,30 +57,11 @@
                   {% for vendor in vendor_values %}
                     {% assign vendor_name = vendor | strip %}
                     {% if vendor_name != blank %}
+                      {% capture vendor_url %}{{ collection.url }}?{{ rail_base_query }}&filter.p.vendor={{ vendor_name | url_encode }}{% endcapture %}
                       <li>
-                        <form action="{{ collection.url }}" method="get" class="collection-filter-rail__quick-form">
-                          <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                          {% for active_filter in collection.filters %}
-                            {% if active_filter.type == 'list' %}
-                              {% for active_value in active_filter.active_values %}
-                                {% unless active_value.param_name contains 'vendor' %}
-                                  <input type="hidden" name="{{ active_value.param_name }}" value="{{ active_value.value | escape }}">
-                                {% endunless %}
-                              {% endfor %}
-                            {% elsif active_filter.type == 'price_range' %}
-                              {% if active_filter.min_value.value %}
-                                <input type="hidden" name="{{ active_filter.min_value.param_name }}" value="{{ active_filter.min_value.value | money_without_currency | replace: ',', '' }}">
-                              {% endif %}
-                              {% if active_filter.max_value.value %}
-                                <input type="hidden" name="{{ active_filter.max_value.param_name }}" value="{{ active_filter.max_value.value | money_without_currency | replace: ',', '' }}">
-                              {% endif %}
-                            {% endif %}
-                          {% endfor %}
-                          <button type="submit" class="collection-filter-rail__option collection-filter-rail__option--button">
+                        <a href="{{ vendor_url }}" class="collection-filter-rail__option collection-filter-rail__option--button">
                             <span>{{ vendor_name }}</span>
-                          </button>
-                          <input type="hidden" name="filter.p.vendor" value="{{ vendor_name | escape }}">
-                        </form>
+                        </a>
                       </li>
                     {% endif %}
                   {% endfor %}
@@ -79,30 +81,11 @@
                   {% for product_type in type_values %}
                     {% assign type_name = product_type | strip %}
                     {% if type_name != blank %}
+                      {% capture type_url %}{{ collection.url }}?{{ rail_base_query }}&filter.p.product_type={{ type_name | url_encode }}{% endcapture %}
                       <li>
-                        <form action="{{ collection.url }}" method="get" class="collection-filter-rail__quick-form">
-                          <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                          {% for active_filter in collection.filters %}
-                            {% if active_filter.type == 'list' %}
-                              {% for active_value in active_filter.active_values %}
-                                {% unless active_value.param_name contains 'product_type' %}
-                                  <input type="hidden" name="{{ active_value.param_name }}" value="{{ active_value.value | escape }}">
-                                {% endunless %}
-                              {% endfor %}
-                            {% elsif active_filter.type == 'price_range' %}
-                              {% if active_filter.min_value.value %}
-                                <input type="hidden" name="{{ active_filter.min_value.param_name }}" value="{{ active_filter.min_value.value | money_without_currency | replace: ',', '' }}">
-                              {% endif %}
-                              {% if active_filter.max_value.value %}
-                                <input type="hidden" name="{{ active_filter.max_value.param_name }}" value="{{ active_filter.max_value.value | money_without_currency | replace: ',', '' }}">
-                              {% endif %}
-                            {% endif %}
-                          {% endfor %}
-                          <button type="submit" class="collection-filter-rail__option collection-filter-rail__option--button">
+                        <a href="{{ type_url }}" class="collection-filter-rail__option collection-filter-rail__option--button">
                             <span>{{ type_name }}</span>
-                          </button>
-                          <input type="hidden" name="filter.p.product_type" value="{{ type_name | escape }}">
-                        </form>
+                        </a>
                       </li>
                     {% endif %}
                   {% endfor %}
@@ -374,10 +357,6 @@
       gap: 8px;
       max-height: 320px;
       overflow-y: auto;
-    }
-
-    .collection-filter-rail__quick-form {
-      margin: 0;
     }
 
     .collection-filter-rail__option {
