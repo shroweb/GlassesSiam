@@ -47,21 +47,25 @@
       <div class="collection-filter-rail__shell">
         <div class="collection-filter-rail__left">
           {% if has_brand_filter == false and vendor_values.size > 1 %}
-            <details class="collection-filter-rail__item">
+            <details class="collection-filter-rail__item collection-filter-rail__item--client" data-filter-key="vendor">
               <summary class="collection-filter-rail__button">
                 <span>Brand</span>
                 <i class="feather-chevron-down"></i>
               </summary>
               <div class="collection-filter-rail__panel">
                 <ul class="collection-filter-rail__options" role="list">
+                  <li>
+                    <button type="button" class="collection-filter-rail__option collection-filter-rail__option--button is-active">
+                      <span>All</span>
+                    </button>
+                  </li>
                   {% for vendor in vendor_values %}
                     {% assign vendor_name = vendor | strip %}
                     {% if vendor_name != blank %}
-                      {% capture vendor_url %}{{ collection.url }}?{{ rail_base_query }}&filter.p.vendor={{ vendor_name | url_encode }}{% endcapture %}
                       <li>
-                        <a href="{{ vendor_url }}" class="collection-filter-rail__option collection-filter-rail__option--button">
+                        <button type="button" class="collection-filter-rail__option collection-filter-rail__option--button">
                             <span>{{ vendor_name }}</span>
-                        </a>
+                        </button>
                       </li>
                     {% endif %}
                   {% endfor %}
@@ -71,21 +75,25 @@
           {% endif %}
 
           {% if has_type_filter == false and type_values.size > 1 %}
-            <details class="collection-filter-rail__item">
+            <details class="collection-filter-rail__item collection-filter-rail__item--client" data-filter-key="category">
               <summary class="collection-filter-rail__button">
                 <span>Category</span>
                 <i class="feather-chevron-down"></i>
               </summary>
               <div class="collection-filter-rail__panel">
                 <ul class="collection-filter-rail__options" role="list">
+                  <li>
+                    <button type="button" class="collection-filter-rail__option collection-filter-rail__option--button is-active">
+                      <span>All</span>
+                    </button>
+                  </li>
                   {% for product_type in type_values %}
                     {% assign type_name = product_type | strip %}
                     {% if type_name != blank %}
-                      {% capture type_url %}{{ collection.url }}?{{ rail_base_query }}&filter.p.product_type={{ type_name | url_encode }}{% endcapture %}
                       <li>
-                        <a href="{{ type_url }}" class="collection-filter-rail__option collection-filter-rail__option--button">
+                        <button type="button" class="collection-filter-rail__option collection-filter-rail__option--button">
                             <span>{{ type_name }}</span>
-                        </a>
+                        </button>
                       </li>
                     {% endif %}
                   {% endfor %}
@@ -221,6 +229,8 @@
           .map(function(node) { return node.textContent.trim().toLowerCase(); });
         var selectedValues = {};
         var dynamicConfigs = [
+          { key: 'vendor', label: 'Brand' },
+          { key: 'category', label: 'Category' },
           { key: 'material', label: 'Material' },
           { key: 'shape', label: 'Shape' },
           { key: 'gender', label: 'Gender' },
@@ -251,6 +261,30 @@
             }
           });
         }
+
+        filterLeft.querySelectorAll('.collection-filter-rail__item--client').forEach(function(details) {
+          var filterKey = details.dataset.filterKey;
+          var optionsList = details.querySelector('.collection-filter-rail__options');
+          if (!filterKey || !optionsList) return;
+
+          optionsList.addEventListener('click', function(event) {
+            var button = event.target.closest('.collection-filter-rail__option--button');
+            if (!button) return;
+            event.preventDefault();
+            optionsList.querySelectorAll('.collection-filter-rail__option--button').forEach(function(optionButton) {
+              optionButton.classList.remove('is-active');
+            });
+            button.classList.add('is-active');
+            var value = button.textContent.trim();
+            if (value === 'All') {
+              delete selectedValues[filterKey];
+            } else {
+              selectedValues[filterKey] = value;
+            }
+            applyClientFilters();
+            details.open = false;
+          });
+        });
 
         dynamicConfigs.forEach(function(config) {
           if (existingLabels.indexOf(config.label.toLowerCase()) !== -1) return;
