@@ -40,6 +40,14 @@
   assign gender_value = product.metafields.custom.gender.value | default: product.metafields.custom.gender
   assign frame_type_value = product.metafields.custom.frame_type.value | default: product.metafields.custom.frame_type
   assign size_value = product.metafields.custom.size.value | default: product.metafields.custom.size
+  assign lens_feature_value = product.metafields.custom.lens_feature.value | default: product.metafields.custom.lens_feature
+  assign progressive_bifocal_value = product.metafields.custom.progressive_bifocal.value | default: product.metafields.custom.progressive_bifocal
+  assign spring_hinges_value = product.metafields.custom.spring_hinges.value | default: product.metafields.custom.spring_hinges
+  assign face_shape_value = product.metafields.custom.face_shape_recommendation.value | default: product.metafields.custom.face_shape_recommendation
+  assign temple_length_value = product.metafields.custom.temple_length.value | default: product.metafields.custom.temple_length
+  assign bridge_width_value = product.metafields.custom.bridge_width.value | default: product.metafields.custom.bridge_width
+  assign lens_width_value = product.metafields.custom.lens_width.value | default: product.metafields.custom.lens_width
+  assign lens_height_value = product.metafields.custom.lens_height.value | default: product.metafields.custom.lens_height
   assign color_values = ''
   for option in product.options_with_values
     assign option_name_downcase = option.name | downcase
@@ -67,6 +75,14 @@
   data-filter-color="{{ color_values | escape }}"
   data-filter-size="{{ size_value | escape }}"
   data-filter-frame-type="{{ frame_type_value | escape }}"
+  data-filter-lens-feature="{{ lens_feature_value | escape }}"
+  data-filter-progressive-bifocal="{{ progressive_bifocal_value | escape }}"
+  data-filter-spring-hinges="{{ spring_hinges_value | escape }}"
+  data-filter-face-shape="{{ face_shape_value | escape }}"
+  data-filter-temple-length="{{ temple_length_value | escape }}"
+  data-filter-bridge-width="{{ bridge_width_value | escape }}"
+  data-filter-lens-width="{{ lens_width_value | escape }}"
+  data-filter-lens-height="{{ lens_height_value | escape }}"
 >
   <div class="product-image{% unless product.available %} stock-out{% endunless %}">
     <div class="product-card-topline">
